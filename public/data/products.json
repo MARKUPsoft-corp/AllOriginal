@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1,
+    "name": "iPhone 13 Pro",
+    "slug": "iphone-13-pro",
+    "category_id": 1,
+    "brand": "APPLE",
+    "price": 650000,
+    "description": "Le dernier iPhone avec une caméra exceptionnelle et des performances inégalées.",
+    "long_description": "Découvrez l'iPhone 13 Pro, le smartphone Apple le plus puissant jamais créé. Avec son système de caméra Pro, son écran Super Retina XDR avec ProMotion et la puce A15 Bionic, c'est un appareil qui redéfinit ce qu'un smartphone peut faire. Parfait pour les professionnels et les amateurs de photographie qui exigent le meilleur de la technologie mobile.",
+    "images": [
+      "/images/products/iphone-13-pro-1.jpg",
+      "/images/products/iphone-13-pro-2.jpg"
+    ],
+    "in_stock": true,
+    "featured": true
+  },
+  {
+    "id": 2,
+    "name": "Samsung Galaxy S21",
+    "slug": "samsung-galaxy-s21",
+    "category_id": 1,
+    "brand": "SAMSUNG",
+    "price": 450000,
+    "description": "Un smartphone Android puissant avec un écran AMOLED de haute qualité.",
+    "long_description": "Le Samsung Galaxy S21 combine un design élégant avec des performances extraordinaires. Son système de caméra avancé vous permet de capturer des photos et des vidéos époustouflantes, tandis que son écran Dynamic AMOLED 2X offre des couleurs vives et un contraste incroyable. Avec sa puce Exynos de dernière génération, il gère facilement les applications et les jeux les plus exigeants.",
+    "images": [
+      "/images/products/samsung-s21-1.jpg",
+      "/images/products/samsung-s21-2.jpg"
+    ],
+    "in_stock": true,
+    "featured": true
+  },
+  {
+    "id": 3,
+    "name": "Xiaomi Mi 11",
+    "slug": "xiaomi-mi-11",
+    "category_id": 1,
+    "brand": "XIAOMI",
+    "price": 350000,
+    "description": "Un rapport qualité-prix imbattable avec des spécifications haut de gamme.",
+    "long_description": "Le Xiaomi Mi 11 est un smartphone qui offre des performances haut de gamme à un prix abordable. Son écran AMOLED 120Hz vous offre une expérience visuelle fluide, tandis que son processeur Snapdragon 888 garantit des performances exceptionnelles. Avec sa caméra principale de 108MP, vous pouvez capturer des photos d'une netteté incroyable dans n'importe quelles conditions d'éclairage.",
+    "images": [
+      "/images/products/xiaomi-mi11-1.jpg",
+      "/images/products/xiaomi-mi11-2.jpg"
+    ],
+    "in_stock": false,
+    "featured": true
+  },
+  {
+    "id": 4,
+    "name": "MacBook Pro 14\"",
+    "slug": "macbook-pro-14",
+    "category_id": 2,
+    "brand": "APPLE",
+    "price": 1250000,
+    "description": "Puissant ordinateur portable avec Apple M1 Pro pour les professionnels.",
+    "long_description": "Le MacBook Pro 14 pouces avec puce Apple M1 Pro redéfinit ce qu'un ordinateur portable professionnel peut faire. Avec jusqu'à 10 cœurs CPU et 16 cœurs GPU, il offre des performances incroyables pour le développement, la conception graphique et le montage vidéo. Son écran Liquid Retina XDR offre un contraste exceptionnel et des couleurs précises, parfait pour les professionnels créatifs.",
+    "images": [
+      "/images/products/macbook-pro-14-1.jpg",
+      "/images/products/macbook-pro-14-2.jpg"
+    ],
+    "in_stock": true,
+    "featured": true
+  },
+  {
+    "id": 5,
+    "name": "Dell XPS 13",
+    "slug": "dell-xps-13",
+    "category_id": 2,
+    "brand": "DELL",
+    "price": 850000,
+    "description": "Ultrabook avec écran InfinityEdge et processeur Intel de dernière génération.",
+    "long_description": "Le Dell XPS 13 est l'ultraportable par excellence, combinant un design compact avec des performances impressionnantes. Son écran InfinityEdge pratiquement sans bordure maximise l'espace d'affichage dans un châssis 13 pouces incroyablement compact. Alimenté par les derniers processeurs Intel Core et doté d'options de stockage SSD ultra-rapides, c'est le compagnon idéal pour les professionnels en déplacement.",
+    "images": [
+      "/images/products/dell-xps-13-1.jpg",
+      "/images/products/dell-xps-13-2.jpg"
+    ],
+    "in_stock": true,
+    "featured": false
+  },
+  {
+    "id": 6,
+    "name": "HP Spectre x360",
+    "slug": "hp-spectre-x360",
+    "category_id": 2,
+    "brand": "HP",
+    "price": 780000,
+    "description": "Ordinateur portable convertible avec écran tactile et performances élevées.",
+    "long_description": "Le HP Spectre x360 est un ordinateur portable convertible premium qui allie élégance et polyvalence. Sa charnière à 360 degrés vous permet de l'utiliser en mode ordinateur portable, tablette, tente ou présentation. Avec son écran tactile 4K OLED, ses performances exceptionnelles et sa longue durée de batterie, c'est l'appareil idéal pour les créatifs et les professionnels qui ont besoin de flexibilité.",
+    "images": [
+      "/images/products/hp-spectre-x360-1.jpg",
+      "/images/products/hp-spectre-x360-2.jpg"
+    ],
+    "in_stock": true,
+    "featured": false
+  }
+] 

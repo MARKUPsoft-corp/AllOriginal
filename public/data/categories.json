@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "name": "Téléphones",
+    "slug": "telephones",
+    "icon": "smartphone",
+    "image": "/images/categories/telephones.png",
+    "description": "Smartphones haut de gamme de toutes marques"
+  },
+  {
+    "id": 2,
+    "name": "Ordinateurs",
+    "slug": "ordinateurs",
+    "icon": "laptop",
+    "image": "/images/categories/ordinateurs.png",
+    "description": "Laptops et ordinateurs de bureau puissants"
+  },
+  {
+    "id": 3,
+    "name": "Tablettes",
+    "slug": "tablettes",
+    "icon": "tablet",
+    "image": "/images/categories/tablettes.png",
+    "description": "Tablettes tactiles pour tous les usages"
+  },
+  {
+    "id": 4,
+    "name": "Accessoires",
+    "slug": "accessoires",
+    "icon": "headphones",
+    "image": "/images/categories/accessoires.png",
+    "description": "Complétez votre équipement avec nos accessoires"
+  }
+] 
