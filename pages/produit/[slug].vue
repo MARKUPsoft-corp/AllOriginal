@@ -1,106 +1,254 @@
 <template>
   <div>
-    <div v-if="product" class="product-detail">
-      <div class="container">
+    <section class="product-detail-section py-5">
+      <div class="container" v-if="product">
         <!-- Fil d'Ariane -->
-        <div class="breadcrumb">
-          <NuxtLink to="/" class="breadcrumb-link">Accueil</NuxtLink>
-          <span class="breadcrumb-separator">›</span>
-          <NuxtLink :to="`/catalogue?category=${category ? category.slug : 'tous'}`" class="breadcrumb-link">
+        <div class="breadcrumb-container mb-4 px-3 py-2 rounded-3 bg-light">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+              <li class="breadcrumb-item">
+                <NuxtLink to="/" class="text-decoration-none">
+                  <i class="bi bi-house-door me-1"></i> Accueil
+                </NuxtLink>
+              </li>
+              <li class="breadcrumb-item">
+                <NuxtLink :to="`/catalogue?category=${category ? category.slug : 'tous'}`" class="text-decoration-none">
             {{ category ? category.name : 'Catalogue' }}
           </NuxtLink>
-          <span class="breadcrumb-separator">›</span>
-          <span class="breadcrumb-current">{{ product.name }}</span>
+              </li>
+              <li class="breadcrumb-item active text-orange fw-semibold" aria-current="page">{{ product.name }}</li>
+            </ol>
+          </nav>
         </div>
         
-        <div class="product-content">
+        <div class="row g-4 g-lg-5">
+          <!-- Galerie du produit -->
+          <div class="col-lg-6" data-aos="fade-right">
           <div class="product-gallery">
-            <div class="product-main-image">
+              <!-- Image principale -->
+              <div class="main-image-wrapper position-relative mb-4 rounded-4 overflow-hidden shadow">
               <div 
-                class="product-placeholder" 
-                :style="{ backgroundColor: getBrandColor(product.brand) }"
+                  class="product-main-image"
+                  :style="{ background: getBrandGradient(product.brand, activeImageIndex) }"
               >
-                {{ product.brand.charAt(0) }}
+                  <div class="brand-model-badge">{{ product.model || product.name.split(' ')[0] }}</div>
+                  <span class="brand-initial">{{ product.brand.charAt(0) }}</span>
+                  
+                  <!-- Badge promo si applicable -->
+                  <div v-if="product.promo" class="product-ribbon">Promo</div>
+                </div>
               </div>
-            </div>
-            <div class="product-thumbnails">
+              
+              <!-- Thumbnails -->
+              <div class="thumbnails-wrapper d-flex justify-content-center gap-3 mb-4">
               <div 
-                v-for="i in 2" 
+                  v-for="i in 3" 
                 :key="i" 
-                class="thumbnail"
-                :class="{ 'active': i === 1 }"
+                  class="thumbnail-item rounded-3 overflow-hidden shadow-sm"
+                  :class="{ 'active': i === activeImageIndex }"
+                  @click="setActiveImage(i)"
               >
-                <div class="thumbnail-placeholder" :style="{ backgroundColor: getBrandColor(product.brand, i) }"></div>
+                  <div class="thumbnail-inner" :style="{ background: getBrandGradient(product.brand, i) }">
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Spécifications -->
+              <div class="product-specs mt-4">
+                <h2 class="specs-title fw-semibold fs-4 mb-4 border-start border-4 border-orange ps-3">Caractéristiques</h2>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <div class="spec-item d-flex gap-3 align-items-center p-3">
+                      <div class="spec-icon text-orange">
+                        <i class="bi bi-cpu"></i>
+                      </div>
+                      <div class="spec-text">
+                        <div class="spec-label mb-0">RAM</div>
+                        <div class="spec-value">{{ product.specs?.ram || '8 GB' }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="spec-item d-flex gap-3 align-items-center p-3">
+                      <div class="spec-icon text-orange">
+                        <i class="bi bi-device-hdd"></i>
+                      </div>
+                      <div class="spec-text">
+                        <div class="spec-label mb-0">Stockage</div>
+                        <div class="spec-value">{{ product.specs?.storage || '256 GB SSD' }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="spec-item d-flex gap-3 align-items-center p-3">
+                      <div class="spec-icon text-orange">
+                        <i class="bi bi-cpu-fill"></i>
+                      </div>
+                      <div class="spec-text">
+                        <div class="spec-label mb-0">Processeur</div>
+                        <div class="spec-value">{{ product.specs?.processor || 'Snapdragon 8 Gen 2' }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="spec-item d-flex gap-3 align-items-center p-3">
+                      <div class="spec-icon text-orange">
+                        <i class="bi bi-display"></i>
+                      </div>
+                      <div class="spec-text">
+                        <div class="spec-label mb-0">Écran</div>
+                        <div class="spec-value">{{ product.specs?.screen || '6.7' }}"</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
           
-          <div class="product-info">
-            <div class="product-header">
-              <span class="product-brand">{{ product.brand }}</span>
-              <h1 class="product-title">{{ product.name }}</h1>
-              <div class="product-stock" :class="{ 'in-stock': product.in_stock, 'out-of-stock': !product.in_stock }">
+          <!-- Informations produit -->
+          <div class="col-lg-6" data-aos="fade-left">
+            <div class="product-info-container">
+              <!-- En-tête du produit -->
+              <div class="product-header mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="brand-badge px-3 py-2 rounded-pill">{{ product.brand }}</span>
+                  <span 
+                    :class="[
+                      'stock-badge rounded-pill px-3 py-2', 
+                      product.in_stock ? 'stock-badge-success' : 'stock-badge-danger'
+                    ]"
+                  >
+                    <i :class="['bi me-1', product.in_stock ? 'bi-check-circle' : 'bi-x-circle']"></i>
                 {{ product.in_stock ? 'En stock' : 'Rupture de stock' }}
-              </div>
-            </div>
-            
-            <div class="product-price">{{ formatPrice(product.price) }} FCFA</div>
-            
-            <div class="product-description">
-              <h2 class="description-title">Description</h2>
-              <p class="description-text">{{ product.long_description || product.description }}</p>
-            </div>
-            
-            <div class="product-action">
-              <WhatsAppButton 
-                :product-name="product.name" 
-                :disabled="!product.in_stock" 
-              />
-            </div>
-            
-            <div class="product-additional">
-              <div class="product-guarantee">
-                <div class="guarantee-icon">🛡️</div>
-                <div class="guarantee-text">
-                  <strong>Qualité Garantie</strong>
-                  <p>Produit 100% authentique avec garantie fabricant</p>
+                  </span>
+                </div>
+                <h1 class="product-title display-5 fw-bold mb-3">{{ product.name }}</h1>
+                
+                <!-- Note et avis (simulés) -->
+                <div class="rating-wrapper d-flex align-items-center gap-2 mb-3">
+                  <div class="stars">
+                    <i v-for="n in 5" :key="n" class="bi" :class="n <= 4 ? 'bi-star-fill' : 'bi-star'" style="color: #FFD700;"></i>
+                  </div>
+                  <span class="rating-count text-muted">(12 avis)</span>
                 </div>
               </div>
               
-              <div class="product-delivery">
-                <div class="delivery-icon">🚚</div>
-                <div class="delivery-text">
-                  <strong>Livraison Rapide</strong>
-                  <p>Partout au Cameroun sous 24h à 72h</p>
+              <!-- Prix -->
+              <div class="product-price-container mb-4">
+                <div class="d-flex align-items-baseline gap-3">
+                  <div class="current-price display-6 fw-bold text-orange">{{ formatPrice(product.price) }} FCFA</div>
+                  <div v-if="product.promo" class="old-price text-decoration-line-through text-muted fs-5">
+                    {{ formatPrice(product.old_price || Math.round(product.price * 1.2)) }} FCFA
+                  </div>
+                </div>
+                <div v-if="product.promo" class="savings-badge bg-success-subtle text-success small rounded-pill px-2 py-1 d-inline-block mt-2">
+                  Économisez {{ calculateDiscount(product) }}%
+              </div>
+            </div>
+            
+              <!-- Description -->
+              <div class="product-description mb-5">
+                <h2 class="description-title fw-semibold fs-4 mb-4 border-start border-4 border-orange ps-3">Description</h2>
+                <div class="description-text p-4 bg-light rounded-3 shadow-sm">
+                  {{ product.long_description || product.description }}
+            </div>
+            </div>
+            
+              <!-- Actions -->
+              <div class="product-actions mb-4">
+                <div class="d-grid gap-3 d-md-flex">
+                  <a 
+                    v-if="product.in_stock"
+                    :href="getWhatsAppLink(product)" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    class="btn btn-success btn-lg px-4 py-3 w-100 shine-effect d-flex align-items-center justify-content-center"
+                  >
+                    <i class="bi bi-whatsapp fs-4 me-2"></i> Commander sur WhatsApp
+                  </a>
+                  <button v-else class="btn btn-secondary btn-lg px-4 py-3 w-100 d-flex align-items-center justify-content-center" disabled>
+                    <i class="bi bi-x-circle me-2"></i> Indisponible
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Information additionnelles -->
+              <div class="product-additional rounded-4 p-4 bg-light">
+                <div class="row g-4">
+                  <div class="col-md-6">
+                    <div class="guarantee-badge d-flex gap-3 align-items-center">
+                      <div class="badge-icon text-orange">
+                        <i class="bi bi-shield-check fs-2"></i>
+                      </div>
+                      <div class="badge-text">
+                        <h4 class="fw-semibold mb-1 fs-6">Garantie Officielle</h4>
+                        <p class="small text-muted mb-0">Tous nos produits sont 100% authentiques</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="delivery-badge d-flex gap-3 align-items-center">
+                      <div class="badge-icon text-orange">
+                        <i class="bi bi-truck fs-2"></i>
+                      </div>
+                      <div class="badge-text">
+                        <h4 class="fw-semibold mb-1 fs-6">Livraison Express</h4>
+                        <p class="small text-muted mb-0">Sous 24h à 72h au Cameroun</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      
+      <!-- État de chargement -->
+      <div v-else-if="loading" class="container">
+        <div class="loading-container py-5">
+          <div class="spinner-grow text-orange mb-3" role="status">
+            <span class="visually-hidden">Chargement...</span>
+          </div>
+          <p class="text-muted">Chargement des informations produit...</p>
+      </div>
     </div>
     
-    <div v-else-if="loading" class="loading-container">
-      <div class="loading-spinner"></div>
-      <p>Chargement du produit...</p>
+      <!-- Message d'erreur -->
+      <div v-else class="container">
+        <div class="error-container py-5 text-center">
+          <div class="error-icon fs-1 text-danger mb-3">
+            <i class="bi bi-exclamation-triangle"></i>
     </div>
-    
-    <div v-else class="error-container">
-      <div class="error-icon">⚠️</div>
-      <h2 class="error-title">Produit non trouvé</h2>
-      <p class="error-message">Le produit que vous recherchez n'existe pas ou a été supprimé.</p>
-      <NuxtLink to="/catalogue?category=tous" class="error-button">
-        Voir tous les produits
+          <h2 class="error-title fs-3 fw-bold mb-3">Produit non trouvé</h2>
+          <p class="error-message text-muted mb-4">Le produit que vous recherchez n'existe pas ou a été supprimé.</p>
+          <NuxtLink to="/catalogue?category=tous" class="btn btn-primary px-4 py-2 shine-effect">
+            <i class="bi bi-grid me-2"></i> Voir tous les produits
       </NuxtLink>
     </div>
+      </div>
+    </section>
     
     <!-- Section produits similaires -->
-    <section v-if="product && similarProducts.length > 0" class="similar-products section">
+    <section v-if="product && similarProducts.length > 0" class="similar-products-section py-5 bg-light">
       <div class="container">
-        <h2 class="section-title">Produits similaires</h2>
-        <div class="products-grid">
-          <div v-for="similarProduct in similarProducts" :key="similarProduct.id" class="product-item">
+        <div class="section-header text-center mb-5">
+          <span class="badge bg-orange-subtle text-orange mb-3 px-3 py-2 rounded-pill">Découvrez plus</span>
+          <h2 class="section-title display-6 fw-bold mb-3">Produits similaires</h2>
+          <div class="separator-line mx-auto mb-4"></div>
+          <p class="lead col-lg-6 mx-auto text-muted">D'autres produits qui pourraient vous intéresser dans la catégorie {{ category?.name || 'Produits' }}</p>
+        </div>
+        
+        <div class="row g-4">
+          <div v-for="(similarProduct, index) in similarProducts" :key="similarProduct.id" class="col-md-6 col-lg-4">
+            <div 
+              class="product-card-wrapper h-100"
+              data-aos="fade-up" 
+              :data-aos-delay="`${index * 100}`"
+            >
             <ProductCard :product="similarProduct" />
+            </div>
           </div>
         </div>
       </div>
@@ -122,7 +270,7 @@ const product = ref(null);
 const category = ref(null);
 const categories = ref([]);
 const allProducts = ref([]);
-const mainImage = ref('');
+const activeImageIndex = ref(1);
 
 // SEO
 definePageMeta({
@@ -135,26 +283,51 @@ const formatPrice = (price) => {
   return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 };
 
-// Retourne une couleur différente pour chaque marque et variation
-const getBrandColor = (brand, variation = 0) => {
-  // Couleurs de base pour chaque marque
-  const brandColors = {
-    'APPLE': '#A2AAAD',
-    'SAMSUNG': '#1428A0',
-    'XIAOMI': '#FF6700',
-    'DELL': '#007DB8',
-    'HP': '#0096D6'
-  };
-  
-  // Variation de la teinte pour les thumbnails
-  let color = brandColors[brand] || '#FFA500'; // Couleur par défaut
-  
-  if (variation > 0) {
-    // Assombrir légèrement pour les thumbnails
-    return color + '99'; // Ajoute une transparence
+// Calcul de la remise en pourcentage
+const calculateDiscount = (product) => {
+  if (!product.promo || !product.old_price) {
+    return Math.round(20); // 20% par défaut
   }
   
-  return color;
+  const discount = ((product.old_price - product.price) / product.old_price) * 100;
+  return Math.round(discount);
+};
+
+// Retourne un dégradé différent pour chaque marque et variation
+const getBrandGradient = (brand, variation = 0) => {
+  // Dégradés de base pour chaque marque
+  const brandGradients = {
+    'APPLE': 'linear-gradient(135deg, #A2AAAD 0%, #F5F5F7 100%)',
+    'SAMSUNG': 'linear-gradient(135deg, #1428A0 0%, #1565C0 100%)',
+    'XIAOMI': 'linear-gradient(135deg, #FF6700 0%, #FF9B33 100%)',
+    'DELL': 'linear-gradient(135deg, #007DB8 0%, #00B2E3 100%)',
+    'HP': 'linear-gradient(135deg, #0096D6 0%, #00BCD4 100%)',
+    'HUAWEI': 'linear-gradient(135deg, #CF0A2C 0%, #FF5252 100%)',
+    'LENOVO': 'linear-gradient(135deg, #E2231A 0%, #FF5252 100%)'
+  };
+  
+  // Dégradé par défaut
+  let gradient = brandGradients[brand] || 'linear-gradient(135deg, var(--bs-orange) 0%, #FFAB40 100%)';
+  
+  // Variation pour les thumbnails
+  if (variation > 0) {
+    const angles = [135, 45, 225];
+    return gradient.replace('135deg', `${angles[variation % angles.length]}deg`);
+  }
+  
+  return gradient;
+};
+
+// Changer l'image active
+const setActiveImage = (index) => {
+  activeImageIndex.value = index;
+};
+
+// Générer le lien WhatsApp
+const getWhatsAppLink = (product) => {
+  const text = `Bonjour, je suis intéressé(e) par le produit ${product.name} au prix de ${formatPrice(product.price)} FCFA sur All Original. Pouvez-vous me donner plus d'informations ?`;
+  const encodedText = encodeURIComponent(text);
+  return `https://wa.me/237XXXXXXXXX?text=${encodedText}`;
 };
 
 // Produits similaires (même catégorie, différent ID)
@@ -181,9 +354,6 @@ onMounted(async () => {
     product.value = allProducts.value.find(p => p.slug === slug.value);
     
     if (product.value) {
-      // Définir l'image principale (maintenant un placeholder)
-      mainImage.value = product.value.images[0];
-      
       // Récupérer la catégorie du produit
       category.value = categories.value.find(c => c.id === product.value.category_id);
       
@@ -212,298 +382,392 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.product-detail {
-  padding: 2rem 0;
+/* Section détail produit */
+.product-detail-section {
+  padding-top: 6rem;
+  padding-bottom: 3rem;
 }
 
-.breadcrumb {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-bottom: 2rem;
-  font-size: 0.875rem;
+/* Fil d'ariane */
+.breadcrumb-container {
+  border-left: 4px solid var(--bs-orange);
 }
 
-.breadcrumb-link {
-  color: var(--text-color);
-  text-decoration: none;
+.breadcrumb-item a {
+  color: var(--bs-gray-600);
   transition: color 0.3s ease;
 }
 
-.breadcrumb-link:hover {
-  color: var(--primary-color);
+.breadcrumb-item a:hover {
+  color: var(--bs-orange);
 }
 
-.breadcrumb-separator {
-  margin: 0 0.5rem;
-  color: var(--border-color);
+.text-orange {
+  color: var(--bs-orange);
 }
 
-.breadcrumb-current {
-  color: var(--primary-color);
-  font-weight: 500;
-}
-
-.product-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.product-gallery {
-  flex: 1;
-}
-
+/* Galerie */
 .product-main-image {
-  margin-bottom: 1rem;
-  border-radius: 0.5rem;
-  overflow: hidden;
+  height: 450px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding: 1rem;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.5s ease;
 }
 
-/* Placeholder pour l'image principale */
-.product-placeholder {
-  width: 300px;
-  height: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0.5rem;
-  color: var(--light-color);
-  font-size: 6rem;
+.brand-initial {
+  font-size: 10rem;
   font-weight: bold;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  color: white;
+  opacity: 0.8;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
-.product-thumbnails {
-  display: flex;
-  gap: 0.5rem;
+.brand-model-badge {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  color: white;
+  font-weight: 500;
+  letter-spacing: 1px;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.thumbnail {
-  width: 80px;
-  height: 80px;
-  border-radius: 0.375rem;
-  overflow: hidden;
+.product-ribbon {
+  position: absolute;
+  top: 20px;
+  right: -30px;
+  background: var(--bs-orange);
+  color: white;
+  padding: 0.25rem 2rem;
+  transform: rotate(45deg);
+  z-index: 2;
+  font-weight: 600;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.main-image-wrapper:hover .product-main-image {
+  transform: scale(1.03);
+}
+
+.thumbnails-wrapper {
+  margin-top: 1.5rem;
+}
+
+.thumbnail-item {
+  width: 90px;
+  height: 90px;
   cursor: pointer;
-  border: 2px solid transparent;
+  border: 3px solid transparent;
   transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow: hidden;
+  position: relative;
 }
 
-.thumbnail.active {
-  border-color: var(--primary-color);
-}
-
-.thumbnail-placeholder {
+.thumbnail-inner {
   width: 100%;
   height: 100%;
-  border-radius: 0.25rem;
+  transition: transform 0.3s ease;
 }
 
-.product-info {
-  flex: 1;
+.thumbnail-item:hover .thumbnail-inner {
+  transform: scale(1.1);
 }
 
-.product-header {
-  margin-bottom: 1rem;
+.thumbnail-item.active {
+  border-color: var(--bs-orange);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
-.product-brand {
-  display: inline-block;
-  font-size: 0.875rem;
+.thumbnail-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid var(--bs-orange);
+  transform: translateX(-50%) rotate(180deg);
+}
+
+/* Spécifications */
+.product-specs {
+  margin-bottom: 2rem;
+}
+
+.spec-item {
+  background-color: #f8f9fa;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  height: 100%;
+}
+
+.spec-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  border-left: 3px solid var(--bs-orange);
+}
+
+.spec-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.spec-label {
+  font-size: 0.75rem;
+  color: var(--bs-gray-600);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.spec-value {
   font-weight: 600;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  background-color: var(--secondary-color);
-  color: var(--light-color);
-  margin-bottom: 0.5rem;
+  color: var(--bs-gray-800);
+  font-size: 0.95rem;
+  line-height: 1.2;
+}
+
+/* Infos produit */
+.product-info-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-badge {
+  background-color: var(--bs-primary);
+  color: white;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  font-size: 0.85rem;
+}
+
+.stock-badge {
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.stock-badge-success {
+  background-color: rgba(var(--bs-success-rgb), 0.15);
+  color: var(--bs-success);
+}
+
+.stock-badge-danger {
+  background-color: rgba(var(--bs-danger-rgb), 0.15);
+  color: var(--bs-danger);
 }
 
 .product-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-  color: var(--secondary-color);
+  line-height: 1.2;
+  color: var(--bs-gray-800);
 }
 
-.product-stock {
-  display: inline-block;
-  font-size: 0.875rem;
-  font-weight: 600;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  margin-bottom: 1rem;
-}
-
-.in-stock {
-  background-color: var(--success-color);
-  color: var(--light-color);
-}
-
-.out-of-stock {
-  background-color: var(--danger-color);
-  color: var(--light-color);
-}
-
-.product-price {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--primary-color);
-  margin-bottom: 1.5rem;
-}
-
-.product-description {
-  margin-bottom: 2rem;
-}
-
-.description-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  color: var(--secondary-color);
-}
-
+/* Description */
 .description-text {
-  line-height: 1.7;
-  color: var(--text-color);
+  line-height: 1.9;
+  color: var(--bs-gray-700);
+  font-size: 1.05rem;
+  border-left: 4px solid var(--bs-orange);
 }
 
-.product-action {
-  margin-bottom: 2rem;
+/* Boutons */
+.shine-effect {
+  position: relative;
+  overflow: hidden;
 }
 
+.shine-effect::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
+  transform: rotate(-45deg);
+  animation: shine 3s infinite;
+  opacity: 0;
+}
+
+.shine-effect:hover::after {
+  opacity: 1;
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+    opacity: 0.7;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+/* Badges garantie et livraison */
 .product-additional {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--border-color);
+  border-left: 4px solid var(--bs-orange);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
-.product-guarantee,
-.product-delivery {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+/* Section des produits similaires */
+.similar-products-section {
+  padding: 6rem 0;
+  background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+  position: relative;
+  overflow: hidden;
 }
 
-.guarantee-icon,
-.delivery-icon {
-  font-size: 2rem;
-  color: var(--primary-color);
+.similar-products-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(circle at 10% 20%, rgba(255, 140, 0, 0.03) 0%, transparent 70%),
+                    radial-gradient(circle at 90% 80%, rgba(0, 123, 255, 0.03) 0%, transparent 70%);
+  z-index: 0;
 }
 
-.guarantee-text p,
-.delivery-text p {
-  margin-top: 0.25rem;
-  font-size: 0.875rem;
-  color: var(--text-color);
+.similar-products-section .container {
+  position: relative;
+  z-index: 1;
 }
 
-/* Loading and Error States */
+.separator-line {
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--bs-orange) 0%, var(--bs-primary) 100%);
+  border-radius: 2px;
+  position: relative;
+}
+
+.separator-line::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: 0;
+  width: 20px;
+  height: 8px;
+  background-color: var(--bs-orange);
+  border-radius: 4px;
+  animation: underlinePulse 3s infinite;
+}
+
+@keyframes underlinePulse {
+  0%, 100% { left: 0; }
+  50% { left: calc(100% - 20px); }
+}
+
+/* États de chargement et d'erreur */
 .loading-container,
 .error-container {
+  min-height: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4rem 0;
-  text-align: center;
 }
 
-.loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 4px solid var(--gray-color);
-  border-top: 4px solid var(--primary-color);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.error-icon {
-  font-size: 4rem;
-  margin-bottom: 1rem;
-}
-
-.error-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  color: var(--danger-color);
-}
-
-.error-message {
-  margin-bottom: 2rem;
-  color: var(--text-color);
-}
-
-.error-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.75rem 1.5rem;
-  background-color: var(--primary-color);
-  color: var(--light-color);
-  border-radius: 0.375rem;
-  text-decoration: none;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.error-button:hover {
-  background-color: darken(var(--primary-color), 10%);
-  transform: translateY(-2px);
-}
-
-/* Similar Products Section */
-.similar-products {
-  background-color: var(--gray-color);
-  padding: 3rem 0;
-}
-
-.section-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 2rem;
-  color: var(--secondary-color);
-}
-
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 2rem;
-}
-
-@media (min-width: 768px) {
-  .product-content {
-    flex-direction: row;
+/* Responsive */
+@media (max-width: 991px) {
+  .product-main-image {
+    height: 400px;
   }
   
-  .product-additional {
-    flex-direction: row;
+  .brand-initial {
+    font-size: 8rem;
   }
   
-  .products-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .product-info-container {
+    margin-top: 1rem;
   }
 }
 
-@media (min-width: 1024px) {
-  .products-grid {
-    grid-template-columns: repeat(3, 1fr);
+@media (max-width: 767px) {
+  .product-main-image {
+    height: 350px;
+}
+
+  .brand-initial {
+    font-size: 7rem;
+  }
+  
+  .spec-item {
+    padding: 0.75rem;
+}
+
+  .spec-icon {
+    font-size: 1.3rem;
+  }
+  
+  .product-title {
+    font-size: 2rem;
+}
+
+  .thumbnail-item {
+    width: 70px;
+    height: 70px;
+}
+}
+
+@media (max-width: 575px) {
+  .product-detail-section {
+    padding-top: 5rem;
+    padding-bottom: 2rem;
+  }
+  
+  .product-main-image {
+    height: 280px;
+}
+
+  .brand-initial {
+    font-size: 5.5rem;
+}
+
+  .thumbnail-item {
+    width: 60px;
+    height: 60px;
+}
+
+  .product-title {
+    font-size: 1.5rem;
+  }
+  
+  .current-price {
+    font-size: 1.75rem;
+}
+
+  .spec-item {
+    padding: 0.5rem;
+}
+
+  .spec-icon {
+    font-size: 1.1rem;
+  }
+  
+  .spec-value {
+    font-size: 0.85rem;
+  }
+  
+  .similar-products-section {
+    padding: 4rem 0;
   }
 }
 </style> 

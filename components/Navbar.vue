@@ -7,6 +7,7 @@
       <div class="container">
         <!-- Logo avec animation -->
         <NuxtLink to="/" class="navbar-brand d-flex align-items-center shine-effect">
+          <i class="bi bi-phone text-orange me-2 fs-3"></i>
           <span class="brand-text fw-bold fs-4">All <span class="text-orange border-animation d-inline-block">Original</span></span>
         </NuxtLink>
         

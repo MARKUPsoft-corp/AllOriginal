@@ -22,18 +22,18 @@
                   <span class="badge bg-orange-subtle text-orange mb-3 px-3 py-2 rounded-pill shine-effect">All Original</span>
                   <h1 class="display-3 fw-bold mb-3">High-Tech <span class="text-orange border-3 border-bottom border-orange pb-1 shine-text">Premium</span></h1>
                   <p class="lead mb-4 opacity-75">
-                    Découvrez notre sélection complète de produits technologiques haut de gamme.
-                  </p>
+            Découvrez notre sélection complète de produits technologiques haut de gamme.
+          </p>
                   <NuxtLink to="/catalogue?category=tous" class="btn btn-primary btn-lg px-4 py-3 shadow-sm shine-effect">
-                    Voir le catalogue
+            Voir le catalogue
                     <i class="bi bi-arrow-right-circle-fill ms-2"></i>
-                  </NuxtLink>
-                </div>
+          </NuxtLink>
+        </div>
                 <div class="col-lg-6 text-center" data-aos="fade-left" data-aos-delay="200">
                   <div class="hero-image float-animation position-relative">
                     <div class="hero-circle rotate-animation position-absolute" style="z-index: 0;"></div>
                     <div class="placeholder-image rounded-5 shadow-lg tilt-effect position-relative" style="z-index: 1;"></div>
-                  </div>
+        </div>
                 </div>
               </div>
             </div>
@@ -106,13 +106,18 @@
     </section>
 
     <!-- Categories Section - Style Sobre -->
-    <section class="categories-section-new py-5">
-      <div class="container py-5">
+    <section class="categories-section-new py-5 section-styled position-relative overflow-hidden">
+      <div id="particles-categories" class="particles-container"></div>
+      <!-- Formes décoratives -->
+      <div class="decorative-shape shape-1"></div>
+      <div class="decorative-shape shape-2"></div>
+      <div class="decorative-shape shape-3"></div>
+      <div class="container py-5 position-relative">
         <div class="row mb-5">
           <div class="col-12 text-center" data-aos="fade-up">
-            <span class="badge bg-orange-subtle text-orange mb-3 px-3 py-2 rounded-pill">Explorez</span>
-            <h2 class="display-5 fw-bold mb-3">Nos Catégories</h2>
-            <div class="separator-line mx-auto mb-4"></div>
+            <span class="badge bg-orange-subtle text-orange mb-3 px-3 py-2 rounded-pill shine-effect glow-badge">Explorez</span>
+            <h2 class="display-5 fw-bold mb-3 text-with-glow">Nos Catégories</h2>
+            <div class="separator-line mx-auto mb-4 glow-line"></div>
             <p class="lead col-lg-6 mx-auto opacity-75">Découvrez notre sélection de produits high-tech premium</p>
           </div>
         </div>
@@ -124,26 +129,36 @@
                 :data-aos-delay="`${index * 50}`">
               <div class="category-icon-container">
                 <i :class="`bi bi-${category.icon === 'smartphone' ? 'phone' : category.icon === 'laptop' ? 'laptop' : category.icon === 'tablet' ? 'tablet' : category.icon === 'headphones' ? 'headphones' : 'box'}`"></i>
-              </div>
+          </div>
               <h3 class="category-name">{{ category.name }}</h3>
               <p class="category-desc">{{ category.description }}</p>
               <NuxtLink :to="`/catalogue?category=${category.slug}`" class="category-link">
                 Découvrir <i class="bi bi-arrow-right"></i>
               </NuxtLink>
-            </div>
+        </div>
           </div>
         </div>
       </div>
+      <div class="wave-shape-bottom">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 200">
+          <path fill="#ffffff" fill-opacity="1" d="M0,96L48,106.7C96,117,192,139,288,144C384,149,480,139,576,122.7C672,107,768,85,864,90.7C960,96,1056,128,1152,133.3C1248,139,1344,117,1392,106.7L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+        </svg>
+      </div>
     </section>
-    
+
     <!-- Featured Products Section - Style Sobre -->
-    <section class="featured-products-section py-5">
-      <div class="container py-5">
+    <section class="featured-products-section py-5 section-styled position-relative overflow-hidden">
+      <div id="particles-products" class="particles-container"></div>
+      <!-- Formes décoratives -->
+      <div class="decorative-shape shape-4"></div>
+      <div class="decorative-shape shape-5"></div>
+      <div class="decorative-shape shape-6"></div>
+      <div class="container py-5 position-relative">
         <div class="row mb-5">
           <div class="col-12 text-center" data-aos="fade-up">
-            <span class="badge bg-orange-subtle text-orange mb-3 px-3 py-2 rounded-pill">Tendances</span>
-            <h2 class="display-5 fw-bold mb-3">Produits Populaires</h2>
-            <div class="separator-line mx-auto mb-4"></div>
+            <span class="badge bg-orange-subtle text-orange mb-3 px-3 py-2 rounded-pill shine-effect glow-badge">Tendances</span>
+            <h2 class="display-5 fw-bold mb-3 text-with-glow">Produits Populaires</h2>
+            <div class="separator-line mx-auto mb-4 glow-line"></div>
             <p class="lead col-lg-6 mx-auto opacity-75">Découvrez nos produits les plus demandés par nos clients</p>
           </div>
         </div>
@@ -152,12 +167,9 @@
           <div v-for="(product, index) in featuredProducts" :key="product.id" class="col-12 col-md-6 col-lg-4">
             <div class="product-card-wrapper"
                  data-aos="fade-up" :data-aos-delay="`${index * 50}`">
-              <div class="product-card">
-                <ProductCard :product="product" />
-                <div class="product-shine"></div>
-              </div>
-            </div>
+            <ProductCard :product="product" />
           </div>
+        </div>
         </div>
         
         <div class="text-center mt-5" data-aos="fade-up">
@@ -166,16 +178,26 @@
           </NuxtLink>
         </div>
       </div>
+      <div class="wave-shape-bottom">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 200">
+          <path fill="#f8f9fa" fill-opacity="1" d="M0,96L48,106.7C96,117,192,139,288,144C384,149,480,139,576,122.7C672,107,768,85,864,90.7C960,96,1056,128,1152,133.3C1248,139,1344,117,1392,106.7L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+        </svg>
+      </div>
     </section>
-    
+
     <!-- Services Section - Style Sobre -->
-    <section class="services-section-new py-5">
-      <div class="container py-5">
+    <section class="services-section-new py-5 section-styled position-relative overflow-hidden">
+      <div id="particles-services" class="particles-container"></div>
+      <!-- Formes décoratives -->
+      <div class="decorative-shape shape-7"></div>
+      <div class="decorative-shape shape-8"></div>
+      <div class="decorative-shape shape-9"></div>
+      <div class="container py-5 position-relative">
         <div class="row mb-5">
           <div class="col-12 text-center" data-aos="fade-up">
-            <span class="badge bg-orange-subtle text-orange mb-3 px-3 py-2 rounded-pill">Services</span>
-            <h2 class="display-5 fw-bold mb-3">Pourquoi nous choisir</h2>
-            <div class="separator-line mx-auto mb-4"></div>
+            <span class="badge bg-orange-subtle text-orange mb-3 px-3 py-2 rounded-pill shine-effect glow-badge">Services</span>
+            <h2 class="display-5 fw-bold mb-3 text-with-glow">Pourquoi nous choisir</h2>
+            <div class="separator-line mx-auto mb-4 glow-line"></div>
             <p class="lead col-lg-6 mx-auto opacity-75">Nous nous engageons à offrir la meilleure expérience client</p>
           </div>
         </div>
@@ -187,10 +209,10 @@
               <div class="service-icon">
                 <i class="bi bi-shield-check"></i>
               </div>
-              <h3 class="service-title">Qualité Garantie</h3>
+            <h3 class="service-title">Qualité Garantie</h3>
               <p class="service-desc">
                 Tous nos produits sont authentiques et bénéficient d'une garantie constructeur officielle. Nous sélectionnons avec soin chaque article.
-              </p>
+            </p>
             </div>
           </div>
           
@@ -200,10 +222,10 @@
               <div class="service-icon">
                 <i class="bi bi-truck"></i>
               </div>
-              <h3 class="service-title">Livraison Rapide</h3>
+            <h3 class="service-title">Livraison Rapide</h3>
               <p class="service-desc">
                 Livraison express partout au Cameroun sous 24h à 72h selon votre localisation. Suivi de commande en temps réel.
-              </p>
+            </p>
             </div>
           </div>
           
@@ -213,10 +235,10 @@
               <div class="service-icon">
                 <i class="bi bi-headset"></i>
               </div>
-              <h3 class="service-title">Service Client</h3>
+            <h3 class="service-title">Service Client</h3>
               <p class="service-desc">
                 Notre équipe professionnelle est disponible 7j/7 pour répondre à toutes vos questions et vous accompagner dans vos achats.
-              </p>
+            </p>
             </div>
           </div>
         </div>
@@ -306,6 +328,45 @@ onMounted(async () => {
       });
     }
     
+    // Initialisation des particules pour les catégories
+    if (document.getElementById("particles-categories") && window.particlesJS) {
+      window.particlesJS('particles-categories', {
+        particles: {
+          number: { value: 20, density: { enable: true, value_area: 800 } },
+          color: { value: '#ff8c00' },
+          opacity: { value: 0.1, random: true },
+          size: { value: 4, random: true },
+          line_linked: { enable: true, color: '#ff8c00', opacity: 0.05 }
+        }
+      });
+    }
+    
+    // Initialisation des particules pour les produits
+    if (document.getElementById("particles-products") && window.particlesJS) {
+      window.particlesJS('particles-products', {
+        particles: {
+          number: { value: 15, density: { enable: true, value_area: 800 } },
+          color: { value: '#007bff' },
+          opacity: { value: 0.1, random: true },
+          size: { value: 4, random: true },
+          line_linked: { enable: true, color: '#007bff', opacity: 0.05 }
+        }
+      });
+    }
+    
+    // Initialisation des particules pour les services
+    if (document.getElementById("particles-services") && window.particlesJS) {
+      window.particlesJS('particles-services', {
+        particles: {
+          number: { value: 25, density: { enable: true, value_area: 800 } },
+          color: { value: '#ff8c00' },
+          opacity: { value: 0.1, random: true },
+          size: { value: 3, random: true },
+          line_linked: { enable: true, color: '#ff8c00', opacity: 0.05 }
+        }
+      });
+    }
+    
     if (document.getElementById("particles-cta") && window.particlesJS) {
       window.particlesJS('particles-cta', {
         particles: {
@@ -328,6 +389,238 @@ onMounted(async () => {
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Style commun pour les sections (similaire à la page produit) */
+.section-styled {
+  padding: 6rem 0;
+  background-color: #fff;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.section-styled .container {
+  position: relative;
+  z-index: 2;
+}
+
+.section-styled .particles-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.6;
+}
+
+.section-styled:nth-child(odd) {
+  background-color: #f8f9fa;
+}
+
+.section-styled .wave-shape-bottom {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  transform: rotate(0deg);
+  z-index: 1;
+}
+
+/* Effets de lueur */
+.text-with-glow {
+  text-shadow: 0 0 10px rgba(255, 140, 0, 0.2);
+  position: relative;
+}
+
+.text-with-glow::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 10px;
+  background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.2), transparent);
+  bottom: -10px;
+  left: 0;
+  border-radius: 50%;
+  filter: blur(10px);
+  opacity: 0.7;
+}
+
+.glow-badge {
+  box-shadow: 0 0 15px rgba(255, 140, 0, 0.3);
+  border: 1px solid rgba(255, 140, 0, 0.3);
+  animation: pulseBadge 3s infinite alternate;
+}
+
+.glow-line {
+  box-shadow: 0 0 15px rgba(255, 140, 0, 0.3);
+  animation: pulseLine 3s infinite alternate;
+}
+
+@keyframes pulseBadge {
+  0% {
+    box-shadow: 0 0 10px rgba(255, 140, 0, 0.3);
+    transform: scale(1);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(255, 140, 0, 0.5);
+    transform: scale(1.05);
+  }
+}
+
+@keyframes pulseLine {
+  0% {
+    box-shadow: 0 0 8px rgba(255, 140, 0, 0.3);
+    opacity: 0.8;
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(255, 140, 0, 0.5);
+    opacity: 1;
+  }
+}
+
+/* Formes décoratives */
+.decorative-shape {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(50px);
+  z-index: 0;
+  opacity: 0.1;
+  animation: floatShape 15s infinite alternate ease-in-out;
+}
+
+.shape-1 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle at center, var(--bs-orange) 0%, transparent 70%);
+  top: 10%;
+  left: -100px;
+  animation-delay: 0s;
+}
+
+.shape-2 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle at center, var(--bs-primary) 0%, transparent 70%);
+  bottom: 20%;
+  right: -50px;
+  animation-delay: 2s;
+}
+
+.shape-3 {
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle at center, var(--bs-orange) 0%, transparent 70%);
+  bottom: 10%;
+  left: 30%;
+  animation-delay: 4s;
+}
+
+.shape-4 {
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle at center, var(--bs-primary) 0%, transparent 70%);
+  top: 15%;
+  right: -100px;
+  animation-delay: 1s;
+}
+
+.shape-5 {
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle at center, var(--bs-orange) 0%, transparent 70%);
+  bottom: 25%;
+  left: -80px;
+  animation-delay: 3s;
+}
+
+.shape-6 {
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle at center, var(--bs-primary) 0%, transparent 70%);
+  top: 40%;
+  left: 20%;
+  animation-delay: 5s;
+}
+
+.shape-7 {
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle at center, var(--bs-orange) 0%, transparent 70%);
+  top: 5%;
+  left: -120px;
+  animation-delay: 0s;
+}
+
+.shape-8 {
+  width: 190px;
+  height: 190px;
+  background: radial-gradient(circle at center, var(--bs-primary) 0%, transparent 70%);
+  bottom: 15%;
+  right: -70px;
+  animation-delay: 2.5s;
+}
+
+.shape-9 {
+  width: 160px;
+  height: 160px;
+  background: radial-gradient(circle at center, var(--bs-orange) 0%, transparent 70%);
+  top: 50%;
+  right: 15%;
+  animation-delay: 4.5s;
+}
+
+@keyframes floatShape {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.07;
+  }
+  50% {
+    transform: translate(20px, -20px) scale(1.1);
+    opacity: 0.15;
+  }
+  100% {
+    transform: translate(-20px, 20px) scale(0.95);
+    opacity: 0.07;
+  }
+}
+
+/* Animation améliorée pour le hover des éléments */
+.category-box, .product-card-wrapper, .service-box {
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.category-box:hover, .product-card-wrapper:hover, .service-box:hover {
+  transform: translateY(-15px) scale(1.03);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.separator-line {
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--bs-orange) 0%, var(--bs-primary) 100%);
+  border-radius: 2px;
+  position: relative;
+}
+
+.separator-line::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: 0;
+  width: 20px;
+  height: 8px;
+  background-color: var(--bs-orange);
+  border-radius: 4px;
+  animation: underlinePulse 3s infinite;
+}
+
+@keyframes underlinePulse {
+  0%, 100% { left: 0; }
+  50% { left: calc(100% - 20px); }
 }
 
 .hero-section {
@@ -776,17 +1069,8 @@ onMounted(async () => {
 
 /* Styles pour la nouvelle section des catégories - Style Sobre */
 .categories-section-new {
-  background-color: #fff;
-  padding: 5rem 0;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.separator-line {
-  width: 60px;
-  height: 3px;
-  background-color: var(--bs-orange);
-  border-radius: 3px;
 }
 
 .category-box {
@@ -894,8 +1178,8 @@ onMounted(async () => {
 @media (max-width: 767px) {
   .category-box {
     padding: 2rem 1rem;
-  }
-  
+}
+
   .category-icon-container {
     width: 60px;
     height: 60px;
@@ -905,8 +1189,6 @@ onMounted(async () => {
 
 /* Styles pour la nouvelle section des produits populaires - Style Sobre */
 .featured-products-section {
-  background-color: #f8f9fa;
-  padding: 5rem 0;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
@@ -952,7 +1234,6 @@ onMounted(async () => {
 /* Styles pour la nouvelle section des services - Style Sobre */
 .services-section-new {
   background-color: #fff;
-  padding: 5rem 0;
 }
 
 .service-box {
@@ -1243,8 +1524,8 @@ onMounted(async () => {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   font-weight: 600;
   transition: all 0.3s ease;
-}
-
+  }
+  
 .cta-btn-primary:hover {
   background-color: var(--bs-orange);
   color: white;
@@ -1300,8 +1581,8 @@ onMounted(async () => {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   z-index: 1;
-}
-
+  }
+  
 .cta-device {
   position: absolute;
   display: flex;
@@ -1374,5 +1655,28 @@ onMounted(async () => {
   height: 100%;
   z-index: 0;
   border-radius: inherit;
+}
+
+/* Responsive pour les sections stylisées */
+@media (max-width: 991px) {
+  .section-styled {
+    padding: 4rem 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .section-styled {
+    padding: 3rem 0;
+  }
+  
+  .separator-line {
+    width: 60px;
+  }
+}
+
+@media (max-width: 575px) {
+  .section-styled {
+    padding: 2.5rem 0;
+  }
 }
 </style> 
