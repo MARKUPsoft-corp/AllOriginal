@@ -12,7 +12,7 @@
         
         <!-- Toggle bouton pour mobile -->
         <button class="navbar-toggler border-0 shadow-none" type="button" 
-                data-bs-toggle="collapse" data-bs-target="#navbarMain" 
+                @click="toggleMobileMenu"
                 aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -29,35 +29,35 @@
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle px-3 py-2 mx-1 position-relative" 
                  href="#" role="button"
-                 data-bs-toggle="dropdown" 
+                 @click.prevent="toggleDropdown"
                  aria-expanded="false"
                  :class="{ active: $route.path.includes('/catalogue') }">
                 <i class="bi bi-grid me-1"></i> Catalogue
                 <span class="nav-indicator"></span>
               </a>
-              <ul class="dropdown-menu dropdown-menu-animated border-0 shadow-lg">
-                <li>
+              <ul class="dropdown-menu border-0 shadow-lg" :class="{'show': isDropdownOpen}">
+                <li @click="closeDropdown">
                   <NuxtLink to="/catalogue?category=tous" class="dropdown-item">
                     <i class="bi bi-collection me-2 text-orange"></i> Tous les produits
                   </NuxtLink>
                 </li>
-                <li>
+                <li @click="closeDropdown">
                   <NuxtLink to="/catalogue?category=telephones" class="dropdown-item">
                     <i class="bi bi-phone me-2 text-orange"></i> Téléphones
                   </NuxtLink>
                 </li>
-                <li>
+                <li @click="closeDropdown">
                   <NuxtLink to="/catalogue?category=ordinateurs" class="dropdown-item">
                     <i class="bi bi-laptop me-2 text-orange"></i> Ordinateurs
                   </NuxtLink>
                 </li>
-                <li>
+                <li @click="closeDropdown">
                   <NuxtLink to="/catalogue?category=tablettes" class="dropdown-item">
                     <i class="bi bi-tablet me-2 text-orange"></i> Tablettes
                   </NuxtLink>
                 </li>
                 <li><hr class="dropdown-divider"></li>
-                <li>
+                <li @click="closeDropdown">
                   <NuxtLink to="/catalogue?category=accessoires" class="dropdown-item">
                     <i class="bi bi-headphones me-2 text-orange"></i> Accessoires
                   </NuxtLink>
@@ -91,6 +91,39 @@ import { ref, onMounted } from 'vue';
 // États réactifs
 const isScrolled = ref(false);
 const navbar = ref(null);
+const isDropdownOpen = ref(false);
+const mobileMenuOpen = ref(false);
+
+// Gérer le dropdown
+const toggleDropdown = (event) => {
+  event.preventDefault();
+  isDropdownOpen.value = !isDropdownOpen.value;
+};
+
+const closeDropdown = () => {
+  isDropdownOpen.value = false;
+};
+
+// Gérer le menu mobile
+const toggleMobileMenu = () => {
+  mobileMenuOpen.value = !mobileMenuOpen.value;
+  const navbarMain = document.getElementById('navbarMain');
+  if (navbarMain) {
+    if (mobileMenuOpen.value) {
+      navbarMain.classList.add('show');
+    } else {
+      navbarMain.classList.remove('show');
+    }
+  }
+};
+
+// Fermer le dropdown sur clic à l'extérieur
+const handleClickOutside = (event) => {
+  const dropdown = document.querySelector('.dropdown');
+  if (dropdown && !dropdown.contains(event.target) && isDropdownOpen.value) {
+    closeDropdown();
+  }
+};
 
 // Ajouter classe au scroll
 const handleScroll = () => {
@@ -101,27 +134,17 @@ const handleScroll = () => {
   }
 };
 
-// Initialisation Bootstrap
-const initializeBootstrapComponents = () => {
-  // Initialiser les dropdowns de Bootstrap
-  if (window.bootstrap && window.bootstrap.Dropdown) {
-    const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
-    dropdownElementList.map(function (dropdownToggleEl) {
-      return new window.bootstrap.Dropdown(dropdownToggleEl);
-    });
-  }
-};
-
 onMounted(() => {
   // Ajout de l'écouteur d'événement pour le scroll
   window.addEventListener('scroll', handleScroll);
   
-  // Initialisation des composants Bootstrap
-  initializeBootstrapComponents();
+  // Ajout de l'écouteur pour fermer le dropdown
+  document.addEventListener('click', handleClickOutside);
   
   // Cleanup
   return () => {
     window.removeEventListener('scroll', handleScroll);
+    document.removeEventListener('click', handleClickOutside);
   };
 });
 </script>
@@ -197,22 +220,22 @@ onMounted(() => {
   width: 60%;
 }
 
-/* Animation du dropdown */
-.dropdown-menu-animated {
-  transform: translateY(20px);
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-  display: block;
-  margin-top: 10px;
+/* Styles pour le dropdown */
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  z-index: 1000;
   border-radius: 10px;
   padding: 1rem 0;
+  margin-top: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-.dropdown:hover .dropdown-menu-animated {
+.dropdown-menu.show {
+  display: block;
   transform: translateY(0);
   opacity: 1;
-  visibility: visible;
 }
 
 .dropdown-item {
@@ -249,52 +272,10 @@ onMounted(() => {
   box-shadow: none;
 }
 
-.navbar-toggler:hover {
-  transform: rotate(4deg);
-}
-
-/* Adaptation mobile */
-@media (max-width: 991px) {
-  .nav-link {
-    margin: 0.25rem 0;
-    padding: 0.5rem 1rem !important;
-  }
-  
-  .dropdown-menu-animated {
-    display: none;
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-    border: none;
-    box-shadow: none;
-    background: transparent;
-    margin-top: 0;
-    padding: 0 0 0 1.5rem;
-  }
-  
-  .dropdown-menu-animated.show {
-    display: block;
-  }
-  
-  .dropdown:hover .dropdown-menu-animated {
-    transform: none;
-  }
-  
-  .dropdown-divider {
-    display: none;
-  }
-  
-  .dropdown-item {
-    padding: 0.5rem 1rem;
-    color: var(--bs-secondary);
-  }
-  
-  .dropdown-item:hover {
-    background: transparent;
-  }
-  
-  .nav-indicator {
-    display: none;
-  }
+/* Fix pour les liens actifs */
+.dropdown-item.nuxt-link-active,
+.dropdown-item.nuxt-link-exact-active {
+  background-color: rgba(var(--bs-primary-rgb), 0.1);
+  color: var(--bs-primary);
 }
 </style> 

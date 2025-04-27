@@ -223,30 +223,48 @@
       </div>
     </section>
     
-    <!-- Call To Action Section avec gradient animé -->
-    <section class="py-5 animated-gradient text-white position-relative cta-section overflow-hidden">
-      <div id="particles-cta" class="particles-container"></div>
-      <div class="container py-5 position-relative">
-        <div class="row align-items-center">
-          <div class="col-lg-8 mx-auto text-center" data-aos="fade-up">
-            <h2 class="display-4 fw-bold mb-4 text-shadow">Prêt à découvrir nos produits ?</h2>
-            <p class="lead mb-4 opacity-85">Explorez notre catalogue complet et trouvez les meilleurs produits high-tech au Cameroun.</p>
-            <NuxtLink to="/catalogue?category=tous" class="btn btn-light btn-lg px-5 py-3 fw-semibold text-orange shine-effect">
-              Parcourir le catalogue
-              <i class="bi bi-arrow-right ms-2"></i>
-            </NuxtLink>
-            
-            <div class="floating-icons position-absolute d-none d-lg-block">
-              <i class="bi bi-laptop floating-icon"></i>
-              <i class="bi bi-phone floating-icon"></i>
-              <i class="bi bi-headphones floating-icon"></i>
-              <i class="bi bi-smartwatch floating-icon"></i>
-              <i class="bi bi-speaker floating-icon"></i>
+    <!-- Call To Action Section - Style Sobre avec animations -->
+    <div class="container">
+      <section class="cta-section-new py-5 animated-gradient position-relative overflow-hidden rounded-4">
+        <div class="container-fluid px-md-5">
+          <div id="particles-cta" class="particles-container"></div>
+          <div class="cta-bg-container">
+            <div class="cta-bg"></div>
+          </div>
+          <div class="row py-5">
+            <div class="col-lg-6 mb-5 mb-lg-0" data-aos="fade-right">
+              <div class="cta-content text-white">
+                <span class="badge bg-light text-orange mb-3 px-3 py-2 rounded-pill">Catalogue</span>
+                <h2 class="cta-title fw-bold mb-4 text-white text-shadow">Prêt à explorer notre collection ?</h2>
+                <p class="cta-description mb-4">Découvrez notre sélection de produits high-tech premium et équipez-vous avec les meilleurs appareils disponibles au Cameroun.</p>
+                <div class="cta-btns">
+                  <NuxtLink to="/catalogue?category=tous" class="btn cta-btn-primary btn-lg px-4 py-3 me-3">
+                    Explorer le catalogue <i class="bi bi-arrow-right ms-2"></i>
+                  </NuxtLink>
+                  <NuxtLink to="/contact" class="btn cta-btn-secondary btn-lg px-4 py-3">
+                    Nous contacter
+                  </NuxtLink>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
+              <div class="cta-image-container">
+                <div class="cta-device device-1">
+                  <i class="bi bi-phone"></i>
+                </div>
+                <div class="cta-device device-2">
+                  <i class="bi bi-laptop"></i>
+                </div>
+                <div class="cta-device device-3">
+                  <i class="bi bi-headphones"></i>
+                </div>
+                <div class="cta-circle"></div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   </div>
 </template>
 
@@ -865,6 +883,14 @@ onMounted(async () => {
   transform: translateX(5px);
 }
 
+.category-link:hover {
+  color: var(--bs-primary);
+}
+
+.category-link:hover i {
+  transform: translateX(5px);
+}
+
 @media (max-width: 767px) {
   .category-box {
     padding: 2rem 1rem;
@@ -1025,5 +1051,328 @@ onMounted(async () => {
     height: 70px;
     font-size: 2rem;
   }
+}
+
+/* Styles pour la nouvelle section CTA - Style Sobre */
+.cta-section-new {
+  position: relative;
+  padding: 4rem 0;
+  overflow: hidden;
+  color: #fff;
+  max-width: 100%;
+  margin: 3rem 0;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 1199px) {
+  .cta-title {
+    font-size: 2.5rem;
+  }
+  
+  .cta-description {
+    font-size: 1.15rem;
+  }
+}
+
+@media (max-width: 991px) {
+  .cta-section-new {
+    padding: 3rem 0;
+    margin: 2rem auto;
+  }
+  
+  .cta-content {
+    text-align: center;
+    padding: 1rem;
+  }
+  
+  .cta-title {
+    font-size: 2.25rem;
+  }
+  
+  .cta-description {
+    font-size: 1.1rem;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 90%;
+  }
+  
+  .cta-btns {
+    justify-content: center;
+  }
+  
+  .cta-image-container {
+    height: 300px;
+    margin-top: 2rem;
+  }
+  
+  .cta-device {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+  }
+  
+  .cta-circle {
+    width: 200px;
+    height: 200px;
+  }
+}
+
+@media (max-width: 767px) {
+  .cta-title {
+    font-size: 1.75rem;
+  }
+  
+  .cta-description {
+    font-size: 0.95rem;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 575px) {
+  .cta-section-new {
+    padding: 2.5rem 0;
+    margin: 1.5rem 0;
+  }
+  
+  .cta-content {
+    padding: 0.5rem;
+  }
+  
+  .cta-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .cta-description {
+    font-size: 0.85rem;
+    margin-bottom: 1.25rem;
+    line-height: 1.4;
+  }
+  
+  .cta-btns {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .cta-btn-primary, .cta-btn-secondary {
+    width: 100%;
+    margin-right: 0 !important;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    padding: 0.6rem 1.25rem !important;
+  }
+  
+  .cta-image-container {
+    height: 220px;
+  }
+  
+  .cta-device {
+    width: 50px;
+    height: 50px;
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 375px) {
+  .cta-title {
+    font-size: 1.35rem;
+  }
+  
+  .cta-description {
+    font-size: 0.8rem;
+  }
+  
+  .cta-btn-primary, .cta-btn-secondary {
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem !important;
+  }
+}
+
+.cta-bg-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0.8;
+  border-radius: inherit;
+}
+
+.cta-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(255, 140, 0, 0.4) 100%);
+  transform: skewY(-3deg) scale(1.2);
+  transform-origin: bottom right;
+  border-radius: inherit;
+}
+
+.cta-content {
+  padding: 2rem;
+  position: relative;
+  color: white;
+  z-index: 2;
+}
+
+.cta-title {
+  font-size: 3rem;
+  line-height: 1.2;
+}
+
+.cta-description {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.cta-btns {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.cta-btn-primary {
+  background-color: #fff;
+  color: var(--bs-orange);
+  border: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.cta-btn-primary:hover {
+  background-color: var(--bs-orange);
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.cta-btn-secondary {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(5px);
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.cta-btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: white;
+  transform: translateY(-3px);
+}
+
+.cta-btns .btn-outline-light {
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.cta-btns .btn-outline-light:hover {
+  background-color: white;
+  color: var(--bs-orange);
+}
+
+.cta-image-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  z-index: 1;
+}
+
+.cta-circle {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 1;
+}
+
+.cta-device {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: white;
+  color: var(--bs-orange);
+  font-size: 3rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.device-1 {
+  top: 20%;
+  left: 60%;
+  animation: float-device 6s ease-in-out infinite;
+}
+
+.device-2 {
+  top: 50%;
+  left: 25%;
+  animation: float-device 8s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+.device-3 {
+  top: 70%;
+  left: 55%;
+  animation: float-device 7s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+@keyframes float-device {
+  0%, 100% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-15px) rotate(3deg);
+  }
+}
+
+.animated-gradient {
+  background: linear-gradient(-45deg, #ff8c00, #ff6600, #333333, #000000);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+  border-radius: inherit;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.particles-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  border-radius: inherit;
 }
 </style> 
