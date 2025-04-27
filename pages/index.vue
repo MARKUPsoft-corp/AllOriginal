@@ -132,8 +132,8 @@
                   <div class="icon-halo"></div>
                   <div class="category-icon-container">
                     <i :class="`bi bi-${category.icon === 'smartphone' ? 'phone' : category.icon === 'laptop' ? 'laptop' : category.icon === 'tablet' ? 'tablet' : category.icon === 'headphones' ? 'headphones' : 'box'}`"></i>
-                  </div>
-                </div>
+          </div>
+        </div>
                 <h3 class="category-name">{{ category.name }}</h3>
                 <p class="category-desc">{{ category.description }}</p>
                 <NuxtLink :to="`/catalogue?category=${category.slug}`" class="category-link">
@@ -194,7 +194,7 @@
         </div>
         
         <div class="text-center mt-5" data-aos="fade-up">
-          <NuxtLink to="/catalogue?category=tous" class="btn btn-outline-primary btn-lg px-4">
+          <NuxtLink to="/catalogue?category=tous" class="btn-view-all">
             Voir tous les produits <i class="bi bi-arrow-right ms-2"></i>
           </NuxtLink>
         </div>
@@ -1552,7 +1552,7 @@ const slidePrev = () => {
   }
   
   .cta-content {
-    text-align: center;
+  text-align: center;
     padding: 1rem;
   }
   
@@ -2098,7 +2098,7 @@ const slidePrev = () => {
   right: 0;
   transform: translateY(-50%);
   display: flex;
-  justify-content: space-between;
+    justify-content: space-between;
   pointer-events: none;
   z-index: 10;
   padding: 0 1rem;
@@ -2379,5 +2379,61 @@ const slidePrev = () => {
   color: white;
   transform: translateY(-5px);
   box-shadow: 0 10px 30px rgba(var(--bs-orange-rgb), 0.3);
+}
+
+/* Bouton stylisé pour la section des produits populaires */
+.btn-view-all {
+  display: inline-flex;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, var(--bs-orange) 0%, #f17c0e 100%);
+  color: white;
+  font-weight: 600;
+  border-radius: 50px;
+  text-decoration: none;
+  box-shadow: 0 10px 25px rgba(var(--bs-orange-rgb), 0.25);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  border: none;
+  z-index: 1;
+}
+
+.btn-view-all::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+  transform: skewX(-25deg);
+  transition: all 0.75s ease;
+  z-index: -1;
+}
+
+.btn-view-all:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 15px 30px rgba(var(--bs-orange-rgb), 0.35);
+  color: white;
+}
+
+.btn-view-all:hover::before {
+  left: 100%;
+}
+
+.btn-view-all i {
+  transition: transform 0.3s ease;
+}
+
+.btn-view-all:hover i {
+  transform: translateX(5px);
+}
+
+@media (max-width: 767px) {
+  .btn-view-all {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+  }
 }
 </style> 
