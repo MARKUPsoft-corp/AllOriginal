@@ -12,6 +12,15 @@ export default defineNuxtConfig({
   // Global CSS
   css: [
     '~/assets/css/main.css',
+    'bootstrap/dist/css/bootstrap.min.css',
+    'bootstrap-icons/font/bootstrap-icons.css',
+  ],
+  
+  // Plugins
+  plugins: [
+    { src: '~/plugins/bootstrap.client.js', mode: 'client' },
+    { src: '~/plugins/animations.client.js', mode: 'client' },
+    { src: '~/plugins/particles.client.js', mode: 'client' }
   ],
   
   // App config
@@ -29,7 +38,8 @@ export default defineNuxtConfig({
         { name: 'format-detection', content: 'telephone=no' }
       ],
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap' }
       ]
     }
   },

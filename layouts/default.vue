@@ -1,10 +1,11 @@
 <template>
-  <div class="min-h-screen flex flex-col">
+  <div class="app-wrapper">
     <Navbar />
-    <main class="flex-grow">
+    <main class="main-content">
       <slot />
     </main>
     <Footer />
+    <WhatsAppButton />
   </div>
 </template>
 
@@ -12,20 +13,14 @@
 // Layout par défaut
 </script>
 
-<style scoped>
-.min-h-screen {
+<style>
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
 }
 
-.flex {
-  display: flex;
-}
-
-.flex-col {
-  flex-direction: column;
-}
-
-.flex-grow {
-  flex-grow: 1;
+.main-content {
+  flex: 1 0 auto;
 }
 </style> 
