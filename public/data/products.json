@@ -1,98 +1,302 @@
 [
   {
     "id": 1,
-    "name": "iPhone 13 Pro",
-    "slug": "iphone-13-pro",
+    "name": "iPhone 14 Pro Max",
+    "slug": "iphone-14-pro-max",
+    "brand": "Apple",
+    "model": "14 Pro Max",
+    "price": 1250000,
+    "old_price": 1350000,
+    "promo": true,
     "category_id": 1,
-    "brand": "APPLE",
-    "price": 650000,
-    "description": "Le dernier iPhone avec une caméra exceptionnelle et des performances inégalées.",
-    "long_description": "Découvrez l'iPhone 13 Pro, le smartphone Apple le plus puissant jamais créé. Avec son système de caméra Pro, son écran Super Retina XDR avec ProMotion et la puce A15 Bionic, c'est un appareil qui redéfinit ce qu'un smartphone peut faire. Parfait pour les professionnels et les amateurs de photographie qui exigent le meilleur de la technologie mobile.",
-    "images": [
-      "/images/products/iphone-13-pro-1.jpg",
-      "/images/products/iphone-13-pro-2.jpg"
-    ],
     "in_stock": true,
-    "featured": true
+    "description": "Le dernier iPhone avec puce A16 Bionic et écran Super Retina XDR",
+    "specs": [
+      "A16 Bionic",
+      "6 Go RAM",
+      "128 Go",
+      "Écran 6.7 pouces",
+      "Triple caméra 48MP"
+    ]
   },
   {
     "id": 2,
-    "name": "Samsung Galaxy S21",
-    "slug": "samsung-galaxy-s21",
+    "name": "Samsung Galaxy S23 Ultra",
+    "slug": "samsung-galaxy-s23-ultra",
+    "brand": "Samsung",
+    "model": "S23 Ultra",
+    "price": 1150000,
+    "old_price": 1200000,
+    "promo": true,
     "category_id": 1,
-    "brand": "SAMSUNG",
-    "price": 450000,
-    "description": "Un smartphone Android puissant avec un écran AMOLED de haute qualité.",
-    "long_description": "Le Samsung Galaxy S21 combine un design élégant avec des performances extraordinaires. Son système de caméra avancé vous permet de capturer des photos et des vidéos époustouflantes, tandis que son écran Dynamic AMOLED 2X offre des couleurs vives et un contraste incroyable. Avec sa puce Exynos de dernière génération, il gère facilement les applications et les jeux les plus exigeants.",
-    "images": [
-      "/images/products/samsung-s21-1.jpg",
-      "/images/products/samsung-s21-2.jpg"
-    ],
     "in_stock": true,
-    "featured": true
+    "description": "Le flagship Samsung avec S Pen intégré et zoom périscopique",
+    "specs": [
+      "Snapdragon 8 Gen 2",
+      "12 Go RAM",
+      "256 Go",
+      "Écran 6.8 pouces",
+      "Caméra 200MP"
+    ]
   },
   {
     "id": 3,
-    "name": "Xiaomi Mi 11",
-    "slug": "xiaomi-mi-11",
-    "category_id": 1,
-    "brand": "XIAOMI",
-    "price": 350000,
-    "description": "Un rapport qualité-prix imbattable avec des spécifications haut de gamme.",
-    "long_description": "Le Xiaomi Mi 11 est un smartphone qui offre des performances haut de gamme à un prix abordable. Son écran AMOLED 120Hz vous offre une expérience visuelle fluide, tandis que son processeur Snapdragon 888 garantit des performances exceptionnelles. Avec sa caméra principale de 108MP, vous pouvez capturer des photos d'une netteté incroyable dans n'importe quelles conditions d'éclairage.",
-    "images": [
-      "/images/products/xiaomi-mi11-1.jpg",
-      "/images/products/xiaomi-mi11-2.jpg"
-    ],
-    "in_stock": false,
-    "featured": true
+    "name": "MacBook Pro M2 16 pouces",
+    "slug": "macbook-pro-m2-16",
+    "brand": "Apple",
+    "model": "Pro M2",
+    "price": 2550000,
+    "old_price": null,
+    "promo": false,
+    "category_id": 2,
+    "in_stock": true,
+    "description": "Puissant MacBook Pro avec la nouvelle puce M2 Pro et un écran Liquid Retina XDR",
+    "specs": [
+      "Puce M2 Pro",
+      "16 Go RAM",
+      "512 Go SSD",
+      "Écran 16 pouces",
+      "Autonomie 22h"
+    ]
   },
   {
     "id": 4,
-    "name": "MacBook Pro 14\"",
-    "slug": "macbook-pro-14",
-    "category_id": 2,
-    "brand": "APPLE",
-    "price": 1250000,
-    "description": "Puissant ordinateur portable avec Apple M1 Pro pour les professionnels.",
-    "long_description": "Le MacBook Pro 14 pouces avec puce Apple M1 Pro redéfinit ce qu'un ordinateur portable professionnel peut faire. Avec jusqu'à 10 cœurs CPU et 16 cœurs GPU, il offre des performances incroyables pour le développement, la conception graphique et le montage vidéo. Son écran Liquid Retina XDR offre un contraste exceptionnel et des couleurs précises, parfait pour les professionnels créatifs.",
-    "images": [
-      "/images/products/macbook-pro-14-1.jpg",
-      "/images/products/macbook-pro-14-2.jpg"
-    ],
+    "name": "Google Pixel 7 Pro",
+    "slug": "google-pixel-7-pro",
+    "brand": "Google",
+    "model": "Pixel 7 Pro",
+    "price": 800000,
+    "old_price": null,
+    "promo": false,
+    "category_id": 1,
     "in_stock": true,
-    "featured": true
+    "description": "Le smartphone Google avec le meilleur appareil photo et l'IA avancée",
+    "specs": [
+      "Tensor G2",
+      "12 Go RAM",
+      "128 Go",
+      "Écran 6.7 pouces",
+      "Caméra 50MP"
+    ]
   },
   {
     "id": 5,
-    "name": "Dell XPS 13",
-    "slug": "dell-xps-13",
+    "name": "Dell XPS 15",
+    "slug": "dell-xps-15",
+    "brand": "Dell",
+    "model": "XPS 15",
+    "price": 1800000,
+    "old_price": 1950000,
+    "promo": true,
     "category_id": 2,
-    "brand": "DELL",
-    "price": 850000,
-    "description": "Ultrabook avec écran InfinityEdge et processeur Intel de dernière génération.",
-    "long_description": "Le Dell XPS 13 est l'ultraportable par excellence, combinant un design compact avec des performances impressionnantes. Son écran InfinityEdge pratiquement sans bordure maximise l'espace d'affichage dans un châssis 13 pouces incroyablement compact. Alimenté par les derniers processeurs Intel Core et doté d'options de stockage SSD ultra-rapides, c'est le compagnon idéal pour les professionnels en déplacement.",
-    "images": [
-      "/images/products/dell-xps-13-1.jpg",
-      "/images/products/dell-xps-13-2.jpg"
-    ],
     "in_stock": true,
-    "featured": false
+    "description": "Ordinateur portable premium avec écran InfinityEdge et performances de pointe",
+    "specs": [
+      "Intel Core i9",
+      "32 Go RAM",
+      "1 To SSD",
+      "Écran 15.6 pouces 4K",
+      "RTX 3050 Ti"
+    ]
   },
   {
     "id": 6,
-    "name": "HP Spectre x360",
-    "slug": "hp-spectre-x360",
-    "category_id": 2,
-    "brand": "HP",
-    "price": 780000,
-    "description": "Ordinateur portable convertible avec écran tactile et performances élevées.",
-    "long_description": "Le HP Spectre x360 est un ordinateur portable convertible premium qui allie élégance et polyvalence. Sa charnière à 360 degrés vous permet de l'utiliser en mode ordinateur portable, tablette, tente ou présentation. Avec son écran tactile 4K OLED, ses performances exceptionnelles et sa longue durée de batterie, c'est l'appareil idéal pour les créatifs et les professionnels qui ont besoin de flexibilité.",
-    "images": [
-      "/images/products/hp-spectre-x360-1.jpg",
-      "/images/products/hp-spectre-x360-2.jpg"
-    ],
+    "name": "iPad Pro M2 12.9",
+    "slug": "ipad-pro-m2-12-9",
+    "brand": "Apple",
+    "model": "iPad Pro M2",
+    "price": 1300000,
+    "old_price": null,
+    "promo": false,
+    "category_id": 3,
     "in_stock": true,
-    "featured": false
+    "description": "La tablette la plus puissante d'Apple avec puce M2 et écran Liquid Retina XDR",
+    "specs": [
+      "Puce M2",
+      "8 Go RAM",
+      "256 Go",
+      "Écran 12.9 pouces",
+      "Mini-LED"
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Sony WH-1000XM5",
+    "slug": "sony-wh-1000xm5",
+    "brand": "Sony",
+    "model": "WH-1000XM5",
+    "price": 275000,
+    "old_price": 320000,
+    "promo": true,
+    "category_id": 4,
+    "in_stock": true,
+    "description": "Casque sans fil avec réduction de bruit de référence et qualité audio exceptionnelle",
+    "specs": [
+      "Bluetooth 5.2",
+      "Réduction de bruit",
+      "30h d'autonomie",
+      "Charge rapide",
+      "8 micros"
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Samsung Galaxy Tab S8 Ultra",
+    "slug": "samsung-galaxy-tab-s8-ultra",
+    "brand": "Samsung",
+    "model": "Tab S8 Ultra",
+    "price": 1100000,
+    "old_price": null,
+    "promo": false,
+    "category_id": 3,
+    "in_stock": false,
+    "description": "Grande tablette haut de gamme avec S Pen inclus et écran AMOLED 14.6 pouces",
+    "specs": [
+      "Snapdragon 8 Gen 1",
+      "12 Go RAM",
+      "256 Go",
+      "Écran 14.6 pouces",
+      "S Pen inclus"
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Apple AirPods Pro 2",
+    "slug": "apple-airpods-pro-2",
+    "brand": "Apple",
+    "model": "AirPods Pro 2",
+    "price": 180000,
+    "old_price": 195000,
+    "promo": true,
+    "category_id": 4,
+    "in_stock": true,
+    "description": "Écouteurs sans fil avec réduction de bruit active et audio spatial",
+    "specs": [
+      "Puce H2",
+      "Réduction de bruit 2x",
+      "Spatial Audio",
+      "Résistance à l'eau",
+      "30h d'autonomie"
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Chargeur MagSafe",
+    "slug": "chargeur-magsafe",
+    "brand": "Apple",
+    "model": "MagSafe",
+    "price": 45000,
+    "old_price": null,
+    "promo": false,
+    "category_id": 5,
+    "in_stock": true,
+    "description": "Chargeur sans fil magnétique pour iPhone 12 et modèles plus récents",
+    "specs": [
+      "15W de puissance",
+      "Magnétique",
+      "Certifié Apple",
+      "Compatible iPhone 12+",
+      "Charge rapide"
+    ]
+  },
+  {
+    "id": 11,
+    "name": "OnePlus 11",
+    "slug": "oneplus-11",
+    "brand": "OnePlus",
+    "model": "11",
+    "price": 650000,
+    "old_price": null,
+    "promo": false,
+    "category_id": 1,
+    "in_stock": true,
+    "description": "Smartphone performant avec Hasselblad Camera et charge ultra-rapide",
+    "specs": [
+      "Snapdragon 8 Gen 2",
+      "16 Go RAM",
+      "256 Go",
+      "Charge 100W",
+      "Caméra Hasselblad"
+    ]
+  },
+  {
+    "id": 12,
+    "name": "Lenovo ThinkPad X1 Carbon",
+    "slug": "lenovo-thinkpad-x1-carbon",
+    "brand": "Lenovo",
+    "model": "ThinkPad X1",
+    "price": 1600000,
+    "old_price": 1750000,
+    "promo": true,
+    "category_id": 2,
+    "in_stock": true,
+    "description": "Ordinateur portable professionnel léger, robuste et puissant",
+    "specs": [
+      "Intel Core i7 vPro",
+      "16 Go RAM",
+      "512 Go SSD",
+      "Écran 14 pouces",
+      "1.1 kg"
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Samsung T7 Shield SSD 1TB",
+    "slug": "samsung-t7-shield-ssd-1tb",
+    "brand": "Samsung",
+    "model": "T7 Shield",
+    "price": 120000,
+    "old_price": 135000,
+    "promo": true,
+    "category_id": 5,
+    "in_stock": true,
+    "description": "SSD externe robuste et ultra-rapide avec connectivité USB-C",
+    "specs": [
+      "1 To",
+      "USB 3.2 Gen 2",
+      "1050 Mo/s",
+      "Résistant chocs/eau",
+      "Compact"
+    ]
+  },
+  {
+    "id": 14,
+    "name": "Microsoft Surface Pro 9",
+    "slug": "microsoft-surface-pro-9",
+    "brand": "Microsoft",
+    "model": "Surface Pro 9",
+    "price": 1400000,
+    "old_price": null,
+    "promo": false,
+    "category_id": 3,
+    "in_stock": false,
+    "description": "Tablette 2-en-1 polyvalente avec Windows 11 et processeur Intel de 12e génération",
+    "specs": [
+      "Intel Core i7-1255U",
+      "16 Go RAM",
+      "256 Go SSD",
+      "Écran 13 pouces",
+      "Windows 11 Pro"
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Anker PowerCore 26800",
+    "slug": "anker-powercore-26800",
+    "brand": "Anker",
+    "model": "PowerCore",
+    "price": 45000,
+    "old_price": 55000,
+    "promo": true,
+    "category_id": 5,
+    "in_stock": true,
+    "description": "Batterie externe haute capacité avec charge rapide pour smartphones et tablettes",
+    "specs": [
+      "26800 mAh",
+      "3 ports USB",
+      "Charge rapide",
+      "Compatible tous appareils",
+      "Compact"
+    ]
   }
 ] 

@@ -105,7 +105,7 @@
       </div>
     </section>
 
-    <!-- Categories Section - Style Sobre -->
+    <!-- Categories Section - Style avec défilement horizontal amélioré -->
     <section class="categories-section-new py-5 section-styled position-relative overflow-hidden">
       <div id="particles-categories" class="particles-container"></div>
       <!-- Formes décoratives -->
@@ -113,7 +113,7 @@
       <div class="decorative-shape shape-2"></div>
       <div class="decorative-shape shape-3"></div>
       <div class="container py-5 position-relative">
-        <div class="row mb-5">
+        <div class="row mb-4">
           <div class="col-12 text-center" data-aos="fade-up">
             <span class="badge bg-orange-subtle text-orange mb-3 px-3 py-2 rounded-pill shine-effect glow-badge">Explorez</span>
             <h2 class="display-5 fw-bold mb-3 text-with-glow">Nos Catégories</h2>
@@ -122,20 +122,41 @@
           </div>
         </div>
         
-        <div class="row g-4 justify-content-center">
-          <div v-for="(category, index) in categories" :key="category.id" class="col-12 col-md-6 col-lg-3">
-            <div class="category-box" 
-                data-aos="fade-up" 
+        <div class="categories-slider-container" data-aos="fade-up">
+          <div class="categories-slider" ref="categorySliderRef">
+            <div v-for="(category, index) in categories" :key="category.id" class="category-slide">
+              <div class="category-box" 
                 :data-aos-delay="`${index * 50}`">
-              <div class="category-icon-container">
-                <i :class="`bi bi-${category.icon === 'smartphone' ? 'phone' : category.icon === 'laptop' ? 'laptop' : category.icon === 'tablet' ? 'tablet' : category.icon === 'headphones' ? 'headphones' : 'box'}`"></i>
+                <div class="category-pulse-wrapper">
+                  <div class="pulse-effect"></div>
+                  <div class="icon-halo"></div>
+                  <div class="category-icon-container">
+                    <i :class="`bi bi-${category.icon === 'smartphone' ? 'phone' : category.icon === 'laptop' ? 'laptop' : category.icon === 'tablet' ? 'tablet' : category.icon === 'headphones' ? 'headphones' : 'box'}`"></i>
+                  </div>
+                </div>
+                <h3 class="category-name">{{ category.name }}</h3>
+                <p class="category-desc">{{ category.description }}</p>
+                <NuxtLink :to="`/catalogue?category=${category.slug}`" class="category-link">
+                  Découvrir <i class="bi bi-arrow-right"></i>
+                </NuxtLink>
+                <div class="category-hover-effect"></div>
+              </div>
+            </div>
           </div>
-              <h3 class="category-name">{{ category.name }}</h3>
-              <p class="category-desc">{{ category.description }}</p>
-              <NuxtLink :to="`/catalogue?category=${category.slug}`" class="category-link">
-                Découvrir <i class="bi bi-arrow-right"></i>
-              </NuxtLink>
-        </div>
+          
+          <div class="slider-controls">
+            <button class="slider-arrow slider-prev" @click="slidePrev" aria-label="Précédent">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+            <button class="slider-arrow slider-next" @click="slideNext" aria-label="Suivant">
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </div>
+          
+          <div class="slider-pagination">
+            <div class="slider-progress">
+              <div class="slider-progress-bar" ref="progressBarRef"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -291,97 +312,189 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 
 // SEO
 definePageMeta({
-  title: 'All Original - Boutique High-Tech Premium au Cameroun',
-  description: 'Découvrez notre sélection complète de produits technologiques haut de gamme. Téléphones, ordinateurs et accessoires high-tech disponibles à Douala, Cameroun.'
+  title: 'All Original - Votre boutique tech au Cameroun',
+  description: 'Découvrez notre gamme de produits high-tech certifiés originaux, vendus au Cameroun et garantis.'
 });
 
-// Données
-const categories = ref([]);
+// État
 const featuredProducts = ref([]);
+const categories = ref([]);
+const loading = ref(true);
+const currentSlide = ref(0);
+const totalSlides = ref(3); // Le nombre de slides dans le carousel
+
+// Références pour le slider de catégories
+const categorySliderRef = ref(null);
+const progressBarRef = ref(null);
+const currentCategoryIndex = ref(0);
+const totalCategories = ref(0);
+const visibleCategories = ref(4); // Nombre de catégories visibles à la fois (desktop)
 
 // Récupération des données
 onMounted(async () => {
   try {
+    // Chargement des produits en vedette
+    const response = await fetch('/data/products.json');
+    const allProducts = await response.json();
+    featuredProducts.value = allProducts
+      .filter(product => product.in_stock && product.promo)
+      .slice(0, 6);
+    
     // Chargement des catégories
     const categoriesResponse = await fetch('/data/categories.json');
     categories.value = await categoriesResponse.json();
+    totalCategories.value = categories.value.length;
     
-    // Chargement des produits mis en avant
-    const productsResponse = await fetch('/data/products.json');
-    const products = await productsResponse.json();
-    featuredProducts.value = products.filter(product => product.featured);
+    loading.value = false;
     
-    // Initialisation des particules
-    if (document.getElementById("particles-hero") && window.particlesJS) {
-      window.particlesJS('particles-hero', {
+    // Initialiser les particules
+    if (typeof window !== 'undefined' && window.particlesJS) {
+      window.particlesJS('particles-js', {
         particles: {
-          number: { value: 30, density: { enable: true, value_area: 800 } },
-          color: { value: '#ff8c00' },
-          opacity: { value: 0.2, random: true },
-          size: { value: 5, random: true },
-          line_linked: { enable: true, color: '#ff8c00', opacity: 0.1 }
-        }
-      });
-    }
-    
-    // Initialisation des particules pour les catégories
-    if (document.getElementById("particles-categories") && window.particlesJS) {
-      window.particlesJS('particles-categories', {
-        particles: {
-          number: { value: 20, density: { enable: true, value_area: 800 } },
-          color: { value: '#ff8c00' },
-          opacity: { value: 0.1, random: true },
-          size: { value: 4, random: true },
-          line_linked: { enable: true, color: '#ff8c00', opacity: 0.05 }
-        }
-      });
-    }
-    
-    // Initialisation des particules pour les produits
-    if (document.getElementById("particles-products") && window.particlesJS) {
-      window.particlesJS('particles-products', {
-        particles: {
-          number: { value: 15, density: { enable: true, value_area: 800 } },
-          color: { value: '#007bff' },
-          opacity: { value: 0.1, random: true },
-          size: { value: 4, random: true },
-          line_linked: { enable: true, color: '#007bff', opacity: 0.05 }
-        }
-      });
-    }
-    
-    // Initialisation des particules pour les services
-    if (document.getElementById("particles-services") && window.particlesJS) {
-      window.particlesJS('particles-services', {
-        particles: {
-          number: { value: 25, density: { enable: true, value_area: 800 } },
-          color: { value: '#ff8c00' },
-          opacity: { value: 0.1, random: true },
-          size: { value: 3, random: true },
-          line_linked: { enable: true, color: '#ff8c00', opacity: 0.05 }
-        }
-      });
-    }
-    
-    if (document.getElementById("particles-cta") && window.particlesJS) {
-      window.particlesJS('particles-cta', {
-        particles: {
-          number: { value: 60, density: { enable: true, value_area: 800 } },
-          color: { value: '#ffffff' },
+          number: { value: 80, density: { enable: true, value_area: 800 } },
+          color: { value: "#ffffff" },
           opacity: { value: 0.3, random: true },
-          size: { value: 4, random: true },
-          line_linked: { enable: true, color: '#ffffff', opacity: 0.2 }
+          size: { value: 3, random: true },
+          line_linked: { enable: false },
+          move: { enable: true, speed: 1, direction: "top", random: false, straight: false, out_mode: "out" }
         }
       });
+    }
+    
+    // Initialisation du slider de catégories
+    await nextTick();
+    initCategorySlider();
+    
+    // Initialiser AOS si disponible
+    if (typeof window !== 'undefined' && window.AOS) {
+      window.AOS.refresh();
     }
   } catch (error) {
     console.error('Erreur lors du chargement des données:', error);
+    loading.value = false;
   }
 });
+
+// Initialisation du slider de catégories
+const initCategorySlider = () => {
+  if (typeof window === 'undefined') return;
+  
+  const slider = document.querySelector('.categories-slider');
+  categorySliderRef.value = slider;
+  progressBarRef.value = document.querySelector('.slider-progress-bar');
+  
+  if (slider) {
+    // Mettre à jour le nombre de catégories visibles en fonction de la largeur d'écran
+    updateVisibleCategories();
+    window.addEventListener('resize', updateVisibleCategories);
+    
+    // Ajouter les event listeners aux boutons
+    const prevBtn = document.querySelector('.slider-prev');
+    const nextBtn = document.querySelector('.slider-next');
+    
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        slideCategoryTo(Math.max(0, currentCategoryIndex.value - visibleCategories.value));
+      });
+    }
+    
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        slideCategoryTo(Math.min(totalCategories.value - visibleCategories.value, currentCategoryIndex.value + visibleCategories.value));
+      });
+    }
+    
+    // Mettre à jour la barre de progression
+    updateSliderProgress();
+  }
+};
+
+// Mise à jour du nombre de catégories visibles en fonction de la largeur d'écran
+const updateVisibleCategories = () => {
+  if (typeof window === 'undefined') return;
+  
+  const width = window.innerWidth;
+  if (width >= 1400) {
+    visibleCategories.value = 4; // 4 cartes sur très grands écrans
+  } else if (width >= 1200) {
+    visibleCategories.value = 3; // 3 cartes sur grands écrans
+  } else if (width >= 992) {
+    visibleCategories.value = 3; // 3 cartes sur moyens écrans
+  } else if (width >= 768) {
+    visibleCategories.value = 2; // 2 cartes sur petits écrans
+  } else {
+    visibleCategories.value = 1; // 1 carte sur mobiles
+  }
+  
+  // Mettre à jour le slider si on est déjà à un index trop élevé
+  const maxIndex = totalCategories.value - visibleCategories.value;
+  if (currentCategoryIndex.value > maxIndex) {
+    slideCategoryTo(maxIndex);
+  } else {
+    updateSliderProgress();
+  }
+};
+
+// Défilement vers une catégorie spécifique
+const slideCategoryTo = (index) => {
+  if (!categorySliderRef.value) return;
+  
+  currentCategoryIndex.value = index;
+  
+  const slideWidth = categorySliderRef.value.querySelector('.category-slide').offsetWidth;
+  const gap = parseInt(window.getComputedStyle(categorySliderRef.value).columnGap || '24');
+  const scrollLeft = index * (slideWidth + gap);
+  
+  categorySliderRef.value.scrollTo({
+    left: scrollLeft,
+    behavior: 'smooth'
+  });
+  
+  updateSliderProgress();
+};
+
+// Mise à jour de la barre de progression
+const updateSliderProgress = () => {
+  if (!progressBarRef.value || totalCategories.value === 0) return;
+  
+  const progress = Math.min(1, visibleCategories.value / totalCategories.value);
+  const translateX = (currentCategoryIndex.value / (totalCategories.value - visibleCategories.value)) * 
+                    (100 - progress * 100);
+  
+  progressBarRef.value.style.width = `${progress * 100}%`;
+  progressBarRef.value.style.transform = `translateX(${translateX}%)`;
+};
+
+// Changer de slide
+const changeSlide = (index) => {
+  currentSlide.value = index;
+};
+
+// Slide suivant/précédent
+const nextSlide = () => {
+  currentSlide.value = (currentSlide.value + 1) % totalSlides.value;
+};
+
+const prevSlide = () => {
+  currentSlide.value = (currentSlide.value - 1 + totalSlides.value) % totalSlides.value;
+};
+
+// Défilement vers la droite
+const slideNext = () => {
+  const maxIndex = totalCategories.value - visibleCategories.value;
+  const nextIndex = Math.min(maxIndex, currentCategoryIndex.value + visibleCategories.value);
+  slideCategoryTo(nextIndex);
+};
+
+// Défilement vers la gauche
+const slidePrev = () => {
+  const prevIndex = Math.max(0, currentCategoryIndex.value - visibleCategories.value);
+  slideCategoryTo(prevIndex);
+};
 </script>
 
 <style scoped>
@@ -1074,61 +1187,138 @@ onMounted(async () => {
 }
 
 .category-box {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 2.5rem 1.5rem;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 1rem;
   height: 100%;
-  transition: all 0.3s ease;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  position: relative;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  border: 1px solid rgba(0, 0, 0, 0.03);
-}
-
-.category-box::before {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 5px;
-  background: linear-gradient(to right, var(--bs-orange), var(--bs-primary));
-  top: 0;
-  left: 0;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.4s ease;
-}
-
-.category-box:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-}
-
-.category-box:hover::before {
-  transform: scaleX(1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  max-height: 380px;
 }
 
 .category-icon-container {
   width: 80px;
   height: 80px;
+  background: var(--bs-primary);
+  color: white;
   border-radius: 50%;
-  background-color: rgba(var(--bs-orange-rgb), 0.1);
-  color: var(--bs-orange);
-  font-size: 2.2rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 2.2rem;
   margin-bottom: 1.5rem;
-  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
 }
 
-.category-box:hover .category-icon-container {
-  background-color: var(--bs-orange);
-  color: white;
-  transform: scale(1.1);
+/* Ajout du halo lumineux */
+.icon-halo {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(var(--bs-primary-rgb),0.4) 40%, rgba(var(--bs-primary-rgb),0) 70%);
+  z-index: 1;
+  animation: pulse-halo 3s infinite ease-in-out;
+  opacity: 0.7;
+  filter: blur(8px);
+}
+
+@keyframes pulse-halo {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+}
+
+.category-box:hover .icon-halo {
+  animation: pulse-halo-hover 1.5s infinite ease-in-out;
+  background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(var(--bs-orange-rgb),0.5) 40%, rgba(var(--bs-orange-rgb),0) 70%);
+}
+
+@keyframes pulse-halo-hover {
+  0% {
+    transform: scale(1.1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.1);
+    opacity: 0.6;
+  }
+}
+
+.category-pulse-wrapper {
+  position: relative;
+  margin-bottom: 1.5rem;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pulse-effect {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--bs-primary);
+  opacity: 0.3;
+  animation: pulse-animation 2s infinite;
+  z-index: 1;
+}
+
+.icon-halo {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg, 
+    rgba(var(--bs-primary-rgb), 0.8), 
+    rgba(var(--bs-primary-rgb), 0.1), 
+    rgba(var(--bs-primary-rgb), 0.8)
+  );
+  z-index: 0;
+  animation: rotate-halo 4s linear infinite;
+  opacity: 0.7;
+}
+
+@keyframes rotate-halo {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.category-box:hover .icon-halo {
+  animation: rotate-halo 2s linear infinite;
+  background: conic-gradient(
+    from 0deg, 
+    rgba(var(--bs-orange-rgb), 0.8), 
+    rgba(var(--bs-orange-rgb), 0.2), 
+    rgba(var(--bs-orange-rgb), 0.8)
+  );
 }
 
 .category-name {
@@ -1450,7 +1640,7 @@ onMounted(async () => {
   .cta-device {
     width: 50px;
     height: 50px;
-    font-size: 1.25rem;
+  font-size: 1.25rem;
   }
 }
 
@@ -1524,8 +1714,8 @@ onMounted(async () => {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   font-weight: 600;
   transition: all 0.3s ease;
-  }
-  
+}
+
 .cta-btn-primary:hover {
   background-color: var(--bs-orange);
   color: white;
@@ -1678,5 +1868,516 @@ onMounted(async () => {
   .section-styled {
     padding: 2.5rem 0;
   }
+}
+
+/* Style pour le slider de catégories */
+.categories-slider-container {
+  position: relative;
+  padding: 1.5rem 0;
+  margin: 0 -15px;
+}
+
+.categories-slider {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 1.5rem;
+  padding: 1.5rem 1rem;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.categories-slider::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.category-slide {
+  flex: 0 0 auto;
+  width: calc(25% - 1.125rem);
+  scroll-snap-align: start;
+  transition: transform 0.3s ease;
+  height: auto;
+}
+
+.category-box {
+  position: relative;
+  background: white;
+  height: 100%;
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  z-index: 1;
+  max-height: 380px;
+}
+
+.category-box::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(90deg, var(--bs-orange), var(--bs-primary));
+  top: 0;
+  left: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+  z-index: 1;
+  border-radius: 3px 3px 0 0;
+}
+
+.category-box:hover {
+  transform: translateY(-15px) scale(1.03);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+}
+
+.category-box:hover::before {
+  transform: scaleX(1);
+}
+
+.category-pulse-wrapper {
+  position: relative;
+  margin-bottom: 1.5rem;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pulse-effect {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--bs-primary);
+  opacity: 0.3;
+  animation: pulse-animation 2s infinite;
+  z-index: 1;
+}
+
+.icon-halo {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg, 
+    rgba(var(--bs-primary-rgb), 0.8), 
+    rgba(var(--bs-primary-rgb), 0.1), 
+    rgba(var(--bs-primary-rgb), 0.8)
+  );
+  z-index: 0;
+  animation: rotate-halo 4s linear infinite;
+  opacity: 0.7;
+}
+
+@keyframes rotate-halo {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.category-box:hover .icon-halo {
+  animation: rotate-halo 2s linear infinite;
+  background: conic-gradient(
+    from 0deg, 
+    rgba(var(--bs-orange-rgb), 0.8), 
+    rgba(var(--bs-orange-rgb), 0.2), 
+    rgba(var(--bs-orange-rgb), 0.8)
+  );
+}
+
+.category-icon-container {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(var(--bs-orange-rgb), 0.1) 0%, rgba(var(--bs-primary-rgb), 0.05) 100%);
+  color: var(--bs-orange);
+  font-size: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 3;
+  box-shadow: 0 8px 25px rgba(var(--bs-orange-rgb), 0.15);
+}
+
+.category-name {
+  position: relative;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.7rem;
+  color: #333;
+  z-index: 2;
+  transition: color 0.3s ease;
+}
+
+.category-desc {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 1.2rem;
+  flex-grow: 1;
+  z-index: 2;
+  position: relative;
+  transition: color 0.3s ease;
+  line-height: 1.5;
+  max-height: 4.5rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.category-link {
+  color: var(--bs-orange);
+  font-weight: 600;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  border-radius: 50px;
+  background-color: rgba(var(--bs-orange-rgb), 0.1);
+  transition: all 0.3s ease;
+  z-index: 3;
+  position: relative;
+  font-size: 0.9rem;
+}
+
+.category-link i {
+  transition: transform 0.3s ease;
+}
+
+.category-link:hover {
+  color: white;
+  background-color: var(--bs-orange);
+  box-shadow: 0 5px 15px rgba(var(--bs-orange-rgb), 0.2);
+}
+
+.category-link:hover i {
+  transform: translateX(5px);
+}
+
+.category-hover-effect {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(var(--bs-orange-rgb), 0.05) 0%, rgba(var(--bs-orange-rgb), 0) 70%);
+  border-radius: 50%;
+  z-index: 0;
+  opacity: 0;
+  transition: all 0.5s ease;
+  transform: scale(0.5);
+}
+
+.category-box:hover .category-hover-effect {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Flèches de navigation */
+.slider-controls {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 10;
+  padding: 0 1rem;
+}
+
+.slider-arrow {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  color: var(--bs-orange);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  border: none;
+  pointer-events: auto;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+}
+
+.slider-arrow:hover {
+  background-color: var(--bs-orange);
+  color: white;
+  transform: scale(1.1);
+}
+
+.slider-arrow:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.slider-pagination {
+  position: relative;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.slider-progress {
+  width: 100px;
+  height: 4px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.slider-progress-bar {
+  height: 100%;
+  width: 25%;
+  background: linear-gradient(90deg, var(--bs-orange), var(--bs-primary));
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* Responsive */
+@media (max-width: 1399px) {
+  .category-slide {
+    width: calc(33.333% - 1rem);
+  }
+  
+  .category-icon-container {
+    width: 75px;
+    height: 75px;
+    font-size: 2.1rem;
+  }
+  
+  .pulse-effect, .icon-halo {
+    width: 75px;
+    height: 75px;
+  }
+  
+  .category-box {
+    padding: 1.8rem 1.2rem;
+    max-height: 350px;
+  }
+}
+
+@media (max-width: 1199px) {
+  .category-slide {
+    width: calc(33.333% - 1rem);
+  }
+  
+  .category-icon-container {
+    width: 70px;
+    height: 70px;
+    font-size: 2rem;
+  }
+  
+  .pulse-effect, .icon-halo {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .category-box {
+    padding: 1.8rem 1.2rem;
+    max-height: 330px;
+  }
+}
+
+@media (max-width: 991px) {
+  .categories-slider-container {
+    padding: 0.5rem 0;
+  }
+  
+  .category-slide {
+    width: calc(50% - 0.75rem);
+  }
+  
+  .category-box {
+    padding: 1.5rem 1rem;
+    max-height: 320px;
+  }
+  
+  .category-name {
+    font-size: 1.15rem;
+  }
+  
+  .category-desc {
+    -webkit-line-clamp: 2; /* Limiter à 2 lignes sur tablette */
+    max-height: 3rem;
+  }
+  
+  .slider-controls {
+    top: auto;
+    bottom: -15px;
+    transform: none;
+  }
+  
+  .slider-arrow {
+    transform: scale(0.9);
+  }
+}
+
+@media (max-width: 767px) {
+  .categories-slider {
+    gap: 0.75rem;
+    padding: 1rem 0.5rem 2rem;
+  margin-bottom: 1rem;
+  }
+  
+  .category-slide {
+    width: 85%; /* Une carte occupe presque tout l'écran sur mobile */
+  }
+  
+  .category-box {
+    padding: 1.5rem 1rem;
+    max-height: 280px;
+    margin: 0 auto;
+  }
+  
+  .category-icon-container {
+    width: 60px;
+    height: 60px;
+    font-size: 1.6rem;
+  }
+  
+  .pulse-effect, .icon-halo {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .category-name {
+    font-size: 1.1rem;
+  }
+  
+  .category-desc {
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    max-height: 2.8rem;
+    -webkit-line-clamp: 2;
+  }
+  
+  .category-link {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.85rem;
+  }
+  
+  .slider-arrow {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+    position: absolute;
+    bottom: -15px;
+    top: auto;
+  }
+  
+  .slider-prev {
+    left: calc(50% - 50px);
+  }
+  
+  .slider-next {
+    right: calc(50% - 50px);
+  }
+  
+  .slider-pagination {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 575px) {
+  /* Sur très petits écrans, afficher une carte à la fois */
+  .category-slide {
+    width: 90%;
+  }
+  
+  .categories-slider {
+    padding: 1rem 0 2.5rem;
+  }
+  
+  .category-box {
+    max-height: 270px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+  }
+  
+  .category-icon-container {
+    width: 55px;
+    height: 55px;
+    font-size: 1.4rem;
+  }
+  
+  .pulse-effect, .icon-halo {
+    width: 55px;
+    height: 55px;
+  }
+  
+  .category-name {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .category-desc {
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+  
+  .slider-arrow {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+    bottom: -20px;
+  }
+  
+  .slider-prev {
+    left: calc(50% - 45px);
+  }
+  
+  .slider-next {
+    right: calc(50% - 45px);
+  }
+  
+  .categories-slider-container {
+    margin-bottom: 1rem;
+  }
+}
+
+@keyframes pulse-animation {
+  0% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  70% {
+    transform: scale(1.4);
+    opacity: 0.1;
+  }
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+
+.category-box:hover .category-icon-container {
+  background: linear-gradient(135deg, var(--bs-orange) 0%, #f17c0e 100%);
+  color: white;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(var(--bs-orange-rgb), 0.3);
 }
 </style> 

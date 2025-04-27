@@ -1,34 +1,37 @@
 [
   {
     "id": 1,
-    "name": "Téléphones",
-    "slug": "telephones",
+    "name": "Smartphones",
+    "slug": "smartphones",
     "icon": "smartphone",
-    "image": "/images/categories/telephones.png",
-    "description": "Smartphones haut de gamme de toutes marques"
+    "description": "Téléphones mobiles et smartphones de grandes marques"
   },
   {
     "id": 2,
     "name": "Ordinateurs",
     "slug": "ordinateurs",
     "icon": "laptop",
-    "image": "/images/categories/ordinateurs.png",
-    "description": "Laptops et ordinateurs de bureau puissants"
+    "description": "Ordinateurs portables et de bureau"
   },
   {
     "id": 3,
     "name": "Tablettes",
     "slug": "tablettes",
     "icon": "tablet",
-    "image": "/images/categories/tablettes.png",
-    "description": "Tablettes tactiles pour tous les usages"
+    "description": "Tablettes tactiles de toutes tailles"
   },
   {
     "id": 4,
+    "name": "Audio",
+    "slug": "audio",
+    "icon": "headphones",
+    "description": "Écouteurs, casques et enceintes"
+  },
+  {
+    "id": 5,
     "name": "Accessoires",
     "slug": "accessoires",
-    "icon": "headphones",
-    "image": "/images/categories/accessoires.png",
-    "description": "Complétez votre équipement avec nos accessoires"
+    "icon": "default",
+    "description": "Chargeurs, câbles, housses et protections"
   }
 ] 

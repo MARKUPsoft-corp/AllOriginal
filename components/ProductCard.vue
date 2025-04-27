@@ -1,12 +1,8 @@
 <template>
   <div class="product-card shine-effect-container">
-    <!-- Badge promo si le produit est en promotion -->
-    <div v-if="product.promo" class="product-ribbon">Promo</div>
-    
     <div class="product-brand">
       <span class="brand-badge">{{ product.brand }}</span>
       <span class="stock-badge" :class="product.in_stock ? 'stock-badge-success' : 'stock-badge-danger'">
-        <i :class="product.in_stock ? 'bi bi-check-circle-fill me-1' : 'bi bi-x-circle-fill me-1'"></i>
         {{ product.in_stock ? 'En stock' : 'Rupture' }}
       </span>
     </div>
@@ -18,7 +14,6 @@
       >
         <span class="brand-initial">{{ product.brand.charAt(0) }}</span>
         <span class="brand-model opacity-50">{{ product.model || product.name.split(' ')[0] }}</span>
-        <div class="product-glow"></div>
       </div>
     </div>
     
@@ -26,7 +21,6 @@
       <h3 class="product-title">{{ product.name }}</h3>
       <div class="product-features" v-if="product.specs">
         <span v-for="(spec, index) in getTopSpecs(product)" :key="index" class="feature-badge">
-          <i class="bi" :class="getSpecIcon(spec)"></i>
           {{ spec }}
         </span>
       </div>
@@ -34,6 +28,9 @@
       <div class="product-price-container">
         <div class="product-price">{{ formatPrice(product.price) }} <span class="currency">FCFA</span></div>
         <div v-if="product.promo" class="product-old-price">{{ formatPrice(product.old_price || Math.round(product.price * 1.2)) }} FCFA</div>
+        <div v-if="product.promo" class="product-ribbon">
+          <i class="bi bi-tag-fill me-1"></i>Promo
+        </div>
       </div>
       <div class="product-actions">
         <NuxtLink :to="`/produit/${product.slug}`" class="btn-details shine-effect">
@@ -44,7 +41,7 @@
           :href="getWhatsAppLink(product)" 
           target="_blank" 
           rel="noopener noreferrer"
-          class="btn-whatsapp shine-effect pulse-animation">
+          class="btn-whatsapp shine-effect">
           <i class="bi bi-whatsapp me-2"></i> Commander
         </a>
         <span v-else class="btn-unavailable">
@@ -57,61 +54,51 @@
 </template>
 
 <script setup>
-defineProps({
+import { defineProps, computed } from 'vue';
+
+const props = defineProps({
   product: {
     type: Object,
     required: true
   }
 });
 
-// Formater le prix avec séparateur de milliers
+// Formater le prix avec des espaces
 const formatPrice = (price) => {
-  return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  return new Intl.NumberFormat('fr-FR').format(price);
 };
 
 // Générer le lien WhatsApp
 const getWhatsAppLink = (product) => {
-  const text = `Bonjour, je suis intéressé(e) par le produit ${product.name}`;
-  const encodedText = encodeURIComponent(text);
-  return `https://wa.me/237XXXXXXXXX?text=${encodedText}`;
+  const baseURL = 'https://wa.me/237600000000'; // Remplacer par votre numéro
+  const message = encodeURIComponent(
+    `Bonjour, je suis intéressé par le produit ${product.name} à ${formatPrice(product.price)} FCFA. Est-il disponible ?`
+  );
+  return `${baseURL}?text=${message}`;
 };
 
-// Retourne un dégradé différent pour chaque marque
+// Générer un dégradé de couleur en fonction de la marque
 const getBrandGradient = (brand) => {
-  const brandGradients = {
-    'APPLE': 'linear-gradient(135deg, #A2AAAD 0%, #F5F5F7 100%)',
-    'SAMSUNG': 'linear-gradient(135deg, #1428A0 0%, #1565C0 100%)',
-    'XIAOMI': 'linear-gradient(135deg, #FF6700 0%, #FF9B33 100%)',
-    'DELL': 'linear-gradient(135deg, #007DB8 0%, #00B2E3 100%)',
-    'HP': 'linear-gradient(135deg, #0096D6 0%, #00BCD4 100%)',
-    'HUAWEI': 'linear-gradient(135deg, #CF0A2C 0%, #FF5252 100%)',
-    'LENOVO': 'linear-gradient(135deg, #E2231A 0%, #FF5252 100%)'
+  const brandColors = {
+    'Apple': 'linear-gradient(135deg, #A8B2C3 0%, #48494B 100%)',
+    'Samsung': 'linear-gradient(135deg, #1428A0 0%, #000000 100%)',
+    'Google': 'linear-gradient(135deg, #EA4335 0%, #4285F4 100%)',
+    'Xiaomi': 'linear-gradient(135deg, #FF6900 0%, #ffb02e 100%)',
+    'OnePlus': 'linear-gradient(135deg, #F5010C 0%, #8d0208 100%)',
+    'Dell': 'linear-gradient(135deg, #007DB8 0%, #003c72 100%)',
+    'Lenovo': 'linear-gradient(135deg, #E2231A 0%, #73110d 100%)',
+    'Microsoft': 'linear-gradient(135deg, #7FBA00 0%, #3a5800 100%)',
+    'Sony': 'linear-gradient(135deg, #0063C8 0%, #001e3e 100%)',
+    'Anker': 'linear-gradient(135deg, #6CC04A 0%, #439922 100%)'
   };
   
-  return brandGradients[brand] || 'linear-gradient(135deg, var(--bs-orange) 0%, #FFAB40 100%)'; // Dégradé par défaut
+  return brandColors[brand] || 'linear-gradient(135deg, #5D6272 0%, #2F3137 100%)';
 };
 
-// Extraire les principales spécifications à afficher
+// Obtenir les specifications principales (limités à 3)
 const getTopSpecs = (product) => {
-  if (!product.specs) return [];
-  
-  const specs = [];
-  // Sélectionner jusqu'à 3 spécifications importantes
-  if (product.specs.ram) specs.push(`${product.specs.ram} RAM`);
-  if (product.specs.storage) specs.push(`${product.specs.storage}`);
-  if (product.specs.processor) specs.push(product.specs.processor.split(' ')[0]);
-  if (product.specs.screen && specs.length < 3) specs.push(`${product.specs.screen}"`);
-  
-  return specs.slice(0, 3);
-};
-
-// Retourne une icône adaptée à la spécification
-const getSpecIcon = (spec) => {
-  if (spec.includes('RAM')) return 'bi-memory';
-  if (spec.includes('GB') || spec.includes('TB')) return 'bi-hdd-fill';
-  if (spec.includes('Intel') || spec.includes('AMD') || spec.includes('i5') || spec.includes('i7')) return 'bi-cpu-fill';
-  if (spec.includes('"')) return 'bi-display-fill';
-  return 'bi-gear-fill';
+  if (!product.specs || product.specs.length === 0) return [];
+  return product.specs.slice(0, 3);
 };
 </script>
 
@@ -128,7 +115,6 @@ const getSpecIcon = (spec) => {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(0, 0, 0, 0.03);
   z-index: 1;
-  animation: fadeIn 0.8s ease forwards;
 }
 
 .product-card:hover {
@@ -155,16 +141,18 @@ const getSpecIcon = (spec) => {
 
 .product-ribbon {
   position: absolute;
-  top: 20px;
-  right: -30px;
+  right: 0;
+  bottom: 0;
   background: var(--bs-orange);
   color: white;
-  padding: 0.25rem 2rem;
-  transform: rotate(45deg);
-  z-index: 2;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem 0 0 0;
+  z-index: 5;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
 }
 
 .product-brand {
@@ -184,12 +172,6 @@ const getSpecIcon = (spec) => {
   background-color: var(--bs-primary);
   color: white;
   letter-spacing: 0.5px;
-  transition: all 0.3s ease;
-}
-
-.product-card:hover .brand-badge {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(var(--bs-primary-rgb), 0.2);
 }
 
 .stock-badge {
@@ -198,9 +180,6 @@ const getSpecIcon = (spec) => {
   padding: 0.25rem 0.75rem;
   border-radius: 2rem;
   letter-spacing: 0.5px;
-  display: flex;
-  align-items: center;
-  transition: all 0.3s ease;
 }
 
 .stock-badge-success {
@@ -211,14 +190,6 @@ const getSpecIcon = (spec) => {
 .stock-badge-danger {
   background-color: rgba(var(--bs-danger-rgb), 0.15);
   color: var(--bs-danger);
-}
-
-.product-card:hover .stock-badge-success {
-  background-color: rgba(var(--bs-success-rgb), 0.25);
-}
-
-.product-card:hover .stock-badge-danger {
-  background-color: rgba(var(--bs-danger-rgb), 0.25);
 }
 
 .product-image {
@@ -241,40 +212,18 @@ const getSpecIcon = (spec) => {
   color: white;
   position: relative;
   transition: transform 0.5s ease;
-  overflow: hidden;
 }
 
 .brand-initial {
   font-size: 3.5rem;
   font-weight: bold;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  position: relative;
-  z-index: 2;
 }
 
 .brand-model {
   font-size: 1rem;
   font-weight: 500;
   margin-top: -0.5rem;
-  position: relative;
-  z-index: 2;
-}
-
-.product-glow {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 70%);
-  top: 0;
-  left: 0;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  z-index: 1;
-}
-
-.product-card:hover .product-glow {
-  opacity: 1;
-  animation: pulse 2s infinite;
 }
 
 .tilt-effect {
@@ -320,15 +269,6 @@ const getSpecIcon = (spec) => {
   border-radius: 0.25rem;
   background-color: rgba(var(--bs-primary-rgb), 0.1);
   color: var(--bs-primary);
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  transition: all 0.3s ease;
-}
-
-.product-card:hover .feature-badge {
-  transform: translateY(-2px);
-  background-color: rgba(var(--bs-primary-rgb), 0.2);
 }
 
 .product-description {
@@ -343,6 +283,7 @@ const getSpecIcon = (spec) => {
   display: flex;
   align-items: flex-end;
   margin-bottom: 1.25rem;
+  position: relative;
 }
 
 .product-price {
@@ -350,12 +291,6 @@ const getSpecIcon = (spec) => {
   font-weight: 700;
   color: var(--bs-orange);
   margin-right: 0.75rem;
-  transition: all 0.3s ease;
-}
-
-.product-card:hover .product-price {
-  transform: scale(1.05);
-  text-shadow: 0 2px 10px rgba(var(--bs-orange-rgb), 0.2);
 }
 
 .currency {
@@ -470,45 +405,6 @@ const getSpecIcon = (spec) => {
   animation: cardShine 1.5s forwards;
 }
 
-.pulse-animation {
-  animation: pulseButton 2.5s infinite;
-}
-
-@keyframes pulseButton {
-  0% {
-    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4);
-  }
-  70% {
-    box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
-  }
-}
-
-@keyframes pulse {
-  0% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 0.6;
-  }
-  100% {
-    opacity: 0.3;
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 @keyframes shine {
   0% {
     left: -100%;
@@ -568,11 +464,6 @@ const getSpecIcon = (spec) => {
   
   .product-price {
     font-size: 1.25rem;
-  }
-  
-  .feature-badge {
-    font-size: 0.65rem;
-    padding: 0.1rem 0.4rem;
   }
 }
 

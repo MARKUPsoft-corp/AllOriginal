@@ -4,7 +4,7 @@
     <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3 transition-navbar" 
          :class="{ 'navbar-scrolled': isScrolled }"
          ref="navbar">
-      <div class="container">
+    <div class="container">
         <!-- Logo avec animation -->
         <NuxtLink to="/" class="navbar-brand d-flex align-items-center shine-effect">
           <i class="bi bi-phone text-orange me-2 fs-3"></i>
@@ -16,7 +16,7 @@
                 @click="toggleMobileMenu"
                 aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
-        </button>
+            </button>
         
         <!-- Menu principal -->
         <div class="collapse navbar-collapse" id="navbarMain">
@@ -43,23 +43,23 @@
                   </NuxtLink>
                 </li>
                 <li @click="closeDropdown">
-                  <NuxtLink to="/catalogue?category=telephones" class="dropdown-item">
+              <NuxtLink to="/catalogue?category=telephones" class="dropdown-item">
                     <i class="bi bi-phone me-2 text-orange"></i> Téléphones
-                  </NuxtLink>
+              </NuxtLink>
                 </li>
                 <li @click="closeDropdown">
-                  <NuxtLink to="/catalogue?category=ordinateurs" class="dropdown-item">
+              <NuxtLink to="/catalogue?category=ordinateurs" class="dropdown-item">
                     <i class="bi bi-laptop me-2 text-orange"></i> Ordinateurs
-                  </NuxtLink>
+              </NuxtLink>
                 </li>
                 <li @click="closeDropdown">
-                  <NuxtLink to="/catalogue?category=tablettes" class="dropdown-item">
+              <NuxtLink to="/catalogue?category=tablettes" class="dropdown-item">
                     <i class="bi bi-tablet me-2 text-orange"></i> Tablettes
-                  </NuxtLink>
+              </NuxtLink>
                 </li>
                 <li><hr class="dropdown-divider"></li>
                 <li @click="closeDropdown">
-                  <NuxtLink to="/catalogue?category=accessoires" class="dropdown-item">
+              <NuxtLink to="/catalogue?category=accessoires" class="dropdown-item">
                     <i class="bi bi-headphones me-2 text-orange"></i> Accessoires
                   </NuxtLink>
                 </li>
@@ -77,10 +77,10 @@
               </a>
             </li>
           </ul>
-        </div>
-      </div>
-    </nav>
-    
+            </div>
+          </div>
+        </nav>
+        
     <!-- Espace pour compenser la navbar fixed -->
     <div class="navbar-spacer"></div>
   </header>

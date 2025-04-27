@@ -1,115 +1,145 @@
 <template>
-  <div>
-    <section class="catalogue-header py-5 bg-gradient position-relative overflow-hidden">
-      <div class="particles-container" id="catalogue-particles"></div>
-      <div class="container py-4">
-        <div class="row justify-content-center">
-          <div class="col-lg-8 text-center" data-aos="fade-up">
-            <h1 class="catalogue-title display-4 fw-bold mb-3">Catalogue</h1>
-            <p class="catalogue-subtitle lead mb-4">Découvrez notre gamme complète de produits high-tech</p>
-            <div class="header-separator mx-auto mb-4"></div>
-            <div class="d-inline-block position-relative">
-              <span class="catalogue-badge badge rounded-pill">
-                <i class="bi bi-check-circle-fill me-1"></i> Produits authentiques
-              </span>
+  <div class="catalogue-page">
+    <!-- En-tête avec vague et particules -->
+    <section class="catalogue-header position-relative overflow-hidden">
+      <div id="particles-catalogue" class="particles-container"></div>
+      <div class="animated-bg"></div>
+      <div class="radial-gradient-overlay-orange"></div>
+      <div class="radial-gradient-overlay-blue"></div>
+      
+      <!-- Icônes flottantes -->
+      <div class="floating-icons">
+        <!-- Ordinateurs et portables -->
+        <i class="bi bi-laptop floating-icon laptop-icon" style="top: 15%; left: 20%;"></i>
+        <i class="bi bi-laptop floating-icon laptop-icon" style="bottom: 20%; right: 15%;"></i>
+        <i class="bi bi-pc-display floating-icon desktop-icon" style="top: 25%; right: 10%;"></i>
+        <i class="bi bi-pc-display-horizontal floating-icon desktop-icon" style="bottom: 30%; left: 25%;"></i>
+        
+        <!-- Téléphones et tablettes -->
+        <i class="bi bi-phone floating-icon phone-icon" style="top: 30%; right: 20%;"></i>
+        <i class="bi bi-phone floating-icon phone-icon" style="bottom: 35%; left: 10%;"></i>
+        <i class="bi bi-phone-vibrate floating-icon phone-icon" style="top: 50%; left: 15%;"></i>
+        <i class="bi bi-phone-landscape floating-icon phone-icon" style="bottom: 45%; right: 22%;"></i>
+        <i class="bi bi-tablet floating-icon tablet-icon" style="top: 60%; left: 15%;"></i>
+        <i class="bi bi-tablet floating-icon tablet-icon" style="top: 40%; right: 30%;"></i>
+        <i class="bi bi-tablet-landscape floating-icon tablet-icon" style="bottom: 25%; left: 30%;"></i>
+        
+        <!-- Accessoires -->
+        <i class="bi bi-headphones floating-icon accessory-icon" style="bottom: 25%; right: 15%;"></i>
+        <i class="bi bi-earbuds floating-icon accessory-icon" style="top: 35%; left: 28%;"></i>
+        <i class="bi bi-mouse3 floating-icon accessory-icon" style="top: 45%; right: 30%;"></i>
+        <i class="bi bi-keyboard floating-icon accessory-icon" style="bottom: 40%; right: 35%;"></i>
+        <i class="bi bi-printer floating-icon accessory-icon" style="top: 20%; left: 35%;"></i>
+        <i class="bi bi-speaker floating-icon accessory-icon" style="bottom: 15%; left: 20%;"></i>
+        
+        <!-- Stockage et connectique -->
+        <i class="bi bi-usb-drive floating-icon storage-icon" style="bottom: 35%; left: 35%;"></i>
+        <i class="bi bi-sd-card floating-icon storage-icon" style="top: 55%; right: 15%;"></i>
+        <i class="bi bi-hdd floating-icon storage-icon" style="top: 10%; right: 35%;"></i>
+        <i class="bi bi-usb-c floating-icon storage-icon" style="bottom: 20%; right: 40%;"></i>
+        
+        <!-- Autres icônes tech -->
+        <i class="bi bi-cpu floating-icon tech-icon" style="top: 70%; right: 25%;"></i>
+        <i class="bi bi-gpu-card floating-icon tech-icon" style="bottom: 60%; left: 40%;"></i>
+        <i class="bi bi-battery-full floating-icon tech-icon" style="top: 25%; left: 45%;"></i>
+        <i class="bi bi-smartwatch floating-icon tech-icon" style="bottom: 50%; right: 45%;"></i>
+        <i class="bi bi-camera floating-icon tech-icon" style="top: 48%; left: 48%;"></i>
+        <i class="bi bi-bluetooth floating-icon tech-icon" style="bottom: 55%; left: 8%;"></i>
+        <i class="bi bi-wifi floating-icon tech-icon" style="top: 38%; right: 8%;"></i>
+        <i class="bi bi-activity floating-icon tech-icon" style="bottom: 28%; right: 28%;"></i>
+      </div>
+      
+      <div class="container position-relative z-3">
+        <div class="row">
+          <div class="col-lg-8 mx-auto text-center">
+            <div class="title-container">
+              <h1 class="catalogue-title display-4 fw-bold mb-3" data-aos="fade-up">
+                Notre Catalogue
+              </h1>
+              <div class="gradient-underline mx-auto mb-4"></div>
+              <p class="catalogue-subtitle fs-5 mb-4" data-aos="fade-up" data-aos-delay="100">
+                Découvrez notre sélection premium de produits high-tech certifiés originaux
+              </p>
             </div>
           </div>
         </div>
       </div>
       <div class="catalogue-wave">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-          <path fill="#ffffff" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,213.3C1248,235,1344,213,1392,202.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+          <path fill="#ffffff" fill-opacity="1" d="M0,160L48,149.3C96,139,192,117,288,122.7C384,128,480,160,576,176C672,192,768,192,864,181.3C960,171,1056,149,1152,149.3C1248,149,1344,171,1392,181.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
         </svg>
       </div>
     </section>
     
-    <section class="catalogue-content section py-5">
+    <section class="catalogue-content py-5">
       <div class="container">
         <!-- Filtres et catégories -->
-        <div class="filters mb-5">
-          <div class="filter-header mb-4 d-flex justify-content-between align-items-center">
-            <h2 class="filter-title mb-0 h5">
-              <i class="bi bi-funnel-fill me-2 text-primary"></i>
-              Filtrer les produits
-            </h2>
-            <button @click="resetFilters" class="btn btn-sm btn-outline-secondary d-flex align-items-center">
-              <i class="bi bi-arrow-counterclockwise me-2"></i>
-              Réinitialiser
-            </button>
-          </div>
-          
-          <div class="categories-tabs mb-4">
-            <button 
-              v-for="cat in categories" 
-              :key="cat.id"
-              class="category-tab"
-              :class="{ 'active': activeCategory === cat.slug }"
-              @click="setCategory(cat.slug)"
-            >
-              <span class="category-icon">
-                <i v-if="cat.icon === 'smartphone'" class="bi bi-phone"></i>
-                <i v-else-if="cat.icon === 'laptop'" class="bi bi-laptop"></i>
-                <i v-else-if="cat.icon === 'tablet'" class="bi bi-tablet"></i>
-                <i v-else-if="cat.icon === 'headphones'" class="bi bi-headphones"></i>
-                <i v-else class="bi bi-box"></i>
-              </span>
-              {{ cat.name }}
-            </button>
-            <button 
-              class="category-tab"
-              :class="{ 'active': activeCategory === 'tous' }"
-              @click="setCategory('tous')"
-            >
-              <span class="category-icon">
-                <i class="bi bi-grid-3x3-gap"></i>
-              </span>
-              Tous les produits
-            </button>
-          </div>
-          
-          <div class="search-filters">
-            <div class="row g-3">
-              <div class="col-lg-5">
-                <div class="search-bar position-relative">
-                  <i class="bi bi-search search-icon"></i>
-                  <input 
-                    type="text" 
-                    placeholder="Rechercher un produit..." 
-                    v-model="searchQuery"
-                    class="search-input form-control form-control-lg shadow-sm"
-                  />
-                  <button v-if="searchQuery" @click="searchQuery = ''" class="btn-clear-search">
-                    <i class="bi bi-x"></i>
+        <div class="filters-container mb-5" data-aos="fade-up">
+          <div class="card filter-card shadow-sm border-0">
+            <div class="card-body p-0">
+              <!-- Onglets de catégories -->
+              <div class="categories-tabs p-3 border-bottom">
+                <div class="scrollable-tabs">
+                  <button 
+                    v-for="cat in categories" 
+                    :key="cat.id"
+                    class="category-tab"
+                    :class="{ 'active': activeCategory === cat.slug }"
+                    @click="setCategory(cat.slug)"
+                  >
+                    <i :class="`bi bi-${getCategoryIcon(cat.icon)}`"></i>
+                    {{ cat.name }}
+                  </button>
+                  <button 
+                    class="category-tab"
+                    :class="{ 'active': activeCategory === 'tous' }"
+                    @click="setCategory('tous')"
+                  >
+                    <i class="bi bi-grid"></i>
+                    Tous les produits
                   </button>
                 </div>
               </div>
               
-              <div class="col-lg-7">
-                <div class="filter-dropdowns d-flex flex-wrap gap-3">
-                  <div class="filter-dropdown">
-                    <div class="select-wrapper">
-                      <select v-model="selectedBrand" class="filter-select form-select">
-                        <option value="">Toutes les marques</option>
-                        <option v-for="brand in availableBrands" :key="brand" :value="brand">{{ brand }}</option>
-                      </select>
+              <!-- Recherche et filtres -->
+              <div class="search-filters p-4">
+                <div class="row g-3 align-items-center">
+                  <div class="col-12 col-md-5">
+                    <div class="search-bar position-relative">
+                      <input 
+                        type="text" 
+                        placeholder="Rechercher un produit..." 
+                        v-model="searchQuery"
+                        class="form-control search-input py-2 ps-4 pe-5"
+                      />
+                      <i class="bi bi-search search-icon"></i>
                     </div>
                   </div>
                   
-                  <div class="filter-dropdown">
-                    <div class="select-wrapper">
-                      <select v-model="priceRange" class="filter-select form-select">
-                        <option value="">Tous les prix</option>
-                        <option value="low">Prix croissant</option>
-                        <option value="high">Prix décroissant</option>
-                      </select>
+                  <div class="col-12 col-md-7">
+                    <div class="row g-3">
+                      <div class="col-6 col-sm-4">
+                        <select v-model="selectedBrand" class="form-select py-2">
+                          <option value="">Toutes les marques</option>
+                          <option v-for="brand in availableBrands" :key="brand" :value="brand">{{ brand }}</option>
+                        </select>
+                      </div>
+                      
+                      <div class="col-6 col-sm-4">
+                        <select v-model="priceRange" class="form-select py-2">
+                          <option value="">Tous les prix</option>
+                          <option value="low">Prix croissant</option>
+                          <option value="high">Prix décroissant</option>
+                        </select>
+                      </div>
+                      
+                      <div class="col-12 col-sm-4">
+                        <div class="stock-filter form-check form-switch">
+                          <input class="form-check-input" type="checkbox" id="stockSwitch" v-model="inStockOnly">
+                          <label class="form-check-label" for="stockSwitch">En stock uniquement</label>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div class="stock-filter">
-                    <label class="filter-checkbox form-check">
-                      <input type="checkbox" v-model="inStockOnly" class="form-check-input me-2" />
-                      <span class="form-check-label">En stock uniquement</span>
-                    </label>
                   </div>
                 </div>
               </div>
@@ -117,66 +147,35 @@
           </div>
         </div>
         
-        <!-- Étiquette résultats -->
-        <div class="results-header mb-4 d-flex justify-content-between align-items-center" v-if="filteredProducts.length > 0">
-          <h2 class="h6 mb-0 text-muted">
-            <span class="results-count fw-bold">{{ filteredProducts.length }}</span> produits trouvés
-          </h2>
-          <div class="view-options d-flex gap-2">
-            <button class="btn btn-sm btn-outline-secondary active px-3">
-              <i class="bi bi-grid-3x3-gap"></i>
-            </button>
-            <button class="btn btn-sm btn-outline-secondary px-3">
-              <i class="bi bi-list"></i>
+        <!-- Résultats -->
+        <div v-if="filteredProducts.length > 0" class="product-results">
+          <div class="results-header d-flex justify-content-between align-items-center mb-4" data-aos="fade-up">
+            <p class="results-count mb-0">
+              <span class="fw-bold">{{ filteredProducts.length }}</span> produits trouvés
+            </p>
+            <button @click="resetFilters" class="btn-reset" v-if="isFilterActive">
+              <i class="bi bi-x-circle me-2"></i> Réinitialiser les filtres
             </button>
           </div>
-        </div>
-
-        <!-- Résultats -->
-        <div v-if="filteredProducts.length > 0" class="products-grid">
-          <div 
-            v-for="(product, index) in filteredProducts" 
-            :key="product.id"
-            class="product-card-wrapper"
-            :style="{ animationDelay: `${index * 0.05}s` }"
-          >
-            <ProductCard :product="product" />
+          
+          <div class="row g-4">
+            <div v-for="(product, index) in filteredProducts" :key="product.id" class="col-12 col-md-6 col-lg-4" 
+                 data-aos="fade-up" :data-aos-delay="`${index * 50}`">
+              <ProductCard :product="product" />
+            </div>
           </div>
         </div>
         
-        <div v-else class="no-results">
-          <div class="no-results-content">
-            <div class="no-results-icon">
-              <i class="bi bi-search text-primary"></i>
-            </div>
-            <h3 class="mt-3 fw-bold">Aucun produit trouvé</h3>
-            <p class="text-muted mb-4">Essayez de modifier vos filtres ou d'élargir vos critères de recherche</p>
-            <button @click="resetFilters" class="btn btn-primary mt-2 btn-reset-filters">
-              <i class="bi bi-arrow-counterclockwise me-2"></i>
-              Réinitialiser les filtres
+        <!-- Message si aucun résultat -->
+        <div v-else class="no-results text-center py-5" data-aos="fade-up">
+          <div class="no-results-content p-5">
+            <i class="bi bi-search display-1 text-muted mb-3"></i>
+            <h3 class="fs-4 mb-3">Aucun produit ne correspond à vos critères</h3>
+            <p class="text-muted mb-4">Essayez d'élargir votre recherche ou de modifier les filtres appliqués.</p>
+            <button @click="resetFilters" class="btn btn-primary">
+              <i class="bi bi-arrow-repeat me-2"></i> Réinitialiser les filtres
             </button>
           </div>
-        </div>
-
-        <!-- Pagination -->
-        <div class="pagination-container d-flex justify-content-center mt-5">
-          <nav aria-label="Page navigation">
-            <ul class="pagination">
-              <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
-                  <span aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
-                </a>
-              </li>
-              <li class="page-item active"><a class="page-link" href="#">1</a></li>
-              <li class="page-item"><a class="page-link" href="#">2</a></li>
-              <li class="page-item"><a class="page-link" href="#">3</a></li>
-              <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
-                  <span aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
-                </a>
-              </li>
-            </ul>
-          </nav>
         </div>
       </div>
     </section>
@@ -221,6 +220,36 @@ onMounted(async () => {
     const categoryParam = route.query.category;
     if (categoryParam) {
       activeCategory.value = categoryParam;
+    }
+    
+    // Initialisation des particules avec des couleurs orange et noir
+    if (typeof window !== 'undefined' && window.particlesJS) {
+      window.particlesJS('particles-catalogue', {
+        particles: {
+          number: { value: 40, density: { enable: true, value_area: 1200 } },
+          color: { 
+            value: ["#ff8c00", "#ff6b00", "#222222", "#444444"] 
+          },
+          opacity: { value: 0.7, random: true, anim: { enable: true, speed: 1, opacity_min: 0.4, sync: false } },
+          size: { value: 4, random: true, anim: { enable: true, speed: 2, size_min: 2, sync: false } },
+          line_linked: { enable: true, color: "#ff8c00", opacity: 0.4, width: 1 },
+          move: { 
+            enable: true, 
+            speed: 1, 
+            direction: "none", 
+            random: true, 
+            straight: false, 
+            out_mode: "out",
+            bounce: false,
+            attract: { enable: true, rotateX: 600, rotateY: 1200 }
+          }
+        }
+      });
+    }
+    
+    // Initialiser AOS si disponible
+    if (typeof window !== 'undefined' && window.AOS) {
+      window.AOS.refresh();
     }
   } catch (error) {
     console.error('Erreur lors du chargement des données:', error);
@@ -275,10 +304,24 @@ const filteredProducts = computed(() => {
   return result;
 });
 
+// Vérifier si des filtres sont appliqués
+const isFilterActive = computed(() => {
+  return searchQuery.value !== '' || 
+         selectedBrand.value !== '' || 
+         priceRange.value !== '' || 
+         inStockOnly.value || 
+         activeCategory.value !== 'tous';
+});
+
 // Mise à jour de l'URL lors du changement de catégorie
 const setCategory = (category) => {
   activeCategory.value = category;
   router.push({ query: { ...route.query, category } });
+  
+  // Scroll vers le haut si sur mobile
+  if (window.innerWidth < 768) {
+    window.scrollTo({ top: document.querySelector('.catalogue-content').offsetTop - 80, behavior: 'smooth' });
+  }
 };
 
 // Réinitialisation des filtres
@@ -287,6 +330,7 @@ const resetFilters = () => {
   selectedBrand.value = '';
   priceRange.value = '';
   inStockOnly.value = false;
+  setCategory('tous');
 };
 
 // Observer les changements d'URL
@@ -297,58 +341,31 @@ watch(() => route.query.category, (newCategory) => {
     activeCategory.value = 'tous';
   }
 });
+
+// Convertir les icônes emoji en classes Bootstrap Icons
+const getCategoryIcon = (icon) => {
+  const iconMap = {
+    'smartphone': 'phone',
+    'laptop': 'laptop',
+    'tablet': 'tablet',
+    'headphones': 'headphones',
+    'default': 'box'
+  };
+  
+  return iconMap[icon] || iconMap.default;
+};
 </script>
 
 <style scoped>
+.catalogue-page {
+  min-height: calc(100vh - 70px); /* Ajuster en fonction de la hauteur du header */
+}
+
 .catalogue-header {
-  background: linear-gradient(135deg, var(--bs-primary) 0%, #2c66c4 100%);
-  color: white;
-  padding: 4rem 0 6rem;
-  margin-bottom: 2rem;
-  overflow: hidden;
+  background: transparent;
+  padding: 5rem 0 8rem;
+  text-align: center;
   position: relative;
-}
-
-.catalogue-title {
-  font-size: 3rem;
-  font-weight: 800;
-  margin-bottom: 1rem;
-  position: relative;
-  letter-spacing: -0.5px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.catalogue-subtitle {
-  font-size: 1.25rem;
-  opacity: 0.9;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.header-separator {
-  width: 80px;
-  height: 4px;
-  background: linear-gradient(90deg, white, rgba(255, 255, 255, 0.2));
-  border-radius: 2px;
-  margin: 1.5rem auto;
-}
-
-.catalogue-badge {
-  background-color: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(5px);
-  font-size: 0.85rem;
-  padding: 0.5rem 1rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  animation: float 3s ease-in-out infinite;
-}
-
-.catalogue-wave {
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  width: 100%;
-  overflow: hidden;
-  line-height: 0;
 }
 
 .particles-container {
@@ -357,649 +374,517 @@ watch(() => route.query.category, (newCategory) => {
   left: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  z-index: 1;
+  opacity: 0.7;
 }
 
-@keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
+.animated-bg {
+  display: none;
 }
 
-.catalogue-content {
-  padding-top: 2rem;
+.radial-gradient-overlay-orange {
+  position: absolute;
+  top: -20%;
+  right: -10%;
+  width: 50%;
+  height: 50%;
+  background: radial-gradient(circle, rgba(var(--bs-orange-rgb), 0.25) 0%, rgba(var(--bs-orange-rgb), 0) 70%);
+  z-index: 2;
+  opacity: 0.9;
 }
 
-.filters {
-  margin-bottom: 2rem;
+.radial-gradient-overlay-blue {
+  position: absolute;
+  bottom: -10%;
+  left: -5%;
+  width: 50%;
+  height: 50%;
+  background: radial-gradient(circle, rgba(var(--bs-primary-rgb), 0.15) 0%, rgba(var(--bs-primary-rgb), 0) 70%);
+  z-index: 2;
+  opacity: 0.7;
 }
 
-.filter-header {
+.title-container {
+  position: relative;
+  padding: 2.5rem 2rem;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  max-width: 650px;
+  margin: 0 auto;
+  z-index: 5;
+  border-top: 3px solid var(--bs-orange);
+}
+
+.catalogue-title {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  color: #000;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.gradient-underline {
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--bs-orange) 30%, var(--bs-primary) 100%);
+  border-radius: 2px;
   margin-bottom: 1.5rem;
 }
 
-.filter-title {
-  font-weight: 700;
-  color: var(--bs-gray-800);
+.catalogue-subtitle {
+  color: var(--bs-gray-700);
+  font-weight: 400;
+}
+
+.catalogue-wave {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  z-index: 2;
+  line-height: 0;
+}
+
+.opacity-80 {
+  opacity: 1;
+  font-weight: 500;
+  color: #000;
+}
+
+.filters-container {
+  position: relative;
+  margin-top: -70px;
+  z-index: 10;
+  padding: 0 1.25rem;
+}
+
+.filter-card {
+  border-radius: 1.2rem;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06), 0 3px 15px rgba(0, 0, 0, 0.04);
+  background-color: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
 }
 
 .categories-tabs {
   display: flex;
-  flex-wrap: wrap;
+  justify-content: center;
+  padding: 1.2rem 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  background-color: rgba(248, 249, 250, 0.5);
+}
+
+.scrollable-tabs {
+  display: flex;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  justify-content: flex-start;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0.5rem 0.75rem;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  position: relative;
+}
+
+.scrollable-tabs::-webkit-scrollbar {
+  display: none; /* Chrome et Safari */
+}
+
+.scrollable-tabs::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 30px;
+  background: linear-gradient(90deg, rgba(248, 249, 250, 0) 0%, rgba(248, 249, 250, 0.8) 100%);
+  pointer-events: none;
+  opacity: 0.8;
+  z-index: 10;
 }
 
 .category-tab {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
+  padding: 0.5rem 1.25rem;
   border-radius: 2rem;
-  background-color: #f8f9fa;
-  border: 1px solid #e9ecef;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  color: var(--bs-gray-600);
   font-weight: 500;
-  color: #495057;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.175);
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 .category-tab:hover {
-  background-color: #e9ecef;
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  border-color: rgba(var(--bs-orange-rgb), 0.5);
+  box-shadow: 0 5px 15px rgba(var(--bs-orange-rgb), 0.15);
+  color: var(--bs-orange);
 }
 
 .category-tab.active {
-  background-color: var(--bs-primary);
+  background: linear-gradient(135deg, var(--bs-orange) 0%, #e66c00 100%);
   color: white;
-  border-color: var(--bs-primary);
-  box-shadow: 0 5px 15px rgba(var(--bs-primary-rgb), 0.2);
+  border-color: transparent;
+  box-shadow: 0 5px 15px rgba(var(--bs-orange-rgb), 0.25);
 }
 
-.category-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
+.category-tab.active:hover {
+  box-shadow: 0 7px 20px rgba(var(--bs-orange-rgb), 0.35);
+  transform: translateY(-4px) scale(1.02);
+}
+
+.category-tab i {
+  transition: transform 0.3s ease;
+}
+
+.category-tab:hover i {
+  transform: scale(1.2);
 }
 
 .search-filters {
-  background-color: #f8f9fa;
   padding: 1.5rem;
-  border-radius: 1rem;
-  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  background-color: white;
 }
 
 .search-bar {
+  width: 100%;
   position: relative;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .search-bar {
+    margin-bottom: 0;
+  }
+}
+
+.search-input {
+  border-radius: 2rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s ease;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+}
+
+.search-input:focus {
+  border-color: rgba(var(--bs-orange-rgb), 0.5);
+  box-shadow: 0 0 0 4px rgba(var(--bs-orange-rgb), 0.1);
 }
 
 .search-icon {
   position: absolute;
-  left: 1rem;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: #adb5bd;
-  z-index: 2;
-}
-
-.search-input {
-  padding-left: 2.75rem;
-  border-radius: 0.5rem;
-  height: 50px;
+  color: var(--bs-gray-500);
   font-size: 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  background-color: white;
+}
+
+.form-select {
+  border-radius: 2rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.02);
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
   transition: all 0.3s ease;
+  background-position: right 1rem center;
 }
 
-.search-input:focus {
-  border-color: var(--bs-primary);
-  box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), 0.15);
-}
-
-.btn-clear-search {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  font-size: 1.25rem;
-  cursor: pointer;
-  color: #adb5bd;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
-}
-
-.filter-dropdowns {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.filter-dropdown {
-  flex: 1;
-  min-width: 200px;
-}
-
-.select-wrapper {
-  position: relative;
-}
-
-.filter-select {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  font-size: 1rem;
-  background-color: white;
-  height: 50px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.filter-select:focus {
-  border-color: var(--bs-primary);
-  box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), 0.15);
+.form-select:focus {
+  border-color: rgba(var(--bs-orange-rgb), 0.5);
+  box-shadow: 0 0 0 4px rgba(var(--bs-orange-rgb), 0.1);
 }
 
 .stock-filter {
   display: flex;
   align-items: center;
-  padding: 0 0.75rem;
+  margin-left: 0.5rem;
 }
 
-.filter-checkbox {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  padding: 0.5rem;
-  margin: 0;
+.form-check-input {
+  width: 2.5rem;
+  height: 1.25rem;
+  margin-top: 0;
+  transition: all 0.2s ease;
 }
 
 .form-check-input:checked {
-  background-color: var(--bs-primary);
-  border-color: var(--bs-primary);
+  background-color: var(--bs-orange);
+  border-color: var(--bs-orange);
 }
 
-.results-header {
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #e9ecef;
+.form-check-input:focus {
+  box-shadow: 0 0 0 3px rgba(var(--bs-orange-rgb), 0.15);
+}
+
+.form-check-label {
+  transition: color 0.2s ease;
+  font-size: 0.95rem;
+}
+
+.form-check-input:checked ~ .form-check-label {
+  color: var(--bs-orange);
 }
 
 .results-count {
-  color: var(--bs-primary);
+  color: var(--bs-gray-600);
+  font-size: 0.95rem;
 }
 
-.view-options button {
+.btn-reset {
+  background: none;
+  border: none;
+  color: var(--bs-gray-600);
+  font-size: 0.9rem;
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  border-radius: 2rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
-.view-options button.active {
-  background-color: var(--bs-gray-200);
-  border-color: var(--bs-gray-400);
-}
-
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
-  position: relative;
-  min-height: 200px;
-}
-
-.product-card-wrapper {
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-  animation: fadeInUp 0.5s ease forwards;
-  opacity: 0;
-  border-radius: 0.75rem;
-  overflow: hidden;
-  height: 100%;
-  position: relative;
-  will-change: transform;
-  transform: perspective(1000px) translateZ(0);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-}
-
-.product-card-wrapper:hover {
-  transform: translateY(-10px) scale(1.02);
-  z-index: 10;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(var(--bs-primary-rgb), 0.08);
-}
-
-.product-card-wrapper::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: 0.75rem;
-  opacity: 0;
-  background: radial-gradient(circle at 50% 0%, rgba(var(--bs-primary-rgb), 0.12), transparent 70%);
-  transition: opacity 0.5s ease;
-  pointer-events: none;
-}
-
-.product-card-wrapper:hover::after {
-  opacity: 1;
-}
-
-.product-card-wrapper::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 300%);
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  border-radius: 0.75rem;
-}
-
-.product-card-wrapper:hover::before {
-  opacity: 1;
+.btn-reset:hover {
+  background-color: rgba(var(--bs-orange-rgb), 0.1);
+  color: var(--bs-orange);
 }
 
 .no-results {
-  min-height: 400px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem;
-  background: linear-gradient(135deg, #f8f9fa 0%, #f0f1f2 100%);
-  border-radius: 1rem;
-  animation: fadeIn 0.7s ease;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05), 0 10px 30px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.03);
-  position: relative;
-  overflow: hidden;
-}
-
-.no-results::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(var(--bs-primary-rgb), 0.03) 0%, transparent 70%);
-  z-index: 0;
+  padding: 2rem 0;
 }
 
 .no-results-content {
-  text-align: center;
-  max-width: 500px;
-  position: relative;
-  z-index: 1;
+  background-color: #f8f9fa;
+  border-radius: 1rem;
+  border: 1px dashed rgba(0, 0, 0, 0.1);
 }
 
-.no-results-icon {
-  background: rgba(var(--bs-primary-rgb), 0.1);
-  width: 90px;
-  height: 90px;
-  font-size: 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  margin: 0 auto 1rem;
-  animation: pulse 3s infinite;
-  box-shadow: 0 0 0 10px rgba(var(--bs-primary-rgb), 0.03), 0 0 0 20px rgba(var(--bs-primary-rgb), 0.01);
-  position: relative;
-}
-
-.no-results-icon::after {
-  content: '';
-  position: absolute;
-  inset: -5px;
-  border-radius: 50%;
-  border: 2px dashed rgba(var(--bs-primary-rgb), 0.2);
-  animation: spin 20s linear infinite;
-}
-
-.btn-reset-filters {
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(var(--bs-primary-rgb), 0.15);
-  position: relative;
-  overflow: hidden;
-  padding: 0.75rem 1.5rem;
-  font-weight: 500;
-  letter-spacing: 0.3px;
-}
-
-.btn-reset-filters:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(var(--bs-primary-rgb), 0.2);
-}
-
-.btn-reset-filters::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
-  transform: rotate(45deg);
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-
-.btn-reset-filters:hover::after {
-  opacity: 1;
-  animation: shineButton 1.5s forwards;
-}
-
-.pagination-container {
-  margin-top: 4rem;
-  margin-bottom: 3rem;
-  position: relative;
-}
-
-.pagination-container::before {
-  content: '';
-  position: absolute;
-  top: -2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  height: 1px;
-  width: 100px;
-  background: linear-gradient(90deg, transparent, rgba(var(--bs-primary-rgb), 0.3), transparent);
-}
-
-.pagination {
-  display: inline-flex;
-  background-color: white;
-  border-radius: 2rem;
-  padding: 0.5rem;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.07);
-  transition: all 0.3s ease;
-}
-
-.pagination:hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-}
-
-.pagination .page-item:first-child .page-link {
-  border-top-left-radius: 1.5rem;
-  border-bottom-left-radius: 1.5rem;
-  padding-left: 1.25rem;
-}
-
-.pagination .page-item:last-child .page-link {
-  border-top-right-radius: 1.5rem;
-  border-bottom-right-radius: 1.5rem;
-  padding-right: 1.25rem;
-}
-
-.pagination .page-link {
-  color: var(--bs-gray-800);
+.btn-primary {
+  background: linear-gradient(135deg, var(--bs-orange) 0%, darken(var(--bs-orange), 10%) 100%);
   border: none;
-  margin: 0;
-  padding: 0.75rem 1.2rem;
-  font-weight: 600;
-  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-  position: relative;
-  z-index: 1;
-  min-width: 45px;
-  text-align: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 2rem;
+  box-shadow: 0 5px 15px rgba(var(--bs-orange-rgb), 0.2);
+  transition: all 0.3s ease;
 }
 
-.pagination .page-link:hover:not(.active) {
-  background-color: var(--bs-gray-100);
-  color: var(--bs-primary);
+.btn-primary:hover {
   transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(var(--bs-orange-rgb), 0.3);
 }
 
-.pagination .page-item.active .page-link {
-  background-color: var(--bs-primary);
-  color: white;
-  box-shadow: 0 5px 15px rgba(var(--bs-primary-rgb), 0.2);
-}
-
-.pagination .page-item.active .page-link::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, var(--bs-primary) 0%, rgba(var(--bs-primary-rgb), 0.8) 100%);
-  border-radius: inherit;
-  z-index: -1;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(var(--bs-primary-rgb), 0.4);
-    transform: scale(1);
-  }
-  70% {
-    box-shadow: 0 0 0 20px rgba(var(--bs-primary-rgb), 0);
-    transform: scale(1.05);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(var(--bs-primary-rgb), 0);
-    transform: scale(1);
-  }
-}
-
-@keyframes shineButton {
-  0% {
-    left: -100%;
-    opacity: 0.7;
-  }
-  100% {
-    left: 100%;
-    opacity: 0;
-  }
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* Responsive adjustments */
-@media (max-width: 1200px) {
-  .products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .catalogue-header h1 {
-    font-size: 2.5rem;
-  }
-}
-
-@media (max-width: 992px) {
+@media (max-width: 767px) {
   .catalogue-header {
-    padding: 3rem 1rem;
+    padding: 3rem 0 6rem;
   }
-
-  .filters-section {
-    padding: 1.5rem;
+  
+  .catalogue-title {
+    font-size: 1.85rem;
   }
-
-  .category-tabs {
-    overflow-x: auto;
-    padding-bottom: 0.5rem;
-    mask-image: linear-gradient(to right, black 80%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to right, black 80%, transparent 100%);
-  }
-
-  .category-tabs .nav-link {
-    min-width: auto;
-    white-space: nowrap;
-    padding: 0.75rem 1.25rem;
-  }
-
-  .filter-dropdowns {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .filter-dropdowns .dropdown {
-    width: 100%;
-    margin-bottom: 0.75rem;
-  }
-
-  .search-box {
-    width: 100%;
-    margin-bottom: 1rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .catalogue-header {
-    padding: 2.5rem 1rem;
-  }
-
-  .catalogue-header h1 {
-    font-size: 2rem;
-  }
-
-  .catalogue-header p {
-    font-size: 1rem;
-  }
-
-  .products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1.25rem;
-  }
-
+  
   .filters-container {
-    gap: 1rem;
-    flex-direction: column;
+    margin-top: -50px;
+    padding: 0 0.75rem;
   }
-
-  .active-filters {
-    margin-top: 0.5rem;
+  
+  .filter-card {
+    border-radius: 1rem;
   }
-
-  .pagination .page-link {
-    padding: 0.6rem 1rem;
-    min-width: 40px;
+  
+  .categories-tabs {
+    padding: 0.75rem 0.5rem 0.75rem 0.25rem;
   }
-
-  .product-card-wrapper:hover {
-    transform: translateY(-5px) scale(1.01);
+  
+  .scrollable-tabs {
+    padding: 0.25rem 0.5rem;
   }
-}
-
-@media (max-width: 576px) {
-  .catalogue-header {
-    padding: 2rem 0.5rem;
+  
+  .category-tab {
+    padding: 0.35rem 0.85rem;
+    font-size: 0.8rem;
+    gap: 0.25rem;
   }
-
-  .catalogue-header h1 {
-    font-size: 1.75rem;
-  }
-
-  .filters-section {
-    padding: 1rem;
-  }
-
-  .products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 1rem;
-  }
-
-  .no-results {
-    padding: 2rem 1rem;
-  }
-
-  .no-results-icon {
-    width: 70px;
-    height: 70px;
-    font-size: 2rem;
-  }
-
-  .pagination .page-link {
-    padding: 0.5rem 0.8rem;
-    min-width: 36px;
+  
+  .category-tab i {
     font-size: 0.9rem;
   }
+  
+  .search-filters {
+    padding: 1rem 1rem 1.25rem;
+  }
+  
+  .stock-filter {
+    margin-top: 0.25rem;
+    justify-content: flex-start;
+  }
+  
+  .search-input, .form-select {
+    font-size: 0.85rem;
+    padding: 0.45rem 1rem;
+  }
+  
+  .search-icon {
+    right: 12px;
+  }
+  
+  /* Ajuster les colonnes pour mobile */
+  .col-6 {
+    padding-right: 0.25rem;
+    padding-left: 0.25rem;
+  }
+  
+  .row.g-3 {
+    margin: 0 -0.25rem;
+  }
 }
 
-/* Animations and transitions */
-.fade-move,
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+@media (min-width: 992px) {
+  .search-bar {
+    max-width: 100%;
+  }
+  
+  .scrollable-tabs {
+    max-width: 90%;
+  }
 }
 
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-  transform: translateY(30px);
-}
-
-.fade-leave-active {
+/* Icônes flottantes */
+.floating-icons {
   position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
 }
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+.floating-icon {
+  position: absolute;
+  color: rgba(255, 140, 0, 0.7);
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.3));
+  animation: floating 8s infinite ease-in-out;
+  opacity: 0.7;
+  font-size: 1.8rem;
 }
 
-::-webkit-scrollbar-track {
-  background: rgba(var(--bs-light-rgb), 0.8);
-  border-radius: 10px;
+.laptop-icon, .desktop-icon {
+  font-size: 2.3rem;
+  color: rgba(255, 140, 0, 0.8);
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(var(--bs-gray-500-rgb), 0.4);
-  border-radius: 10px;
-  border: 2px solid rgba(var(--bs-light-rgb), 0.8);
-  transition: all 0.3s ease;
+.phone-icon, .tablet-icon {
+  font-size: 1.7rem;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(var(--bs-primary-rgb), 0.6);
+.accessory-icon {
+  font-size: 1.6rem;
+  color: rgba(255, 140, 0, 0.75);
 }
 
-/* Page transition effect */
-.page-enter-active,
-.page-leave-active {
-  transition: all 0.4s;
+.storage-icon {
+  font-size: 1.5rem;
+  color: rgba(255, 140, 0, 0.65);
 }
-.page-enter-from,
-.page-leave-to {
-  opacity: 0;
-  filter: blur(1rem);
+
+.tech-icon {
+  font-size: 1.4rem;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+/* Animation pour les icônes flottantes */
+.floating-icon {
+  animation-duration: calc(8s + (var(--i, 0) * 1s));
+  animation-delay: calc(var(--i, 0) * 0.5s);
+}
+
+/* On crée plusieurs animations différentes */
+.floating-icon:nth-child(3n) {
+  animation-name: floating1;
+}
+
+.floating-icon:nth-child(3n+1) {
+  animation-name: floating2;
+}
+
+.floating-icon:nth-child(3n+2) {
+  animation-name: floating3;
+}
+
+@keyframes floating1 {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translateY(-15px) rotate(3deg) scale(1.05);
+  }
+  50% {
+    transform: translateY(5px) rotate(-2deg) scale(0.95);
+  }
+  75% {
+    transform: translateY(-8px) rotate(1deg) scale(1.02);
+  }
+}
+
+@keyframes floating2 {
+  0%, 100% {
+    transform: translateX(0) rotate(0deg) scale(1);
+  }
+  33% {
+    transform: translateX(10px) rotate(2deg) scale(1.03);
+  }
+  66% {
+    transform: translateX(-8px) rotate(-3deg) scale(0.97);
+  }
+}
+
+@keyframes floating3 {
+  0%, 100% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+  }
+  30% {
+    transform: translateY(-12px) translateX(8px) rotate(5deg);
+  }
+  60% {
+    transform: translateY(8px) translateX(-5px) rotate(-3deg);
+  }
+}
+
+/* Au survol des icônes, on les fait briller légèrement */
+@media (hover: hover) {
+  .floating-icon:hover {
+    opacity: 1;
+    color: var(--bs-orange);
+    filter: drop-shadow(0 0 8px rgba(255, 140, 0, 0.5));
+    animation-play-state: paused;
+  }
+}
+
+/* Ajustements responsives */
+@media (max-width: 768px) {
+  .floating-icon {
+    font-size: 1.2rem !important;
+  }
+  
+  .laptop-icon, .desktop-icon {
+    font-size: 1.4rem !important;
+  }
 }
 </style> 
