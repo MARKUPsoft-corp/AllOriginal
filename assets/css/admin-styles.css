@@ -1,0 +1,296 @@
+/* Styles communs pour le tableau de bord d'administration */
+
+/* ===== SECTIONS HERO ===== */
+.admin-hero-section {
+  padding-top: 100px;
+  padding-bottom: 70px;
+  position: relative;
+  min-height: 30vh;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.5) 0%, rgba(248, 249, 250, 0.5) 100%);
+}
+
+.admin-hero-section-sm {
+  padding-top: 100px;
+  padding-bottom: 70px;
+  position: relative;
+  min-height: 30vh;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.5) 0%, rgba(248, 249, 250, 0.5) 100%);
+}
+
+/* Particles container */
+.particles-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.wave-shape-bottom {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  line-height: 0;
+  direction: ltr;
+}
+
+.wave-shape-bottom svg {
+  display: block;
+  width: 100%;
+  height: 40px;
+}
+
+/* ===== CARDS & CONTAINERS ===== */
+.admin-card {
+  background-color: #fff;
+  transition: all 0.3s ease;
+  border-radius: 16px;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 140, 0, 0.1);
+  overflow: hidden;
+}
+
+.admin-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+/* ===== FORM CONTROLS ===== */
+.form-control, .form-select, .form-check-input {
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+  border: 1px solid #dee2e6;
+}
+
+.custom-form-control, .custom-form-select {
+  border-radius: 0.75rem !important;
+  border-width: 1.5px !important;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.02) !important;
+}
+
+.custom-form-control::placeholder {
+  color: transparent !important;
+}
+
+.custom-form-control:hover, .custom-form-select:hover {
+  background-color: #fff !important;
+  border-color: rgba(var(--bs-primary-rgb), 0.5) !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03) !important;
+}
+
+.custom-form-control:focus, .custom-form-select:focus {
+  border-color: var(--bs-primary) !important;
+  box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.2) !important;
+  transform: translateY(-2px);
+  background-color: #fff !important;
+  font-weight: normal !important;
+}
+
+.custom-floating {
+  margin-bottom: 0.5rem;
+}
+
+.custom-floating label {
+  background: linear-gradient(to right, var(--bs-primary), #FF8C00);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  opacity: 0;
+  font-weight: normal;
+}
+
+.custom-floating input:focus ~ label,
+.custom-floating input:not(:placeholder-shown) ~ label {
+  opacity: 1;
+  animation: floatLabel 0.4s ease-in-out forwards;
+}
+
+@keyframes floatLabel {
+  0% { transform: translate3d(0, 0, 0); opacity: 0; }
+  50% { transform: translate3d(0, -1.2rem, 0); opacity: 0.7; }
+  100% { transform: scale(0.85) translate3d(0, -1rem, 0); opacity: 1; }
+}
+
+.form-floating > .form-control, 
+.form-floating > .form-select {
+  border-radius: 0.75rem;
+  height: calc(3.5rem + 2px);
+  line-height: 1.25;
+  padding: 1.5rem 1rem 0.5rem;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.form-floating > label {
+  padding: 1rem 1rem;
+  color: #6c757d;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  opacity: 0.7;
+  transform-origin: 0 0;
+  pointer-events: none; /* Permet de cliquer à travers le label */
+}
+
+.form-floating > .form-control:placeholder-shown ~ label {
+  transform: translate3d(0, 0.5rem, 0);
+  opacity: 0.5;
+  font-weight: normal;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-select ~ label {
+  opacity: 1;
+  transform: scale(0.85) translate3d(0, -1rem, 0);
+  color: var(--bs-primary);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.03);
+}
+
+.form-floating > textarea.form-control {
+  height: 120px;
+  padding-top: 1.5rem;
+}
+
+/* ===== SWITCHES & CHECKBOXES ===== */
+.form-check-input {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.form-check-input:checked {
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
+  box-shadow: 0 0 0 0.15rem rgba(var(--bs-primary-rgb), 0.2);
+  transform: scale(1.05);
+}
+
+.form-check-label {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding-left: 5px;
+  font-weight: normal;
+  color: #495057;
+}
+
+.form-check-input:checked ~ .form-check-label {
+  color: var(--bs-primary);
+  font-weight: normal;
+}
+
+/* Custom switches */
+.custom-switch {
+  padding-left: 2.5rem;
+}
+
+.custom-switch .form-check-input.styled-switch {
+  width: 3rem !important;
+  height: 1.5rem;
+  margin-top: 0.25rem;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+  background-position: left center;
+  border-radius: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.custom-switch .form-check-input.styled-switch:checked {
+  background-position: right center;
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
+  box-shadow: 0 0 0 0.15rem rgba(var(--bs-primary-rgb), 0.2);
+}
+
+.custom-switch .form-check-input.styled-switch:focus {
+  box-shadow: 0 0 0 0.15rem rgba(var(--bs-primary-rgb), 0.25);
+  border-color: rgba(var(--bs-primary-rgb), 0.7);
+}
+
+.custom-switch .form-check-label {
+  font-size: 1rem;
+  font-weight: normal;
+  padding-left: 0.5rem;
+  color: #495057;
+}
+
+/* ===== BUTTONS ===== */
+.shine-effect {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.shine-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0) 70%);
+  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.shine-effect:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+.shine-effect:hover::before {
+  left: 100%;
+}
+
+.btn-animated {
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.btn-animated:hover i {
+  animation: moveRightIcon 0.5s ease forwards;
+}
+
+.btn-prev:hover i {
+  animation: moveLeftIcon 0.5s ease forwards;
+}
+
+@keyframes moveLeftIcon {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes moveRightIcon {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(3px); }
+  100% { transform: translateX(0); }
+}
+
+/* ===== TEXT STYLES ===== */
+.text-gradient {
+  background: linear-gradient(90deg, var(--bs-primary) 0%, #FF8C00 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+  position: relative;
+  font-weight: 500;
+}
+
+.text-gradient::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 40px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--bs-primary) 0%, #FF8C00 100%);
+  border-radius: 2px;
+}

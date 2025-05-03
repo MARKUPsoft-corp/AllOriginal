@@ -13,9 +13,9 @@
             </p>
           </div>
           <div class="col-lg-4 d-flex justify-content-lg-end align-items-center mt-4 mt-lg-0" data-aos="fade-left">
-            <button type="button" class="btn btn-primary btn-lg px-4 py-3 shadow-sm shine-effect" @click="showAddModal">
+            <NuxtLink to="/admin/categories/ajouter" class="btn btn-primary btn-lg px-4 py-3 shadow-sm shine-effect btn-animated">
               <i class="bi bi-plus-circle me-2"></i> Ajouter une catégorie
-            </button>
+            </NuxtLink>
           </div>
         </div>
       </div>
@@ -38,16 +38,16 @@
                 </div>
                 <div class="category-actions">
                   <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-outline-primary" @click="editCategory(category)">
+                    <button type="button" class="btn btn-sm btn-outline-primary shine-effect" @click="editCategory(category)">
                       <i class="bi bi-pencil"></i>
                     </button>
-                    <button type="button" class="btn btn-sm btn-outline-danger" @click="confirmDelete(category)">
+                    <button type="button" class="btn btn-sm btn-outline-danger shine-effect" @click="confirmDelete(category)">
                       <i class="bi bi-trash"></i>
                     </button>
                   </div>
                 </div>
               </div>
-              <h3 class="category-title fs-4 mb-2">{{ category.name }}</h3>
+              <h3 class="category-title fs-4 mb-2 text-gradient">{{ category.name }}</h3>
               <p class="category-slug text-muted small mb-2">
                 <code>{{ category.slug }}</code>
               </p>
@@ -77,67 +77,66 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
           <div class="modal-header border-0">
-            <h5 class="modal-title" id="categoryModalLabel">{{ isEditing ? 'Modifier' : 'Ajouter' }} une catégorie</h5>
+            <h5 class="modal-title text-gradient" id="categoryModalLabel">{{ isEditing ? 'Modifier' : 'Ajouter' }} une catégorie</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <form @submit.prevent="saveCategory">
-              <div class="mb-3">
-                <label for="categoryName" class="form-label">Nom de la catégorie*</label>
+              <div class="mb-3 form-floating custom-floating">
                 <input 
                   type="text" 
-                  class="form-control rounded-3" 
+                  class="form-control custom-form-control" 
                   id="categoryName" 
+                  placeholder="Nom de la catégorie"
                   v-model="currentCategory.name"
                   @input="generateSlug"
                   required
                 >
+                <label for="categoryName">Nom de la catégorie*</label>
               </div>
               
-              <div class="mb-3">
-                <label for="categorySlug" class="form-label">Slug (URL)*</label>
+              <div class="mb-3 form-floating custom-floating">
                 <input 
                   type="text" 
-                  class="form-control rounded-3" 
+                  class="form-control custom-form-control" 
                   id="categorySlug" 
+                  placeholder="Slug (URL)"
                   v-model="currentCategory.slug"
                   required
                 >
-                <small class="text-muted">Le slug est généré automatiquement mais peut être personnalisé</small>
+                <label for="categorySlug">Slug (URL)*</label>
+                <small class="text-muted mt-1 d-block">Le slug est généré automatiquement mais peut être personnalisé</small>
               </div>
               
-              <div class="mb-3">
-                <label for="categoryIcon" class="form-label">Icône</label>
-                <div class="input-group">
-                  <span class="input-group-text">bi-</span>
-                  <input 
-                    type="text" 
-                    class="form-control rounded-end" 
-                    id="categoryIcon" 
-                    v-model="currentCategory.icon"
-                    placeholder="ex: smartphone, laptop, headphones..."
-                  >
-                </div>
-                <small class="text-muted">Nom de l'icône Bootstrap Icons (sans le préfixe bi-)</small>
+              <div class="mb-3 form-floating custom-floating">
+                <input 
+                  type="text" 
+                  class="form-control custom-form-control" 
+                  id="categoryIcon" 
+                  placeholder="Icône"
+                  v-model="currentCategory.icon"
+                >
+                <label for="categoryIcon">Icône</label>
+                <small class="text-muted mt-1 d-block">Nom de l'icône Bootstrap Icons (sans le préfixe bi-)</small>
               </div>
               
-              <div class="mb-3">
-                <label for="categoryDescription" class="form-label">Description*</label>
+              <div class="mb-3 form-floating custom-floating">
                 <textarea 
-                  class="form-control rounded-3" 
+                  class="form-control custom-form-control" 
                   id="categoryDescription" 
-                  rows="3"
+                  style="height: 100px" 
+                  placeholder="Description"
                   v-model="currentCategory.description"
                   required
                 ></textarea>
+                <label for="categoryDescription">Description*</label>
+              </div>
+              
+              <div class="d-flex justify-content-end mt-4">
+                <button type="button" class="btn btn-secondary me-2 shine-effect" data-bs-dismiss="modal">Annuler</button>
+                <button type="submit" class="btn btn-primary shine-effect btn-animated">{{ isEditing ? 'Mettre à jour' : 'Ajouter' }} <i class="bi bi-check ms-1"></i></button>
               </div>
             </form>
-          </div>
-          <div class="modal-footer border-0">
-            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-            <button type="button" class="btn btn-primary" @click="saveCategory">
-              <i class="bi bi-check-circle me-2"></i> {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
-            </button>
           </div>
         </div>
       </div>
@@ -148,7 +147,7 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
           <div class="modal-header border-0">
-            <h5 class="modal-title" id="deleteCategoryModalLabel">Confirmer la suppression</h5>
+            <h5 class="modal-title text-gradient" id="deleteCategoryModalLabel">Confirmer la suppression</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -156,8 +155,8 @@
             <p class="text-danger mb-0">Attention : Cette action supprimera également le lien entre les produits et cette catégorie.</p>
           </div>
           <div class="modal-footer border-0">
-            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-            <button type="button" class="btn btn-danger" @click="deleteCategory">
+            <button type="button" class="btn btn-secondary shine-effect" data-bs-dismiss="modal">Annuler</button>
+            <button type="button" class="btn btn-danger shine-effect btn-animated" @click="deleteCategory">
               <i class="bi bi-trash me-2"></i> Supprimer
             </button>
           </div>
@@ -169,6 +168,7 @@
 
 <script setup>
 import { ref, onMounted, reactive } from 'vue';
+import '~/assets/css/admin-styles.css';
 
 // États
 const categories = ref([]);
@@ -317,13 +317,13 @@ onMounted(() => {
   if (window.particlesJS) {
     window.particlesJS('particles-admin-categories', {
       particles: {
-        number: { value: 20, density: { enable: true, value_area: 800 } },
-        color: { value: '#FF8C00' },
-        shape: { type: 'circle' },
-        opacity: { value: 0.1, random: true },
-        size: { value: 5, random: true },
-        line_linked: { enable: true, distance: 150, color: '#FF8C00', opacity: 0.1, width: 1 },
-        move: { enable: true, speed: 2, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
+        number: { value: 65, density: { enable: true, value_area: 800 } },
+        color: { value: ['#FF8C00', '#FFA500', '#FFD700', '#FF6B6B', '#FF9E80'] },
+        shape: { type: ['circle', 'triangle', 'polygon'], polygon: { nb_sides: 6 } },
+        opacity: { value: 0.22, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } },
+        size: { value: 6, random: true, anim: { enable: true, speed: 2, size_min: 2, sync: false } },
+        line_linked: { enable: true, distance: 150, color: '#FF8C00', opacity: 0.25, width: 1.2 },
+        move: { enable: true, speed: 2.5, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false, attract: { enable: true, rotateX: 600, rotateY: 1200 } }
       },
       interactivity: {
         detect_on: 'canvas',

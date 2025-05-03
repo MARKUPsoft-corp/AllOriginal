@@ -65,7 +65,7 @@
               
               <!-- Formulaire Étape 1 - Informations générales -->
               <div v-if="currentStep === 1" data-aos="fade-up">
-                <h3 class="mb-4 fs-4">Informations générales</h3>
+                <h3 class="mb-4 fs-4 text-gradient">Informations générales</h3>
                 
                 <div class="row g-4">
                   <div class="col-md-6">
@@ -125,7 +125,7 @@
                   <div class="col-md-12">
                     <div class="form-floating">
                       <select 
-                        class="form-select" 
+                        class="form-select custom-form-select" 
                         id="productCategory" 
                         v-model="product.category_id"
                       >
@@ -153,7 +153,7 @@
                 </div>
                 
                 <div class="d-flex justify-content-end mt-4">
-                  <button class="btn btn-primary btn-lg px-5 shine-effect" @click="goToStep(2)">
+                  <button class="btn btn-primary btn-lg px-5 shine-effect btn-animated" @click="goToStep(2)">
                     Continuer <i class="bi bi-arrow-right ms-2"></i>
                   </button>
                 </div>
@@ -161,7 +161,7 @@
               
               <!-- Formulaire Étape 2 - Prix & Stock -->
               <div v-if="currentStep === 2" data-aos="fade-up">
-                <h3 class="mb-4 fs-4">Prix & Stock</h3>
+                <h3 class="mb-4 fs-4 text-gradient">Prix & Stock</h3>
                 
                 <div class="row g-4">
                   <div class="col-md-6">
@@ -217,10 +217,10 @@
                 </div>
                 
                 <div class="d-flex justify-content-between mt-4">
-                  <button class="btn btn-outline-primary btn-lg px-5 shine-effect" @click="goToStep(1)">
+                  <button class="btn btn-outline-primary btn-lg px-5 shine-effect btn-prev" @click="goToStep(1)">
                     <i class="bi bi-arrow-left me-2"></i> Précédent
                   </button>
-                  <button class="btn btn-primary btn-lg px-5 shine-effect" @click="goToStep(3)">
+                  <button class="btn btn-primary btn-lg px-5 shine-effect btn-animated" @click="goToStep(3)">
                     Continuer <i class="bi bi-arrow-right ms-2"></i>
                   </button>
                 </div>
@@ -228,7 +228,7 @@
               
               <!-- Formulaire Étape 3 - Spécifications -->
               <div v-if="currentStep === 3" data-aos="fade-up">
-                <h3 class="mb-4 fs-4">Spécifications du produit</h3>
+                <h3 class="mb-4 fs-4 text-gradient">Spécifications du produit</h3>
                 
                 <div class="row g-4">
                   <div class="col-12">
@@ -251,7 +251,7 @@
                         </button>
                       </div>
                       
-                      <button class="btn btn-outline-primary mt-3" @click="addSpec">
+                      <button class="btn btn-outline-primary mt-3 shine-effect btn-animated" @click="addSpec">
                         <i class="bi bi-plus-circle me-2"></i> Ajouter une spécification
                       </button>
                     </div>
@@ -259,10 +259,10 @@
                 </div>
                 
                 <div class="d-flex justify-content-between mt-4">
-                  <button class="btn btn-outline-primary btn-lg px-5 shine-effect" @click="goToStep(2)">
+                  <button class="btn btn-outline-primary btn-lg px-5 shine-effect btn-prev" @click="goToStep(2)">
                     <i class="bi bi-arrow-left me-2"></i> Précédent
                   </button>
-                  <button class="btn btn-success btn-lg px-5 shine-effect" @click="saveProduct">
+                  <button class="btn btn-success btn-lg px-5 shine-effect btn-animated" @click="saveProduct">
                     <i class="bi bi-check-circle me-2"></i> Enregistrer le produit
                   </button>
                 </div>
@@ -316,6 +316,7 @@
 
 <script setup>
 import { ref, onMounted, reactive } from 'vue';
+import '~/assets/css/admin-styles.css';
 
 // État du formulaire
 const currentStep = ref(1);
@@ -443,13 +444,13 @@ onMounted(() => {
   if (window.particlesJS) {
     window.particlesJS('particles-admin-add-product', {
       particles: {
-        number: { value: 20, density: { enable: true, value_area: 800 } },
-        color: { value: '#FF8C00' },
-        shape: { type: 'circle' },
-        opacity: { value: 0.1, random: true },
-        size: { value: 5, random: true },
-        line_linked: { enable: true, distance: 150, color: '#FF8C00', opacity: 0.1, width: 1 },
-        move: { enable: true, speed: 2, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
+        number: { value: 65, density: { enable: true, value_area: 800 } },
+        color: { value: ['#FF8C00', '#FFA500', '#FFD700', '#FF6B6B', '#FF9E80'] },
+        shape: { type: ['circle', 'triangle', 'polygon'], polygon: { nb_sides: 6 } },
+        opacity: { value: 0.22, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } },
+        size: { value: 6, random: true, anim: { enable: true, speed: 2, size_min: 2, sync: false } },
+        line_linked: { enable: true, distance: 150, color: '#FF8C00', opacity: 0.25, width: 1.2 },
+        move: { enable: true, speed: 2.5, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false, attract: { enable: true, rotateX: 600, rotateY: 1200 } }
       },
       interactivity: {
         detect_on: 'canvas',

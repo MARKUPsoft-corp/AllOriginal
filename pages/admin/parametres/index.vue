@@ -7,13 +7,13 @@
         <div class="row">
           <div class="col-lg-8" data-aos="fade-up">
             <span class="badge bg-orange-subtle text-orange mb-3 px-3 py-2 rounded-pill shine-effect">Paramètres</span>
-            <h1 class="display-5 fw-bold mb-3">Configuration <span class="text-orange border-3 border-bottom border-orange pb-1 shine-text">Générale</span></h1>
+            <h1 class="display-5 fw-bold mb-3">Configuration <span class="text-gradient">Générale</span></h1>
             <p class="lead mb-4 opacity-75">
               Configurez les paramètres de votre boutique
             </p>
           </div>
           <div class="col-lg-4 d-flex justify-content-lg-end align-items-center mt-4 mt-lg-0" data-aos="fade-left">
-            <button type="button" class="btn btn-primary btn-lg px-4 py-3 shadow-sm shine-effect" @click="saveSettings">
+            <button type="button" class="btn btn-primary btn-lg px-4 py-3 shadow-sm shine-effect btn-animated" @click="saveSettings">
               <i class="bi bi-save me-2"></i> Enregistrer
             </button>
           </div>
@@ -36,22 +36,22 @@
               <ul class="nav nav-tabs settings-tabs mb-4" id="settingsTabs" role="tablist">
                 <li class="nav-item" role="presentation">
                   <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab" aria-controls="general" aria-selected="true">
-                    <i class="bi bi-shop me-2"></i> Boutique
+                    <i class="bi bi-shop me-2"></i> <span class="btn-animated">Boutique</span>
                   </button>
                 </li>
                 <li class="nav-item" role="presentation">
                   <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">
-                    <i class="bi bi-telephone me-2"></i> Contact
+                    <i class="bi bi-telephone me-2"></i> <span class="btn-animated">Contact</span>
                   </button>
                 </li>
                 <li class="nav-item" role="presentation">
                   <button class="nav-link" id="social-tab" data-bs-toggle="tab" data-bs-target="#social" type="button" role="tab" aria-controls="social" aria-selected="false">
-                    <i class="bi bi-share me-2"></i> Réseaux sociaux
+                    <i class="bi bi-share me-2"></i> <span class="btn-animated">Réseaux sociaux</span>
                   </button>
                 </li>
                 <li class="nav-item" role="presentation">
                   <button class="nav-link" id="whatsapp-tab" data-bs-toggle="tab" data-bs-target="#whatsapp" type="button" role="tab" aria-controls="whatsapp" aria-selected="false">
-                    <i class="bi bi-whatsapp me-2"></i> WhatsApp
+                    <i class="bi bi-whatsapp me-2"></i> <span class="btn-animated">WhatsApp</span>
                   </button>
                 </li>
               </ul>
@@ -328,7 +328,7 @@
               </div>
               
               <div class="d-flex justify-content-end mt-4 pt-3 border-top">
-                <button class="btn btn-primary btn-lg px-5 shine-effect" @click="saveSettings">
+                <button class="btn btn-primary btn-lg px-5 shine-effect btn-animated" @click="saveSettings">
                   <i class="bi bi-save me-2"></i> Enregistrer les paramètres
                 </button>
               </div>
@@ -342,6 +342,7 @@
 
 <script setup>
 import { ref, onMounted, reactive } from 'vue';
+import '~/assets/css/admin-styles.css';
 
 // États des paramètres
 const settings = reactive({
@@ -399,13 +400,13 @@ onMounted(() => {
   if (window.particlesJS) {
     window.particlesJS('particles-admin-settings', {
       particles: {
-        number: { value: 20, density: { enable: true, value_area: 800 } },
-        color: { value: '#FF8C00' },
-        shape: { type: 'circle' },
-        opacity: { value: 0.1, random: true },
-        size: { value: 5, random: true },
-        line_linked: { enable: true, distance: 150, color: '#FF8C00', opacity: 0.1, width: 1 },
-        move: { enable: true, speed: 2, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
+        number: { value: 65, density: { enable: true, value_area: 800 } },
+        color: { value: ['#FF8C00', '#FFA500', '#FFD700', '#FF6B6B', '#FF9E80'] },
+        shape: { type: ['circle', 'triangle', 'polygon'], polygon: { nb_sides: 6 } },
+        opacity: { value: 0.22, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } },
+        size: { value: 6, random: true, anim: { enable: true, speed: 2, size_min: 2, sync: false } },
+        line_linked: { enable: true, distance: 150, color: '#FF8C00', opacity: 0.25, width: 1.2 },
+        move: { enable: true, speed: 2.5, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false, attract: { enable: true, rotateX: 600, rotateY: 1200 } }
       },
       interactivity: {
         detect_on: 'canvas',

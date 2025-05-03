@@ -7,13 +7,21 @@
         <div class="row">
           <div class="col-lg-8" data-aos="fade-up">
             <span class="badge bg-orange-subtle text-orange mb-3 px-3 py-2 rounded-pill shine-effect">Gestion des produits</span>
-            <h1 class="display-5 fw-bold mb-3">Liste des <span class="text-orange border-3 border-bottom border-orange pb-1 shine-text">Produits</span></h1>
-            <p class="lead mb-4 opacity-75">
+            <h1 class="display-5 fw-bold mb-3" v-if="!categoryName">
+              Liste des <span class="text-gradient">Produits</span>
+            </h1>
+            <h1 class="display-5 fw-bold mb-3" v-else>
+              Produits : <span class="text-gradient">{{ categoryName }}</span>
+            </h1>
+            <p class="lead mb-4 opacity-75" v-if="!categoryName">
               Consultez, modifiez ou supprimez les produits existants
+            </p>
+            <p class="lead mb-4 opacity-75" v-else>
+              Produits de la catégorie <strong>{{ categoryName }}</strong>
             </p>
           </div>
           <div class="col-lg-4 d-flex justify-content-lg-end align-items-center mt-4 mt-lg-0" data-aos="fade-left">
-            <NuxtLink to="/admin/produits/ajouter" class="btn btn-primary btn-lg px-4 py-3 shadow-sm shine-effect">
+            <NuxtLink to="/admin/produits/ajouter" class="btn btn-primary btn-lg px-4 py-3 shadow-sm shine-effect btn-animated">
               <i class="bi bi-plus-circle me-2"></i> Ajouter un produit
             </NuxtLink>
           </div>
@@ -37,7 +45,7 @@
               </span>
               <input 
                 type="text" 
-                class="form-control border-start-0 ps-0" 
+                class="form-control border-start-0 ps-0 form-control-animated" 
                 placeholder="Rechercher un produit..." 
                 v-model="searchQuery"
                 @input="filterProducts"
@@ -46,9 +54,9 @@
           </div>
           <div class="col-md-4">
             <select 
-              class="form-select" 
+              class="form-select form-control-animated" 
               v-model="selectedCategory"
-              @change="filterProducts"
+              @change="categoryChanged"
             >
               <option value="all">Toutes les catégories</option>
               <option v-for="category in categories" :key="category.id" :value="category.id">
@@ -109,10 +117,10 @@
                   </td>
                   <td class="align-middle py-3 text-end">
                     <div class="btn-group">
-                      <NuxtLink :to="'/admin/produits/modifier/' + product.id" class="btn btn-sm btn-outline-primary">
+                      <NuxtLink :to="'/admin/produits/modifier/' + product.id" class="btn btn-sm btn-outline-primary shine-effect btn-animated">
                         <i class="bi bi-pencil"></i>
                       </NuxtLink>
-                      <button type="button" class="btn btn-sm btn-outline-danger" @click="confirmDelete(product)">
+                      <button type="button" class="btn btn-sm btn-outline-danger shine-effect btn-animated" @click="confirmDelete(product)">
                         <i class="bi bi-trash"></i>
                       </button>
                     </div>
@@ -167,8 +175,8 @@
             <p class="text-muted mb-0">Cette action est irréversible.</p>
           </div>
           <div class="modal-footer border-0">
-            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-            <button type="button" class="btn btn-danger" @click="deleteProduct">
+            <button type="button" class="btn btn-light shine-effect btn-animated" data-bs-dismiss="modal">Annuler</button>
+            <button type="button" class="btn btn-danger shine-effect btn-animated" @click="deleteProduct">
               <i class="bi bi-trash me-2"></i> Supprimer
             </button>
           </div>
@@ -179,7 +187,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
+import { useRoute } from '#app';
+import '~/assets/css/admin-styles.css';
+
+// Récupérer la route pour accéder aux paramètres d'URL
+const route = useRoute();
 
 // États
 const products = ref([]);
@@ -188,6 +201,7 @@ const searchQuery = ref('');
 const selectedCategory = ref('all');
 const productToDelete = ref(null);
 const deleteModal = ref(null);
+const categoryName = ref('');
 
 // Charger les données
 const loadData = async () => {
@@ -231,6 +245,22 @@ const getBrandGradient = (brand) => {
   };
   
   return brandColors[brand] || 'linear-gradient(135deg, #5D6272 0%, #2F3137 100%)';
+};
+
+// Fonction appelée lorsque la catégorie change dans le sélecteur
+const categoryChanged = () => {
+  // Mettre à jour le nom de la catégorie pour l'affichage
+  if (selectedCategory.value === 'all') {
+    categoryName.value = '';
+  } else {
+    const category = categories.value.find(c => c.id === parseInt(selectedCategory.value));
+    if (category) {
+      categoryName.value = category.name;
+    }
+  }
+  
+  // Filtrer les produits
+  filterProducts();
 };
 
 // Filtrer les produits en fonction de la recherche et de la catégorie
@@ -288,13 +318,13 @@ onMounted(() => {
   if (window.particlesJS) {
     window.particlesJS('particles-admin-products', {
       particles: {
-        number: { value: 20, density: { enable: true, value_area: 800 } },
-        color: { value: '#FF8C00' },
-        shape: { type: 'circle' },
-        opacity: { value: 0.1, random: true },
-        size: { value: 5, random: true },
-        line_linked: { enable: true, distance: 150, color: '#FF8C00', opacity: 0.1, width: 1 },
-        move: { enable: true, speed: 2, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
+        number: { value: 65, density: { enable: true, value_area: 800 } },
+        color: { value: ['#FF8C00', '#FFA500', '#FFD700', '#FF6B6B', '#FF9E80'] },
+        shape: { type: ['circle', 'triangle', 'polygon'], polygon: { nb_sides: 6 } },
+        opacity: { value: 0.22, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } },
+        size: { value: 6, random: true, anim: { enable: true, speed: 2, size_min: 2, sync: false } },
+        line_linked: { enable: true, distance: 150, color: '#FF8C00', opacity: 0.25, width: 1.2 },
+        move: { enable: true, speed: 2.5, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false, attract: { enable: true, rotateX: 600, rotateY: 1200 } }
       },
       interactivity: {
         detect_on: 'canvas',
@@ -316,8 +346,19 @@ onMounted(() => {
   
   // Charger les données
   loadData().then(() => {
-    // Initialiser les produits filtrés après le chargement
-    filteredProducts.value = [...products.value];
+    // Vérifier si un paramètre de catégorie est présent dans l'URL
+    const categoryParam = route.query.category;
+    if (categoryParam) {
+      selectedCategory.value = categoryParam;
+      // Mettre à jour le nom de la catégorie pour l'affichage
+      const category = categories.value.find(c => c.id === parseInt(categoryParam));
+      if (category) {
+        categoryName.value = category.name;
+      }
+    }
+    
+    // Filtrer les produits en fonction de la catégorie sélectionnée
+    filterProducts();
   });
 });
 </script>
