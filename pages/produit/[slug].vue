@@ -213,6 +213,15 @@
             </div>
           </div>
         </div>
+        
+        <!-- Section Avis Clients -->
+        <div v-if="product" class="reviews-section container my-5">
+          <hr class="mb-4"/>
+          <ProductReviews 
+            :productId="product.id" 
+            :productSlug="product.slug"
+          />
+        </div>
       </div>
       
       <!-- État de chargement -->
@@ -267,9 +276,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
-import productsService from '~/services/products';
+import { ref, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import productsService from '~/services/products'
+import ProductReviews from '@/components/ProductReviews.vue'
 import categoriesService from '~/services/categories';
 
 // SEO dynamique
