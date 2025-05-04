@@ -31,8 +31,19 @@
                   class="product-main-image"
                   :style="{ background: getBrandGradient(product.brand, activeImageIndex) }"
               >
-                  <div class="brand-model-badge">{{ product.model || product.name.split(' ')[0] }}</div>
-                  <span class="brand-initial">{{ product.brand.charAt(0) }}</span>
+                  <!-- Image du produit si disponible -->
+                  <img 
+                    v-if="activeImage" 
+                    :src="activeImage" 
+                    :alt="product.name" 
+                    class="w-100 h-100 object-fit-cover"
+                    loading="lazy"
+                  />
+                  <!-- Placeholder si pas d'image -->
+                  <template v-else>
+                    <div class="brand-model-badge">{{ product.model || product.name.split(' ')[0] }}</div>
+                    <span class="brand-initial">{{ product.brand.charAt(0) }}</span>
+                  </template>
                   
                   <!-- Badge promo si applicable -->
                   <div v-if="product.promo" class="product-ribbon">Promo</div>
@@ -41,63 +52,62 @@
               
               <!-- Thumbnails -->
               <div class="thumbnails-wrapper d-flex justify-content-center gap-3 mb-4">
-              <div 
-                  v-for="i in 3" 
-                :key="i" 
-                  class="thumbnail-item rounded-3 overflow-hidden shadow-sm"
-                  :class="{ 'active': i === activeImageIndex }"
-                  @click="setActiveImage(i)"
-              >
-                  <div class="thumbnail-inner" :style="{ background: getBrandGradient(product.brand, i) }">
+                <!-- Images du produit si disponibles -->
+                <template v-if="productHasImages">
+                  <div 
+                    v-for="(image, index) in displayedImages" 
+                    :key="index" 
+                    class="thumbnail-item rounded-3 overflow-hidden shadow-sm"
+                    :class="{ 'active': activeImageIndex === index }"
+                    @click="setActiveImage(index)"
+                  >
+                    <div class="thumbnail-inner position-relative overflow-hidden">
+                      <img 
+                        :src="image" 
+                        :alt="`Vue ${index + 1} de ${product.name}`" 
+                        class="w-100 h-100 object-fit-cover"
+                        loading="lazy"
+                      />
+                    </div>
                   </div>
-                </div>
+                </template>
+                
+                <!-- Placeholders si pas d'images -->
+                <template v-else>
+                  <div 
+                    v-for="i in 3" 
+                    :key="i" 
+                    class="thumbnail-item rounded-3 overflow-hidden shadow-sm"
+                    :class="{ 'active': i === activeImageIndex }"
+                    @click="setActiveImage(i)"
+                  >
+                    <div class="thumbnail-inner" :style="{ background: getBrandGradient(product.brand, i) }">
+                    </div>
+                  </div>
+                </template>
               </div>
               
               <!-- Spécifications -->
               <div class="product-specs mt-4">
                 <h2 class="specs-title fw-semibold fs-4 mb-4 border-start border-4 border-orange ps-3">Caractéristiques</h2>
-                <div class="row g-3">
-                  <div class="col-md-6">
+                
+                <!-- Message si aucune spécification n'est disponible -->
+                <div v-if="!product.specifications || product.specifications.length === 0" 
+                     class="text-center p-4 bg-light rounded-3">
+                  <i class="bi bi-info-circle text-muted fs-4"></i>
+                  <p class="text-muted mt-2 mb-0">Aucune spécification disponible pour ce produit</p>
+                </div>
+                
+                <!-- Affichage dynamique des spécifications -->
+                <div v-else class="row g-3">
+                  <div class="col-md-6" v-for="(spec, index) in product.specifications" :key="spec.id || index">
                     <div class="spec-item d-flex gap-3 align-items-center p-3">
                       <div class="spec-icon text-orange">
-                        <i class="bi bi-cpu"></i>
+                        <i :class="getSpecIcon(spec.name)"></i>
                       </div>
                       <div class="spec-text">
-                        <div class="spec-label mb-0">RAM</div>
-                        <div class="spec-value">{{ product.specs?.ram || '8 GB' }}</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="spec-item d-flex gap-3 align-items-center p-3">
-                      <div class="spec-icon text-orange">
-                        <i class="bi bi-device-hdd"></i>
-                      </div>
-                      <div class="spec-text">
-                        <div class="spec-label mb-0">Stockage</div>
-                        <div class="spec-value">{{ product.specs?.storage || '256 GB SSD' }}</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="spec-item d-flex gap-3 align-items-center p-3">
-                      <div class="spec-icon text-orange">
-                        <i class="bi bi-cpu-fill"></i>
-                      </div>
-                      <div class="spec-text">
-                        <div class="spec-label mb-0">Processeur</div>
-                        <div class="spec-value">{{ product.specs?.processor || 'Snapdragon 8 Gen 2' }}</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="spec-item d-flex gap-3 align-items-center p-3">
-                      <div class="spec-icon text-orange">
-                        <i class="bi bi-display"></i>
-                      </div>
-                      <div class="spec-text">
-                        <div class="spec-label mb-0">Écran</div>
-                        <div class="spec-value">{{ product.specs?.screen || '6.7' }}"</div>
+                        <div class="spec-label mb-0">{{ spec.name }}</div>
+                        <div class="spec-value">{{ spec.value }}</div>
                       </div>
                     </div>
                   </div>
@@ -259,6 +269,8 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import productsService from '~/services/products';
+import categoriesService from '~/services/categories';
 
 // SEO dynamique
 const route = useRoute();
@@ -323,11 +335,128 @@ const setActiveImage = (index) => {
   activeImageIndex.value = index;
 };
 
+// Vérifier si le produit a des images
+const productHasImages = computed(() => {
+  if (!product.value) return false;
+  
+  // Vérifier si le produit a des images complètes (priorité 1)
+  if (product.value.full_images && product.value.full_images.length > 0) {
+    return true;
+  }
+  
+  // Vérifier si le produit a des URLs d'images simples (priorité 2)
+  if (product.value.images && product.value.images.length > 0) {
+    return true;
+  }
+  
+  // Vérifier si le produit a une image principale (priorité 3)
+  if (product.value.main_image) {
+    return true;
+  }
+  
+  return false;
+});
+
+// Extraire les URLs des images pour l'affichage
+const displayedImages = computed(() => {
+  if (!product.value) return [];
+  
+  // Essayer d'abord avec full_images (plus complet)
+  if (product.value.full_images && Array.isArray(product.value.full_images) && product.value.full_images.length > 0) {
+    console.log('Utilisation de full_images:', product.value.full_images);
+    // Trier pour que l'image principale soit en premier
+    const sortedImages = [...product.value.full_images].sort((a, b) => {
+      if (a.is_primary) return -1;
+      if (b.is_primary) return 1;
+      return 0;
+    });
+    
+    // Extraire les URLs des images
+    return sortedImages.slice(0, 3).map(img => img.image);
+  }
+  
+  // Essayer ensuite avec les URLs simples
+  if (product.value.images && Array.isArray(product.value.images) && product.value.images.length > 0) {
+    console.log('Utilisation de images URLs simples');
+    // Limiter à 3 images maximum
+    return product.value.images.slice(0, 3);
+  }
+  
+  // En dernier recours, utiliser l'image principale
+  if (product.value.main_image) {
+    console.log('Utilisation de main_image uniquement');
+    return [product.value.main_image];
+  }
+  
+  return [];
+});
+
+// Image actuellement sélectionnée
+const activeImage = computed(() => {
+  if (!product.value) return null;
+  
+  // Si des images sont disponibles dans displayedImages
+  if (displayedImages.value && displayedImages.value.length > 0) {
+    // Si l'index actif est valide, utiliser cette image
+    if (activeImageIndex.value >= 0 && activeImageIndex.value < displayedImages.value.length) {
+      return displayedImages.value[activeImageIndex.value];
+    }
+    // Sinon, utiliser la première image
+    return displayedImages.value[0];
+  }
+  
+  return null; // Les autres cas sont déjà couverts par displayedImages
+});
+
 // Générer le lien WhatsApp
 const getWhatsAppLink = (product) => {
   const text = `Bonjour, je suis intéressé(e) par le produit ${product.name} au prix de ${formatPrice(product.price)} FCFA sur All Original. Pouvez-vous me donner plus d'informations ?`;
   const encodedText = encodeURIComponent(text);
   return `https://wa.me/237XXXXXXXXX?text=${encodedText}`;
+};
+
+// Assigner des icônes bootstrap en fonction du nom de la spécification
+const getSpecIcon = (specName) => {
+  const name = specName.toLowerCase();
+  
+  // Mapping des noms de spécifications aux icônes Bootstrap
+  const iconMapping = {
+    'ram': 'bi-memory',
+    'mémoire': 'bi-memory',
+    'stockage': 'bi-device-hdd',
+    'disque': 'bi-device-hdd',
+    'ssd': 'bi-device-hdd',
+    'processeur': 'bi-cpu-fill',
+    'cpu': 'bi-cpu',
+    'écran': 'bi-display',
+    'affichage': 'bi-display',
+    'batterie': 'bi-battery-full',
+    'autonomie': 'bi-battery-charging',
+    'caméra': 'bi-camera',
+    'photo': 'bi-camera-fill',
+    'appareil photo': 'bi-camera-fill',
+    'résolution': 'bi-aspect-ratio',
+    'os': 'bi-gear',
+    'système': 'bi-gear-wide',
+    'poids': 'bi-speedometer',
+    'dimensions': 'bi-rulers',
+    'connectivité': 'bi-wifi',
+    'réseau': 'bi-reception-4',
+    'bluetooth': 'bi-bluetooth',
+    'usb': 'bi-usb-symbol',
+    'couleur': 'bi-palette',
+    'garantie': 'bi-shield-check'
+  };
+  
+  // Parcourir les clés du mapping pour trouver une correspondance
+  for (const [key, icon] of Object.entries(iconMapping)) {
+    if (name.includes(key)) {
+      return icon;
+    }
+  }
+  
+  // Icône par défaut si aucune correspondance n'est trouvée
+  return 'bi-info-circle';
 };
 
 // Produits similaires (même catégorie, différent ID)
@@ -342,20 +471,30 @@ const similarProducts = computed(() => {
 // Récupération des données du produit
 onMounted(async () => {
   try {
-    // Chargement des catégories
-    const categoriesResponse = await fetch('/data/categories.json');
-    categories.value = await categoriesResponse.json();
+    // Chargement en parallèle des catégories et du produit
+    const [productData, categoriesData] = await Promise.all([
+      productsService.getProduct(slug.value),
+      categoriesService.getAllCategories()
+    ]);
     
-    // Chargement de tous les produits
-    const productsResponse = await fetch('/data/products.json');
-    allProducts.value = await productsResponse.json();
+    // Mise à jour des données
+    product.value = productData;
+    categories.value = categoriesData;
     
-    // Recherche du produit par slug
-    product.value = allProducts.value.find(p => p.slug === slug.value);
+    // Débogage des images
+    console.log('Images du produit:', productData.images);
+    console.log('Image principale:', productData.primary_image);
+    console.log('Images affichées:', displayedImages.value);
     
     if (product.value) {
       // Récupérer la catégorie du produit
-      category.value = categories.value.find(c => c.id === product.value.category_id);
+      category.value = categories.value.find(c => c.id === product.value.category || c.slug === product.value.category);
+      
+      // Charger les produits similaires
+      if (category.value) {
+        const similarProductsData = await productsService.getAllProducts({ category: category.value.slug });
+        allProducts.value = similarProductsData.filter(p => p.id !== product.value.id);
+      }
       
       // Mettre à jour les métadonnées SEO
       const pageTitle = `${product.value.name} - All Original`;

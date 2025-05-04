@@ -67,6 +67,7 @@ export const adaptProduct = (product) => {
   // Formatage des images pour qu'elles soient facilement utilisables
   let mainImage = null;
   let images = [];
+  let fullImages = [];
   
   if (product.primary_image) {
     // Assurer que l'URL de l'image est complète
@@ -74,8 +75,16 @@ export const adaptProduct = (product) => {
   }
   
   if (Array.isArray(product.images)) {
-    // Assurer que toutes les URLs des images sont complètes
-    images = product.images.map(img => getFullImageUrl(img.image));
+    // Conserver les objets d'image complets avec leurs URLs transformées
+    fullImages = product.images.map(img => ({
+      id: img.id,
+      image: getFullImageUrl(img.image),
+      is_primary: img.is_primary,
+      alt_text: img.alt_text || ''
+    }));
+    
+    // Assurer que toutes les URLs des images sont complètes (pour compatibilité)
+    images = fullImages.map(img => img.image);
   }
   
   return {
@@ -96,8 +105,9 @@ export const adaptProduct = (product) => {
     is_active: product.is_active !== undefined ? product.is_active : true,
     main_image: mainImage,
     images: images,
-    specs: Array.isArray(product.specs) ? product.specs : [],
+    full_images: fullImages,  // Ajout des objets d'images complets
     specifications: product.specifications || [],
+    specs: Array.isArray(product.specs) ? product.specs : [],
     created_at: product.created_at || new Date().toISOString(),
     updated_at: product.updated_at || new Date().toISOString()
   };
