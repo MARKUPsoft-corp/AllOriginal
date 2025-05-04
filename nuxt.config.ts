@@ -3,6 +3,13 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
   
+  // Configuration API pour communiquer avec le backend Django
+  runtimeConfig: {
+    public: {
+      apiBaseUrl: 'http://localhost:8000/api'
+    }
+  },
+  
   // Modules
   modules: [
     '@nuxt/image',

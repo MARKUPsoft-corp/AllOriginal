@@ -8,7 +8,17 @@
     </div>
     
     <div class="product-image">
+      <!-- Image du produit si disponible -->
+      <img 
+        v-if="product.main_image" 
+        :src="product.main_image" 
+        :alt="product.name" 
+        class="product-img shadow-lg rounded-4 tilt-effect"
+        loading="lazy"
+      />
+      <!-- Placeholder si pas d'image -->
       <div 
+        v-else
         class="product-placeholder shadow-lg rounded-4 tilt-effect" 
         :style="{ background: getBrandGradient(product.brand) }"
       >
@@ -19,8 +29,8 @@
     
     <div class="product-info">
       <h3 class="product-title">{{ product.name }}</h3>
-      <div class="product-features" v-if="product.specs">
-        <span v-for="(spec, index) in getTopSpecs(product)" :key="index" class="feature-badge">
+      <div class="product-features" v-if="product.specs && product.specs.length > 0">
+        <span v-for="(spec, index) in product.specs" :key="index" class="feature-badge">
           {{ spec }}
         </span>
       </div>
@@ -95,11 +105,7 @@ const getBrandGradient = (brand) => {
   return brandColors[brand] || 'linear-gradient(135deg, #5D6272 0%, #2F3137 100%)';
 };
 
-// Obtenir les specifications principales (limités à 3)
-const getTopSpecs = (product) => {
-  if (!product.specs || product.specs.length === 0) return [];
-  return product.specs.slice(0, 3);
-};
+// La fonction getTopSpecs a été supprimée car les spécifications sont déjà formatées par le backend
 </script>
 
 <style scoped>

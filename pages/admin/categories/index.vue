@@ -29,8 +29,21 @@
     <!-- Section des Catégories -->
     <section class="categories-section py-5 section-styled position-relative overflow-hidden">
       <div class="container">
-        <div class="row g-4">
-          <div class="col-md-6 col-lg-4" v-for="category in categories" :key="category.id" data-aos="fade-up">
+        <!-- Indicateur de chargement -->
+        <div v-if="isLoading" class="d-flex justify-content-center mb-5">
+          <div class="spinner-border text-orange" role="status">
+            <span class="visually-hidden">Chargement...</span>
+          </div>
+        </div>
+        
+        <!-- Message d'erreur -->
+        <div v-if="errorMessage" class="alert alert-danger mb-4" role="alert">
+          {{ errorMessage }}
+        </div>
+        
+        <!-- Liste des catégories -->
+        <div class="row g-4" v-else-if="categories.length > 0">
+          <div class="col-md-6 col-lg-4" v-for="category in categories" :key="category.slug" data-aos="fade-up">
             <div class="category-card rounded-4 shadow-sm p-4 h-100 shine-effect-container position-relative overflow-hidden">
               <div class="d-flex justify-content-between align-items-start mb-4">
                 <div class="category-icon-container tilt-effect rounded-3 d-flex align-items-center justify-content-center">
@@ -57,10 +70,10 @@
               <div class="d-flex align-items-center justify-content-between mt-auto pt-3 border-top">
                 <div class="category-product-count">
                   <span class="badge bg-light text-secondary rounded-pill">
-                    {{ getProductCountForCategory(category.id) }} produits
+                    {{ getProductCountForCategory(category.slug) }} produits
                   </span>
                 </div>
-                <NuxtLink :to="'/admin/produits?category=' + category.id" class="category-view-products small">
+                <NuxtLink :to="'/admin/produits?category=' + category.slug" class="category-view-products small">
                   Voir les produits <i class="bi bi-arrow-right ms-1"></i>
                 </NuxtLink>
               </div>
@@ -68,6 +81,18 @@
               <div class="category-card-shine-overlay"></div>
             </div>
           </div>
+        </div>
+        
+        <!-- Message quand il n'y a pas de catégories -->
+        <div v-else-if="!isLoading" class="text-center py-5">
+          <div class="mb-4">
+            <i class="bi bi-grid text-muted" style="font-size: 3rem;"></i>
+          </div>
+          <h4>Aucune catégorie disponible</h4>
+          <p class="text-muted">Commencez par ajouter votre première catégorie</p>
+          <button @click="showAddModal" class="btn btn-primary mt-3 shine-effect">
+            <i class="bi bi-plus-circle me-2"></i> Ajouter une catégorie
+          </button>
         </div>
       </div>
     </section>
@@ -81,6 +106,12 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
+            <!-- Message d'erreur dans le modal -->
+            <div class="alert alert-danger mb-3" v-if="errorMessage" role="alert">
+              {{ errorMessage }}
+              <button type="button" class="btn-close float-end" @click="errorMessage = ''"></button>
+            </div>
+            
             <form @submit.prevent="saveCategory">
               <div class="mb-3 form-floating custom-floating">
                 <input 
@@ -169,14 +200,18 @@
 <script setup>
 import { ref, onMounted, reactive } from 'vue';
 import '~/assets/css/admin-styles.css';
+import categoriesService from '~/services/categories';
+import productsService from '~/services/products';
 
 // États
 const categories = ref([]);
 const products = ref([]);
 const isEditing = ref(false);
+const isLoading = ref(false);
 const categoryModal = ref(null);
 const deleteCategoryModal = ref(null);
 const categoryToDelete = ref(null);
+const errorMessage = ref('');
 
 // Catégorie actuelle (pour ajout/modification)
 const currentCategory = reactive({
@@ -187,24 +222,57 @@ const currentCategory = reactive({
   description: ''
 });
 
-// Charger les données
+// Charger les données depuis l'API Django
 const loadData = async () => {
   try {
-    // Charger les catégories
-    const categoriesResponse = await fetch('/data/categories.json');
-    categories.value = await categoriesResponse.json();
+    // Afficher l'indicateur de chargement
+    isLoading.value = true;
+    console.log('Début du chargement des données depuis l\'API...');
+    
+    // Charger les catégories depuis l'API
+    console.log('Appel à categoriesService.getAllCategories()...');
+    const categoriesData = await categoriesService.getAllCategories();
+    console.log('Réponse API des catégories:', categoriesData);
+    categories.value = categoriesData;
     
     // Charger les produits pour compter les occurrences par catégorie
-    const productsResponse = await fetch('/data/products.json');
-    products.value = await productsResponse.json();
+    console.log('Appel à productsService.getAllProducts()...');
+    const productsData = await productsService.getAllProducts();
+    console.log('Réponse API des produits:', productsData);
+    products.value = productsData;
+    
+    // Masquer l'indicateur de chargement
+    isLoading.value = false;
+    console.log('Données chargées avec succès:', { categories: categories.value, products: products.value });
   } catch (error) {
     console.error('Erreur lors du chargement des données:', error);
+    if (error.response) {
+      console.error('Détails de l\'erreur API:', {
+        status: error.response.status,
+        statusText: error.response.statusText,
+        data: error.response.data
+      });
+    } else if (error.request) {
+      console.error('Aucune réponse reçue du serveur:', error.request);
+    } else {
+      console.error('Erreur lors de la configuration de la requête:', error.message);
+    }
+    isLoading.value = false;
+    // Afficher un message d'erreur plus clair
+    errorMessage.value = 'Impossible de charger les données depuis l\'API. Veuillez réessayer plus tard.';
+    // Initialiser des tableaux vides pour éviter les erreurs
+    categories.value = [];
+    products.value = [];
   }
 };
 
 // Compter le nombre de produits par catégorie
-const getProductCountForCategory = (categoryId) => {
-  return products.value.filter(product => product.category_id === categoryId).length;
+const getProductCountForCategory = (slug) => {
+  // Vérifier si les produits ont été chargés
+  if (!products.value || products.value.length === 0) return 0;
+  
+  // Filtrer les produits qui ont cette catégorie
+  return products.value.filter(product => product.category === slug).length;
 };
 
 // Générer un slug à partir du nom
@@ -249,40 +317,62 @@ const resetCurrentCategory = () => {
   currentCategory.description = '';
 };
 
-// Sauvegarder une catégorie
-const saveCategory = () => {
-  // Valider les champs obligatoires
+// Sauvegarder une catégorie via l'API
+const saveCategory = async () => {
+  // Vérifier si tous les champs requis sont remplis
   if (!currentCategory.name || !currentCategory.slug || !currentCategory.description) {
-    alert('Veuillez remplir tous les champs obligatoires.');
+    errorMessage.value = 'Veuillez remplir tous les champs obligatoires';
     return;
   }
   
-  if (isEditing.value) {
-    // Mise à jour d'une catégorie existante
-    const index = categories.value.findIndex(cat => cat.id === currentCategory.id);
-    if (index !== -1) {
-      categories.value[index] = { ...currentCategory };
-    }
-  } else {
-    // Ajout d'une nouvelle catégorie
-    // Dans un vrai backend, l'ID serait généré par le serveur
-    const newId = Math.max(...categories.value.map(cat => cat.id), 0) + 1;
-    const newCategory = {
-      ...currentCategory,
-      id: newId
+  try {
+    isLoading.value = true;
+    
+    // Préparer les données de la catégorie
+    const categoryData = {
+      name: currentCategory.name,
+      slug: currentCategory.slug,
+      description: currentCategory.description,
+      icon: currentCategory.icon || '',
+      icon_description: currentCategory.icon_description || '',
+      status: currentCategory.status || 'active'
     };
-    categories.value.push(newCategory);
+    
+    // Si nous sommes en mode édition
+    if (isEditing.value) {
+      // Appeler l'API pour mettre à jour la catégorie
+      await categoriesService.updateCategory(currentCategory.slug, categoryData);
+      console.log('Catégorie mise à jour avec succès');
+    } else {
+      // Appeler l'API pour créer une nouvelle catégorie
+      await categoriesService.createCategory(categoryData);
+      console.log('Nouvelle catégorie créée avec succès');
+    }
+    
+    // Recharger les données pour afficher les modifications
+    await loadData();
+    
+    // Fermer le modal
+    const modal = window.bootstrap.Modal.getInstance(categoryModal.value);
+    modal.hide();
+    
+    // Réinitialiser la catégorie courante
+    resetCurrentCategory();
+    
+    // Réinitialiser le message d'erreur
+    errorMessage.value = '';
+  } catch (error) {
+    console.error('Erreur lors de la sauvegarde de la catégorie:', error);
+    
+    // Afficher un message d'erreur
+    if (error.response && error.response.data) {
+      errorMessage.value = error.response.data.detail || 'Une erreur est survenue lors de la sauvegarde de la catégorie';
+    } else {
+      errorMessage.value = 'Une erreur est survenue lors de la sauvegarde de la catégorie';
+    }
+  } finally {
+    isLoading.value = false;
   }
-  
-  // Fermer le modal
-  const modal = window.bootstrap.Modal.getInstance(categoryModal.value);
-  modal.hide();
-  
-  // Réinitialiser la catégorie courante
-  resetCurrentCategory();
-  
-  // Notification de succès
-  alert(isEditing.value ? 'Catégorie mise à jour avec succès !' : 'Catégorie ajoutée avec succès !');
 };
 
 // Confirmer la suppression d'une catégorie
@@ -292,27 +382,44 @@ const confirmDelete = (category) => {
   modal.show();
 };
 
-// Supprimer une catégorie
-const deleteCategory = () => {
-  if (categoryToDelete.value) {
-    // Supprimer la catégorie
-    categories.value = categories.value.filter(cat => cat.id !== categoryToDelete.value.id);
+// Supprimer une catégorie via l'API
+const deleteCategory = async () => {
+  if (!categoryToDelete.value) return;
+  
+  try {
+    isLoading.value = true;
     
-    // Dans un vrai backend, il faudrait également mettre à jour les produits associés
+    // Appeler l'API pour supprimer la catégorie
+    await categoriesService.deleteCategory(categoryToDelete.value.slug);
+    console.log('Catégorie supprimée avec succès');
     
-    // Fermer le modal
+    // Recharger les données pour mettre à jour l'affichage
+    await loadData();
+    
+    // Fermer le modal de confirmation
     const modal = window.bootstrap.Modal.getInstance(deleteCategoryModal.value);
     modal.hide();
     
     // Réinitialiser la catégorie à supprimer
     categoryToDelete.value = null;
+  } catch (error) {
+    console.error('Erreur lors de la suppression de la catégorie:', error);
     
-    // Notification de succès
-    alert('Catégorie supprimée avec succès !');
+    // Afficher un message d'erreur
+    if (error.response && error.response.data) {
+      errorMessage.value = error.response.data.detail || 'Une erreur est survenue lors de la suppression de la catégorie';
+    } else {
+      errorMessage.value = 'Une erreur est survenue lors de la suppression de la catégorie';
+    }
+  } finally {
+    isLoading.value = false;
   }
 };
 
 onMounted(() => {
+  // Charger les données depuis l'API
+  loadData();
+  
   // Initialiser particles.js
   if (window.particlesJS) {
     window.particlesJS('particles-admin-categories', {

@@ -42,22 +42,13 @@
                     <i class="bi bi-collection me-2 text-orange"></i> Tous les produits
                   </NuxtLink>
                 </li>
-                <li @click="closeDropdown">
-              <NuxtLink to="/catalogue?category=telephones" class="dropdown-item">
-                    <i class="bi bi-phone me-2 text-orange"></i> Téléphones
-              </NuxtLink>
+                <!-- Catégories chargées dynamiquement depuis l'API -->
+                <li v-for="category in categories" :key="category.slug" @click="closeDropdown">
+                  <NuxtLink :to="`/catalogue?category=${category.slug}`" class="dropdown-item">
+                    <i :class="`bi bi-${getCategoryIcon(category.icon)} me-2 text-orange`"></i> {{ category.name }}
+                  </NuxtLink>
                 </li>
-                <li @click="closeDropdown">
-              <NuxtLink to="/catalogue?category=ordinateurs" class="dropdown-item">
-                    <i class="bi bi-laptop me-2 text-orange"></i> Ordinateurs
-              </NuxtLink>
-                </li>
-                <li @click="closeDropdown">
-              <NuxtLink to="/catalogue?category=tablettes" class="dropdown-item">
-                    <i class="bi bi-tablet me-2 text-orange"></i> Tablettes
-              </NuxtLink>
-                </li>
-                <li><hr class="dropdown-divider"></li>
+                <li v-if="categories.length > 0"><hr class="dropdown-divider"></li>
                 <li @click="closeDropdown">
               <NuxtLink to="/catalogue?category=accessoires" class="dropdown-item">
                     <i class="bi bi-headphones me-2 text-orange"></i> Accessoires
@@ -93,13 +84,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import categoriesService from '~/services/categories';
 
 // États réactifs
 const isScrolled = ref(false);
 const navbar = ref(null);
 const isDropdownOpen = ref(false);
 const mobileMenuOpen = ref(false);
+const categories = ref([]);
 
 // Gérer le dropdown
 const toggleDropdown = (event) => {
@@ -121,6 +114,47 @@ const toggleMobileMenu = () => {
     } else {
       navbarMain.classList.remove('show');
     }
+  }
+};
+
+// Convertir les icônes de catégories en classes Bootstrap Icons
+const getCategoryIcon = (icon) => {
+  if (!icon) return 'grid';
+  
+  // Retourner directement l'icône si elle est déjà au bon format
+  if (icon.startsWith('bi-')) return icon.substring(3);
+  if (!icon.includes('bi-')) return icon;
+  
+  // Correspondances emoji -> classes Bootstrap Icons
+  const iconMapping = {
+    '📱': 'phone',
+    '💻': 'laptop',
+    '📟': 'tablet',
+    '🖥️': 'pc-display',
+    '🎮': 'controller',
+    '🎧': 'headphones',
+    '🔋': 'battery-full',
+    '⌚': 'smartwatch',
+    '📀': 'disc',
+    '🔌': 'plug',
+    '📷': 'camera',
+    '🖨️': 'printer',
+    '🖱️': 'mouse3'
+  };
+  
+  return iconMapping[icon] || 'grid';
+};
+
+// Charger les catégories depuis l'API Django
+const loadCategories = async () => {
+  try {
+    console.log('Navbar: Chargement des catégories depuis l\'API...');
+    const categoriesData = await categoriesService.getAllCategories();
+    categories.value = categoriesData;
+    console.log('Navbar: Catégories chargées:', categories.value);
+  } catch (error) {
+    console.error('Erreur lors du chargement des catégories:', error);
+    categories.value = [];
   }
 };
 
@@ -148,11 +182,14 @@ onMounted(() => {
   // Ajout de l'écouteur pour fermer le dropdown
   document.addEventListener('click', handleClickOutside);
   
+  // Charger les catégories depuis l'API Django
+  loadCategories();
+  
   // Cleanup
-  return () => {
+  onBeforeUnmount(() => {
     window.removeEventListener('scroll', handleScroll);
     document.removeEventListener('click', handleClickOutside);
-  };
+  });
 });
 </script>
 

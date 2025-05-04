@@ -80,16 +80,7 @@
               <!-- Onglets de catégories -->
               <div class="categories-tabs p-3 border-bottom">
                 <div class="scrollable-tabs">
-                  <button 
-                    v-for="cat in categories" 
-                    :key="cat.id"
-                    class="category-tab"
-                    :class="{ 'active': activeCategory === cat.slug }"
-                    @click="setCategory(cat.slug)"
-                  >
-                    <i :class="`bi bi-${getCategoryIcon(cat.icon)}`"></i>
-                    {{ cat.name }}
-                  </button>
+                  <!-- Bouton "Tous les produits" d'abord -->
                   <button 
                     class="category-tab"
                     :class="{ 'active': activeCategory === 'tous' }"
@@ -97,6 +88,18 @@
                   >
                     <i class="bi bi-grid"></i>
                     Tous les produits
+                  </button>
+                  
+                  <!-- Catégories provenant de l'API -->
+                  <button 
+                    v-for="cat in categories" 
+                    :key="cat.slug"
+                    class="category-tab"
+                    :class="{ 'active': activeCategory === cat.slug }"
+                    @click="setCategory(cat.slug)"
+                  >
+                    <i :class="`bi bi-${getCategoryIcon(cat.icon)}`"></i>
+                    {{ cat.name }}
                   </button>
                 </div>
               </div>
@@ -185,6 +188,8 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import categoriesService from '~/services/categories';
+import productsService from '~/services/products';
 
 // SEO
 definePageMeta({
@@ -205,16 +210,29 @@ const selectedBrand = ref('');
 const priceRange = ref('');
 const inStockOnly = ref(false);
 
-// Récupération des données
+// Récupération des données depuis l'API Django
 onMounted(async () => {
+  console.log('Catalogue: Initialisation...');
+  console.log('Base URL API:', categoriesService.baseURL || 'Non définie directement dans le service');
+  
   try {
-    // Chargement des catégories
-    const categoriesResponse = await fetch('/data/categories.json');
-    categories.value = await categoriesResponse.json();
+    console.log('Catalogue: Chargement des données depuis l\'API...');
     
-    // Chargement des produits
-    const productsResponse = await fetch('/data/products.json');
-    products.value = await productsResponse.json();
+    // Chargement des catégories d'abord pour s'assurer qu'elles sont disponibles
+    console.log('Catalogue: Récupération des catégories...');
+    const categoriesData = await categoriesService.getAllCategories();
+    categories.value = categoriesData || [];
+    console.log('Catalogue: Catégories chargées:', categories.value);
+    console.log('Catalogue: Nombre de catégories:', categories.value.length);
+    console.log('Catalogue: Première catégorie:', categories.value[0] || 'Aucune catégorie trouvée');
+    
+    // Chargement des produits ensuite
+    console.log('Catalogue: Récupération des produits...');
+    const productsData = await productsService.getAllProducts();
+    products.value = productsData || [];
+    console.log('Catalogue: Produits chargés:', products.value);
+    console.log('Catalogue: Nombre de produits:', products.value.length);
+    console.log('Catalogue: Premier produit:', products.value[0] || 'Aucun produit trouvé');
     
     // Récupération de la catégorie depuis l'URL
     const categoryParam = route.query.category;
@@ -269,9 +287,26 @@ const filteredProducts = computed(() => {
   
   // Filtre par catégorie
   if (activeCategory.value && activeCategory.value !== 'tous') {
+    console.log('Filtrage par catégorie:', activeCategory.value);
     const category = categories.value.find(cat => cat.slug === activeCategory.value);
     if (category) {
-      result = result.filter(product => product.category_id === category.id);
+      console.log('Catégorie trouvée:', category);
+      // Prend en charge différentes structures possibles de la relation catégorie-produit
+      result = result.filter(product => {
+        // Vérifie si category est un objet avec une propriété slug ou id
+        if (product.category && typeof product.category === 'object') {
+          return product.category.slug === category.slug || product.category.id === category.id;
+        }
+        // Vérifie si category est une chaîne (slug de la catégorie)
+        else if (typeof product.category === 'string') {
+          return product.category === category.slug;
+        }
+        // Anciennes structures de données (pour compatibilité)
+        else {
+          return product.category_id === category.id || product.category === category.id;
+        }
+      });
+      console.log('Produits filtrés:', result.length);
     }
   }
   
@@ -342,17 +377,44 @@ watch(() => route.query.category, (newCategory) => {
   }
 });
 
-// Convertir les icônes emoji en classes Bootstrap Icons
+// Convertir les icônes en classes Bootstrap Icons
 const getCategoryIcon = (icon) => {
+  if (!icon) return 'grid';
+  
+  // Si c'est déjà un nom d'icône Bootstrap, retourner directement
+  if (icon.startsWith('bi-')) {
+    return icon.substring(3);
+  }
+  
+  // Mapper les noms standards des icônes
   const iconMap = {
+    'phone': 'phone',
     'smartphone': 'phone',
     'laptop': 'laptop',
     'tablet': 'tablet',
+    'computer': 'pc-display',
+    'desktop': 'pc-display',
+    'game': 'controller',
     'headphones': 'headphones',
-    'default': 'box'
+    'battery': 'battery-full',
+    'watch': 'smartwatch',
+    'disc': 'disc',
+    'plug': 'plug',
+    'camera': 'camera',
+    'printer': 'printer',
+    'mouse': 'mouse3',
+    'default': 'grid'
   };
   
-  return iconMap[icon] || iconMap.default;
+  // Essayer de faire correspondre une icône connue
+  for (const [key, value] of Object.entries(iconMap)) {
+    if (icon.includes(key)) {
+      return value;
+    }
+  }
+  
+  console.log('Icône non reconnue, utilisation de l\'icône par défaut:', icon);
+  return 'grid'; // Icône par défaut
 };
 </script>
 

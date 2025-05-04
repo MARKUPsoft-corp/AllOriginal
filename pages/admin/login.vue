@@ -88,6 +88,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from '#app';
 import '~/assets/css/admin-styles.css';
+import authService from '~/services/auth';
 
 // Router pour la redirection
 const router = useRouter();
@@ -97,33 +98,34 @@ const email = ref('');
 const password = ref('');
 const rememberMe = ref(false);
 const errorMessage = ref('');
+const isLoading = ref(false);
 
 // Méthode de connexion
-const login = () => {
+const login = async () => {
   // Réinitialiser le message d'erreur
   errorMessage.value = '';
+  isLoading.value = true;
   
-  // Simuler une vérification d'identifiants
-  // Dans un vrai backend, vous feriez une requête API ici
-  if (email.value === 'admin@alloriginal.com' && password.value === 'admin123') {
-    // Simuler un délai de chargement
+  try {
+    // Appel à l'API d'authentification
+    await authService.login(email.value, password.value, rememberMe.value);
+    
+    // Simuler un délai pour une meilleure expérience utilisateur
     setTimeout(() => {
-      // Stockage du token (simulé)
-      if (rememberMe.value) {
-        localStorage.setItem('admin_token', 'fake_token_for_demo');
-      } else {
-        sessionStorage.setItem('admin_token', 'fake_token_for_demo');
-      }
-      
-      // Rediriger vers le tableau de bord de manière simple
+      isLoading.value = false;
+      // Rediriger vers le tableau de bord
       console.log('Redirection vers le tableau de bord...');
-      setTimeout(() => {
-        window.location.href = '/admin';
-      }, 100);
-    }, 800);
-  } else {
-    // Afficher un message d'erreur
-    errorMessage.value = 'Email ou mot de passe incorrect. Veuillez réessayer.';
+      window.location.href = '/admin';
+    }, 500);
+  } catch (error) {
+    isLoading.value = false;
+    // Afficher le message d'erreur du serveur ou un message générique
+    if (error.response && error.response.data && error.response.data.detail) {
+      errorMessage.value = error.response.data.detail;
+    } else {
+      errorMessage.value = 'Email ou mot de passe incorrect. Veuillez réessayer.';
+    }
+    console.error('Erreur de connexion:', error);
   }
 };
 
@@ -133,9 +135,10 @@ const forgotPassword = () => {
 };
 
 onMounted(() => {
-  // Supprimer les tokens existants pour forcer la connexion
-  localStorage.removeItem('admin_token');
-  sessionStorage.removeItem('admin_token');
+  // Forcer la déconnexion à chaque accès à la page de login
+  // Cela garantit que l'utilisateur doit toujours s'authentifier
+  // même s'il a déjà un token valide
+  authService.forceLogout();
   
   // Initialiser particles.js avec beaucoup plus de particules
   if (window.particlesJS) {

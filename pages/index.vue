@@ -313,6 +313,8 @@
 
 <script setup>
 import { ref, onMounted, nextTick } from 'vue';
+import productsService from '~/services/products';
+import categoriesService from '~/services/categories';
 
 // SEO
 definePageMeta({
@@ -334,20 +336,34 @@ const currentCategoryIndex = ref(0);
 const totalCategories = ref(0);
 const visibleCategories = ref(4); // Nombre de catégories visibles à la fois (desktop)
 
-// Récupération des données
+// Récupération des données depuis l'API backend
 onMounted(async () => {
   try {
-    // Chargement des produits en vedette
-    const response = await fetch('/data/products.json');
-    const allProducts = await response.json();
-    featuredProducts.value = allProducts
-      .filter(product => product.in_stock && product.promo)
-      .slice(0, 6);
+    loading.value = true;
+    console.log('Chargement des données depuis l\'API...');
     
-    // Chargement des catégories
-    const categoriesResponse = await fetch('/data/categories.json');
-    categories.value = await categoriesResponse.json();
+    // Chargement parallèle des produits et catégories pour optimiser le temps de chargement
+    const [featuredData, categoriesData] = await Promise.all([
+      productsService.getFeaturedProducts(),
+      categoriesService.getAllCategories()
+    ]);
+    
+    console.log('Données produits reçues de l\'API:', featuredData);
+    console.log('Données catégories reçues de l\'API:', categoriesData);
+    
+    // Mise à jour des états avec les données de l'API
+    featuredProducts.value = featuredData.slice(0, 6);
+    categories.value = categoriesData;
     totalCategories.value = categories.value.length;
+    
+    // Si aucun produit en vedette n'est retourné, obtenir tous les produits et filtrer
+    if (featuredProducts.value.length === 0) {
+      console.log('Aucun produit en vedette, récupération de tous les produits...');
+      const allProducts = await productsService.getAllProducts();
+      featuredProducts.value = allProducts
+        .filter(product => product.in_stock && product.is_featured)
+        .slice(0, 6);
+    }
     
     loading.value = false;
     
