@@ -72,7 +72,7 @@
               </NuxtLink>
             </li>
             <li class="nav-item">
-              <NuxtLink to="/admin" class="nav-link px-3 py-2 mx-1 position-relative admin-link" exact-active-class="active">
+              <NuxtLink to="/admin/login" class="nav-link px-3 py-2 mx-1 position-relative admin-link" exact-active-class="active">
                 <i class="bi bi-gear-fill me-1"></i> Administration
                 <span class="nav-indicator"></span>
               </NuxtLink>

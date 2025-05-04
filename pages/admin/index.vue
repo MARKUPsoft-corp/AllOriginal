@@ -172,6 +172,7 @@
 import { ref, onMounted } from 'vue';
 import '~/assets/css/admin-styles.css';
 
+
 // Données simulées pour la démo - à remplacer par des données réelles
 const productCount = ref(0);
 const categoryCount = ref(0);
