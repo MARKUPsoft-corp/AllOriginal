@@ -29,7 +29,7 @@ export const getProductReviews = async (productSlug) => {
  */
 export const getProductReviewsSummary = async (productSlug) => {
   try {
-    const response = await api.get(`api/products/${productSlug}/reviews/`)
+    const response = await api.get(`/products/${productSlug}/reviews/`)
     return response.data
   } catch (error) {
     console.error('Erreur lors de la récupération du résumé des avis :', error)

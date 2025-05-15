@@ -49,7 +49,7 @@
                       <span v-if="currentStep <= 2">2</span>
                       <i v-else class="bi bi-check-lg"></i>
                     </div>
-                    <div class="step-label">Prix & Stock</div>
+                    <div class="step-label">Prix & Disponibilité</div>
                   </div>
                   <div class="step-line" :class="{ 'active': currentStep > 2 }"></div>
                   
@@ -159,9 +159,9 @@
                 </div>
               </div>
               
-              <!-- Formulaire Étape 2 - Prix & Stock -->
+              <!-- Formulaire Étape 2 - Prix & Disponibilité -->
               <div v-if="currentStep === 2" data-aos="fade-up">
-                <h3 class="mb-4 fs-4 text-gradient">Prix & Stock</h3>
+                <h3 class="mb-4 fs-4 text-gradient">Prix & Disponibilité</h3>
                 
                 <div class="row g-4">
                   <div class="col-md-6">
@@ -226,34 +226,79 @@
                 </div>
               </div>
               
-              <!-- Formulaire Étape 3 - Spécifications -->
+              <!-- Formulaire Étape 3 - Spécifications et Images -->
               <div v-if="currentStep === 3" data-aos="fade-up">
-                <h3 class="mb-4 fs-4 text-gradient">Spécifications du produit</h3>
+                <h3 class="mb-4 fs-4 text-gradient">Spécifications et Images</h3>
                 
-                <div class="row g-4">
+                <div class="row g-4 mb-5">
                   <div class="col-12">
-                    <div class="specs-container p-4 border rounded-3 mb-2">
-                      <div v-for="(spec, index) in product.specs" :key="index" class="spec-item mb-3 d-flex align-items-center">
-                        <div class="flex-grow-1">
-                          <div class="form-floating">
-                            <input 
-                              type="text" 
-                              class="form-control" 
-                              :id="'spec-' + index" 
-                              placeholder="Spécification"
-                              v-model="product.specs[index]"
-                            >
-                            <label :for="'spec-' + index">Spécification {{ index + 1 }}</label>
-                          </div>
+                    <h4 class="fs-5 mb-3">Spécifications techniques</h4>
+                    <p class="text-muted mb-4">Ajoutez les caractéristiques techniques principales du produit. Format: <span class="fw-bold">Nom: Valeur</span> (exemple: "Processeur: Snapdragon 888")</p>
+                    
+                    <div class="specs-container">
+                      <div v-for="(spec, index) in product.specs" :key="index" class="spec-item mb-3">
+                        <div class="input-group">
+                          <input type="text" class="form-control" v-model="product.specs[index]" placeholder="Nom: Valeur">
+                          <button class="btn btn-outline-danger" type="button" @click="removeSpec(index)">
+                            <i class="bi bi-trash"></i>
+                          </button>
                         </div>
-                        <button class="btn btn-outline-danger ms-3" @click="removeSpec(index)">
-                          <i class="bi bi-trash"></i>
-                        </button>
                       </div>
                       
-                      <button class="btn btn-outline-primary mt-3 shine-effect btn-animated" @click="addSpec">
+                      <button class="btn btn-outline-primary btn-sm" @click="addSpec">
                         <i class="bi bi-plus-circle me-2"></i> Ajouter une spécification
                       </button>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Section d'upload d'images -->
+                <div class="row g-4">
+                  <div class="col-12">
+                    <h4 class="fs-5 mb-3">Images du produit</h4>
+                    <p class="text-muted mb-4">Ajoutez au moins une image principale pour votre produit. Formats supportés: JPG, PNG, WEBP.</p>
+                    
+                    <div class="product-images-uploader mb-4">
+                      <div class="row">
+                        <!-- Preview des images sélectionnées -->
+                        <div v-if="imagePreviewUrls.length > 0" class="col-12 mb-4">
+                          <div class="images-preview-container d-flex flex-wrap gap-3">
+                            <div v-for="(url, index) in imagePreviewUrls" :key="index" class="image-preview-item position-relative">
+                              <img :src="url" class="img-thumbnail" alt="Aperçu" style="width: 150px; height: 150px; object-fit: cover;">
+                              <div class="image-actions position-absolute top-0 end-0 d-flex">
+                                <button v-if="index === 0" class="btn btn-sm btn-success me-1" disabled title="Image principale">
+                                  <i class="bi bi-star-fill"></i>
+                                </button>
+                                <button v-else class="btn btn-sm btn-outline-secondary me-1" @click="setAsPrimary(index)" title="Définir comme principale">
+                                  <i class="bi bi-star"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" @click="removeImage(index)" title="Supprimer">
+                                  <i class="bi bi-trash"></i>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <!-- Zone de drop ou sélection de fichier -->
+                        <div class="col-12">
+                          <div class="dropzone-container p-4 border border-dashed rounded-3 text-center" 
+                               @dragover.prevent="onDragOver"
+                               @dragleave.prevent="onDragLeave"
+                               @drop.prevent="onDrop"
+                               :class="{ 'drag-over': isDragging }">
+                            <input type="file" ref="fileInput" @change="onFileSelected" multiple accept="image/*" class="d-none">
+                            <div class="dropzone-content">
+                              <i class="bi bi-cloud-arrow-up text-primary" style="font-size: 2.5rem;"></i>
+                              <h5 class="mt-3">Glissez vos images ici</h5>
+                              <p class="text-muted">ou</p>
+                              <button type="button" class="btn btn-outline-primary" @click="$refs.fileInput.click()">
+                                <i class="bi bi-folder2-open me-2"></i> Parcourir
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -316,11 +361,25 @@
 
 <script setup>
 import { ref, onMounted, reactive } from 'vue';
+import { useRouter } from 'vue-router';
 import '~/assets/css/admin-styles.css';
+import productService from '~/services/products';
+import categoriesService from '~/services/categories';
+
+// Router pour la navigation
+const router = useRouter();
 
 // État du formulaire
 const currentStep = ref(1);
+const isLoading = ref(false); // Indicateur de chargement
 const categories = ref([]);
+const brands = ref(['Apple', 'Samsung', 'Xiaomi', 'Huawei', 'OnePlus', 'Google', 'Oppo', 'Vivo', 'Lenovo', 'HP', 'Dell', 'Asus', 'Acer', 'MSI', 'Sony', 'LG', 'JBL', 'Autre']);
+
+// Gestion des images
+const fileInput = ref(null);
+const isDragging = ref(false);
+const selectedFiles = ref([]);
+const imagePreviewUrls = ref([]);
 
 // État du produit
 const product = reactive({
@@ -328,23 +387,55 @@ const product = reactive({
   slug: '',
   brand: '',
   model: '',
-  price: null,
-  old_price: null,
-  promo: false,
   category_id: '',
-  in_stock: true,
   description: '',
-  specs: ['', '', '']
+  price: '',
+  original_price: '',
+  old_price: '',
+  status: 'in_stock',
+  promo: false,
+  is_featured: false,
+  is_active: true,
+  specs: ['']
 });
 
-// Charger les données
+// Charger les données depuis le backend
 const loadData = async () => {
   try {
-    // Charger les catégories
-    const categoriesResponse = await fetch('/data/categories.json');
-    categories.value = await categoriesResponse.json();
+    isLoading.value = true;
+    
+    // Récupérer les catégories depuis l'API Django
+    const response = await categoriesService.getAllCategories();
+    categories.value = response;
+    
+    // Récupérer les types de spécifications pour les suggestions
+    const specTypes = await productService.getSpecificationTypes();
+    console.log('Types de spécifications disponibles:', specTypes);
+    
+    // Si aucune catégorie n'est trouvée, afficher un message d'erreur
+    if (categories.value.length === 0) {
+      console.warn('Aucune catégorie trouvée dans la base de données. Utilisation des catégories par défaut.');
+      categories.value = [
+        { id: 1, name: 'Smartphones' },
+        { id: 2, name: 'Ordinateurs portables' },
+        { id: 3, name: 'Tablettes' },
+        { id: 4, name: 'Accessoires' },
+        { id: 5, name: 'Écouteurs & Audio' },
+      ];
+    }
   } catch (error) {
     console.error('Erreur lors du chargement des données:', error);
+    alert('Erreur lors du chargement des catégories. Utilisation des catégories par défaut.');
+    // Utiliser des catégories par défaut en cas d'erreur
+    categories.value = [
+      { id: 1, name: 'Smartphones' },
+      { id: 2, name: 'Ordinateurs portables' },
+      { id: 3, name: 'Tablettes' },
+      { id: 4, name: 'Accessoires' },
+      { id: 5, name: 'Écouteurs & Audio' },
+    ];
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -419,24 +510,160 @@ const removeSpec = (index) => {
   product.specs.splice(index, 1);
 };
 
-// Sauvegarder le produit
-const saveProduct = () => {
-  // Effectuer la validation finale
-  if (!product.name || !product.slug || !product.brand || !product.category_id || !product.description || !product.price) {
-    alert('Veuillez remplir tous les champs obligatoires avant de sauvegarder.');
+// Méthodes de gestion des images
+const onDragOver = () => {
+  isDragging.value = true;
+};
+
+const onDragLeave = () => {
+  isDragging.value = false;
+};
+
+const onDrop = (event) => {
+  isDragging.value = false;
+  handleFiles(event.dataTransfer.files);
+};
+
+const onFileSelected = (event) => {
+  handleFiles(event.target.files);
+};
+
+const handleFiles = (files) => {
+  if (!files || files.length === 0) return;
+  
+  // Convertir FileList en Array
+  const newFiles = Array.from(files);
+  
+  // Filtrer pour n'accepter que des images (jpg, png, webp, etc.)
+  const imageFiles = newFiles.filter(file => file.type.startsWith('image/'));
+  
+  if (imageFiles.length === 0) {
+    alert('Veuillez sélectionner uniquement des fichiers image (JPG, PNG, WEBP)');
     return;
   }
   
-  // Nettoyer les spécifications vides
-  product.specs = product.specs.filter(spec => spec.trim() !== '');
+  // Ajouter les nouveaux fichiers à la liste des fichiers sélectionnés
+  selectedFiles.value = [...selectedFiles.value, ...imageFiles];
   
-  // Dans un vrai backend, on ferait un appel API ici
-  console.log('Produit à sauvegarder:', product);
+  // Générer des URL pour les prévisualisations
+  imageFiles.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      imagePreviewUrls.value.push(e.target.result);
+    };
+    reader.readAsDataURL(file);
+  });
+};
+
+const removeImage = (index) => {
+  // Supprimer le fichier et la prévisualisation
+  selectedFiles.value.splice(index, 1);
+  imagePreviewUrls.value.splice(index, 1);
+};
+
+const setAsPrimary = (index) => {
+  // Déplacer l'image sélectionnée en première position (image principale)
+  if (index > 0) {
+    // Sauvegarder les éléments à échanger
+    const file = selectedFiles.value[index];
+    const url = imagePreviewUrls.value[index];
+    
+    // Supprimer les éléments de leur position actuelle
+    selectedFiles.value.splice(index, 1);
+    imagePreviewUrls.value.splice(index, 1);
+    
+    // Les insérer au début des tableaux
+    selectedFiles.value.unshift(file);
+    imagePreviewUrls.value.unshift(url);
+  }
+};
+
+// Sauvegarder le produit
+const saveProduct = async () => {
+  // Afficher le spinner de chargement
+  isLoading.value = true;
   
-  // Rediriger vers la liste des produits
-  alert('Produit enregistré avec succès !');
-  // Dans un vrai projet, on utiliserait un routeur pour la redirection
-  window.location.href = '/admin/produits';
+  // Effectuer la validation finale
+  if (!product.name || !product.slug || !product.brand || !product.category_id || !product.description || !product.price) {
+    alert('Veuillez remplir tous les champs obligatoires avant de sauvegarder.');
+    isLoading.value = false;
+    return;
+  }
+  
+  // Vérifier si au moins une image a été sélectionnée
+  if (selectedFiles.value.length === 0) {
+    alert('Veuillez ajouter au moins une image pour le produit.');
+    isLoading.value = false;
+    return;
+  }
+  
+  try {
+    // Préparer les données pour l'API Django
+    const productData = {
+      name: product.name,
+      slug: product.slug,
+      description: product.description,
+      category: parseInt(product.category_id), // Django attend un ID numérique
+      brand: product.brand,
+      model: product.model || null,
+      price: parseFloat(product.price),
+      original_price: product.original_price ? parseFloat(product.original_price) : null,
+      status: product.in_stock ? 'in_stock' : 'out_of_stock', // Statut basé sur in_stock
+      is_featured: product.is_featured,
+      is_active: product.is_active
+    };
+    
+    console.log('Produit à sauvegarder:', productData);
+    
+    // 1. Créer le produit dans la base de données
+    const savedProduct = await productService.createProduct(productData);
+    console.log('Produit enregistré:', savedProduct);
+    
+    // 2. Ajouter les images au produit
+    for (let i = 0; i < selectedFiles.value.length; i++) {
+      const file = selectedFiles.value[i];
+      const isPrimary = i === 0; // La première image est définie comme principale
+      
+      // Créer un FormData pour l'upload de fichier
+      const formData = new FormData();
+      formData.append('image', file);
+      formData.append('is_primary', isPrimary);
+      formData.append('alt_text', product.name); // Utiliser le nom du produit comme texte alternatif par défaut
+      
+      await productService.addProductImage(savedProduct.slug, formData);
+      console.log(`Image ${i+1}/${selectedFiles.value.length} ajoutée`);
+    }
+    
+    // 3. Ajouter les spécifications au produit
+    const specs = product.specs.filter(spec => spec.trim() !== '');
+    
+    if (savedProduct && savedProduct.slug && specs.length > 0) {
+      // Traiter chaque spécification
+      for (const spec of specs) {
+        const [name, value] = spec.split(':').map(s => s.trim());
+        if (name && value) {
+          await productService.addProductSpecification(savedProduct.slug, {
+            name,
+            value,
+            is_highlighted: true
+          });
+        }
+      }
+      console.log(`${specs.length} spécifications ajoutées`);
+    }
+    
+    // Rediriger vers la liste des produits avec un message de succès
+    setTimeout(() => {
+      alert('Produit et images enregistrés avec succès !');
+      router.push('/admin/produits');
+    }, 500);
+    
+  } catch (error) {
+    console.error('Erreur lors de l\'enregistrement du produit:', error);
+    alert(`Erreur lors de l'enregistrement: ${error.message || 'Veuillez réessayer'}`);
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 onMounted(() => {

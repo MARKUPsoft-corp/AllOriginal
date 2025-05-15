@@ -117,7 +117,7 @@
                   </td>
                   <td class="align-middle py-3 text-end">
                     <div class="btn-group">
-                      <NuxtLink :to="'/admin/produits/modifier/' + product.id" class="btn btn-sm btn-outline-primary shine-effect btn-animated">
+                      <NuxtLink :to="'/admin/produits/modifier/' + product.slug" class="btn btn-sm btn-outline-primary shine-effect btn-animated">
                         <i class="bi bi-pencil"></i>
                       </NuxtLink>
                       <button type="button" class="btn btn-sm btn-outline-danger shine-effect btn-animated" @click="confirmDelete(product)">
@@ -183,12 +183,41 @@
         </div>
       </div>
     </div>
+    
+    <!-- Toast notifications -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      <!-- Toast Success -->
+      <div id="toast-success" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+        <div class="toast-header bg-success text-white">
+          <i class="bi bi-check-circle me-2"></i>
+          <strong class="me-auto">Succès</strong>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          {{ toastMessage }}
+        </div>
+      </div>
+      
+      <!-- Toast Error -->
+      <div id="toast-error" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+        <div class="toast-header bg-danger text-white">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          <strong class="me-auto">Erreur</strong>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          {{ toastErrorMessage }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute } from '#app';
+import productService from '~/services/products';
+import categoriesService from '~/services/categories';
 import '~/assets/css/admin-styles.css';
 
 // Récupérer la route pour accéder aux paramètres d'URL
@@ -203,19 +232,48 @@ const productToDelete = ref(null);
 const deleteModal = ref(null);
 const categoryName = ref('');
 
+// État de l'interface
+const isLoading = ref(false);
+const toastMessage = ref('');
+const toastErrorMessage = ref('');
+
 // Charger les données
 const loadData = async () => {
+  isLoading.value = true;
+  
   try {
-    // Charger les produits
-    // Utiliser le service des produits au lieu du fichier JSON statique
-    const productsService = await import('~/services/products').then(m => m.default);
-    products.value = await productsService.getAllProducts();
+    // Charger les produits depuis l'API Django
+    const productsResponse = await productService.getAllProducts();
+    products.value = productsResponse;
     
-    // Charger les catégories via le service API
-    const categoriesService = await import('~/services/categories').then(m => m.default);
-    categories.value = await categoriesService.getAllCategories();
+    // Filtrer les produits initialement
+    filteredProducts.value = [...products.value];
+    
+    // Charger les catégories depuis l'API Django
+    const categoriesResponse = await categoriesService.getAllCategories();
+    categories.value = categoriesResponse;
+    
+    // Si un ID de catégorie est présent dans l'URL, filtrer les produits
+    if (route.query.category) {
+      selectedCategory.value = route.query.category;
+      categoryChanged();
+    }
+    
+    console.log(`${products.value.length} produits et ${categories.value.length} catégories chargés`);
   } catch (error) {
     console.error('Erreur lors du chargement des données:', error);
+    toastErrorMessage.value = `Erreur de chargement: ${error.message || 'Veuillez réessayer'}`;
+    
+    // Afficher un toast d'erreur
+    setTimeout(() => {
+      const toastEl = document.getElementById('toast-error');
+      if (toastEl) {
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+      }
+    }, 500);
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -288,21 +346,57 @@ const confirmDelete = (product) => {
 };
 
 // Supprimer un produit
-const deleteProduct = () => {
-  if (productToDelete.value) {
-    // Dans un vrai backend, on ferait un appel API ici
-    products.value = products.value.filter(p => p.id !== productToDelete.value.id);
-    filteredProducts.value = filteredProducts.value.filter(p => p.id !== productToDelete.value.id);
+const deleteProduct = async () => {
+  if (!productToDelete.value) return;
+  
+  // Indicateur de chargement
+  isLoading.value = true;
+  
+  try {
+    console.log(`Suppression du produit: ${productToDelete.value.slug}`);
     
+    // Appel à l'API pour supprimer le produit
+    await productService.deleteProduct(productToDelete.value.slug);
+    
+    // Supprimer le produit de la liste locale
+    products.value = products.value.filter(p => p.slug !== productToDelete.value.slug);
+    filteredProducts.value = filteredProducts.value.filter(p => p.slug !== productToDelete.value.slug);
+    
+    // Mettre à jour le message de réussite
+    toastMessage.value = `Le produit "${productToDelete.value.name}" a été supprimé avec succès.`;
+    
+    // Afficher un message de succès
+    setTimeout(() => {
+      const toastEl = document.getElementById('toast-success');
+      if (toastEl) {
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+      }
+    }, 300);
+  } catch (error) {
+    console.error('Erreur lors de la suppression du produit:', error);
+    
+    // Mettre à jour le message d'erreur
+    toastErrorMessage.value = `Erreur lors de la suppression: ${error.message || 'Veuillez réessayer'}`;
+    
+    // Afficher un message d'erreur
+    setTimeout(() => {
+      const toastEl = document.getElementById('toast-error');
+      if (toastEl) {
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+      }
+    }, 300);
+  } finally {
     // Fermer le modal
-    const modal = window.bootstrap.Modal.getInstance(deleteModal.value);
-    modal.hide();
+    if (deleteModal.value) {
+      const modalInstance = bootstrap.Modal.getInstance(deleteModal.value);
+      if (modalInstance) modalInstance.hide();
+    }
     
-    // Réinitialiser le produit à supprimer
+    // Réinitialiser le produit à supprimer et l'indicateur de chargement
     productToDelete.value = null;
-    
-    // Afficher une notification (à implémenter)
-    alert('Produit supprimé avec succès');
+    isLoading.value = false;
   }
 };
 

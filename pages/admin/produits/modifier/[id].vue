@@ -250,22 +250,38 @@
                 <div class="row g-4">
                   <div class="col-12">
                     <div class="specs-container p-4 border rounded-3 mb-2">
-                      <div v-for="(spec, index) in product.specs" :key="index" class="spec-item mb-3 d-flex align-items-center">
-                        <div class="flex-grow-1">
-                          <div class="form-floating custom-floating">
-                            <input 
-                              type="text" 
-                              class="form-control custom-form-control" 
-                              :id="'spec-' + index" 
-                              placeholder="Spécification"
-                              v-model="product.specs[index]"
-                            >
-                            <label :for="'spec-' + index">Spécification {{ index + 1 }}</label>
+                      <div v-for="(spec, index) in product.specItems" :key="index" class="spec-item mb-3">
+                        <div class="row g-2">
+                          <div class="col-md-5">
+                            <div class="form-floating custom-floating">
+                              <input 
+                                type="text" 
+                                class="form-control custom-form-control" 
+                                :id="'spec-name-' + index" 
+                                placeholder="Nom"
+                                v-model="spec.name"
+                              >
+                              <label :for="'spec-name-' + index">Nom</label>
+                            </div>
+                          </div>
+                          <div class="col-md-5">
+                            <div class="form-floating custom-floating">
+                              <input 
+                                type="text" 
+                                class="form-control custom-form-control" 
+                                :id="'spec-value-' + index" 
+                                placeholder="Valeur"
+                                v-model="spec.value"
+                              >
+                              <label :for="'spec-value-' + index">Valeur</label>
+                            </div>
+                          </div>
+                          <div class="col-md-2 d-flex align-items-center">
+                            <button class="btn btn-outline-danger" @click="removeSpec(index)">
+                              <i class="bi bi-trash"></i>
+                            </button>
                           </div>
                         </div>
-                        <button class="btn btn-outline-danger ms-3" @click="removeSpec(index)">
-                          <i class="bi bi-trash"></i>
-                        </button>
                       </div>
                       
                       <button class="btn btn-outline-primary mt-3 shine-effect btn-animated" @click="addSpec">
@@ -362,7 +378,7 @@ import { useRoute, useRouter } from 'vue-router';
 // États
 const route = useRoute();
 const router = useRouter();
-const productId = computed(() => parseInt(route.params.id));
+const productSlug = computed(() => route.params.id); // On utilise l'ID de la route comme slug
 const currentStep = ref(1);
 const loading = ref(true);
 const categories = ref([]);
@@ -382,7 +398,8 @@ const product = reactive({
   category_id: '',
   in_stock: true,
   description: '',
-  specs: ['', '', ''],
+  specs: [],       // Pour compatibilité avec l'API
+  specItems: [],   // Pour l'édition dans le formulaire
   images: []
 });
 
@@ -398,9 +415,9 @@ const loadData = async () => {
     // Charger les produits via le service API
     const productsService = await import('~/services/products').then(m => m.default);
     
-    // Récupérer directement le produit par son ID/slug
+    // Récupérer directement le produit par son slug
     try {
-      const foundProduct = await productsService.getProduct(productId.value);
+      const foundProduct = await productsService.getProduct(productSlug.value);
     
       if (!foundProduct) {
         alert('Produit non trouvé');
@@ -417,10 +434,28 @@ const loadData = async () => {
       return;
     }
     
-    // Si specs n'existe pas ou est vide, initialiser avec trois éléments vides
-    if (!product.specs || product.specs.length === 0) {
-      product.specs = ['', '', ''];
+    // Si specifications existe dans les données du produit, les utiliser pour initialiser specItems
+    if (product.specifications && product.specifications.length > 0) {
+      // Initialiser specItems à partir des specifications complètes
+      product.specItems = product.specifications.map(spec => ({
+        id: spec.id,
+        name: spec.name,
+        value: spec.value,
+        is_highlighted: spec.is_highlighted || true
+      }));
+    } else {
+      // Sinon initialiser avec trois éléments vides
+      product.specItems = [
+        { name: '', value: '', is_highlighted: true },
+        { name: '', value: '', is_highlighted: true },
+        { name: '', value: '', is_highlighted: true }
+      ];
     }
+    
+    // Générer le format de specs pour la compatibilité API
+    product.specs = product.specItems
+      .filter(item => item.name && item.value) // Ne garder que les specs complètes
+      .map(item => `${item.name}: ${item.value}`);
     
     // Si images n'existe pas, initialiser avec un tableau vide
     if (!product.images) {
@@ -482,12 +517,23 @@ const goToStep = (step) => {
 
 // Ajouter une spécification
 const addSpec = () => {
-  product.specs.push('');
+  product.specItems.push({
+    name: '',
+    value: '',
+    is_highlighted: true
+  });
 };
 
 // Supprimer une spécification
 const removeSpec = (index) => {
-  product.specs.splice(index, 1);
+  // Vérifier si la spécification a un ID (existe déjà dans la base de données)
+  const specToRemove = product.specItems[index];
+  product.specItems.splice(index, 1);
+  
+  // Mettre à jour specs pour la compatibilité avec l'API
+  product.specs = product.specItems
+    .filter(item => item.name && item.value)
+    .map(item => `${item.name}: ${item.value}`);
 };
 
 // Générer un dégradé de couleur en fonction de la marque
@@ -509,24 +555,171 @@ const getBrandGradient = (brand) => {
 };
 
 // Sauvegarder le produit
-const saveProduct = () => {
+const saveProduct = async () => {
+  // Démarrer l'indicateur de chargement
+  loading.value = true;
+  
   // Effectuer la validation finale
   if (!product.name || !product.slug || !product.brand || !product.category_id || !product.description || !product.price) {
     alert('Veuillez remplir tous les champs obligatoires avant de sauvegarder.');
+    loading.value = false;
     return;
   }
   
   // Nettoyer les spécifications vides
   product.specs = product.specs.filter(spec => spec.trim() !== '');
   
-  // Dans un vrai backend, on ferait un appel API ici
-  console.log('Produit mis à jour:', product);
-  
-  // Notification de succès
-  alert('Produit mis à jour avec succès !');
-  
-  // Rediriger vers la liste des produits
-  router.push('/admin/produits');
+  try {
+    // Préparer les données pour l'API Django
+    const productData = {
+      name: product.name,
+      slug: product.slug,
+      description: product.description,
+      category: parseInt(product.category_id), // Django attend un ID numérique
+      brand: product.brand,
+      model: product.model || null,
+      price: parseFloat(product.price),
+      // Gestion des promotions
+      promo: product.promo, // Si le produit est en promotion
+      // Prix réduit si le produit est en promotion
+      discounted_price: product.promo ? parseFloat(product.price) : null,
+      // Ancien prix si le produit est en promotion
+      old_price: product.promo && product.old_price ? parseFloat(product.old_price) : null,
+      status: product.in_stock ? 'in_stock' : 'out_of_stock', // Statut basé sur in_stock
+      is_featured: product.is_featured,
+      is_active: product.is_active
+    };
+    
+    console.log('Données à envoyer pour la mise à jour:', productData);
+    
+    // Appel à l'API pour mettre à jour le produit
+    const productsService = await import('~/services/products').then(m => m.default);
+    const updatedProduct = await productsService.updateProduct(productSlug.value, productData);
+    
+    console.log('Produit mis à jour:', updatedProduct);
+    
+    // Récupérer les détails actuels du produit (y compris les images existantes)
+    try {
+      const productDetails = await productsService.getProduct(updatedProduct.slug);
+      const existingImages = productDetails.images || [];
+      console.log('Images existantes du produit:', existingImages);
+      
+      // Traiter les images modifiées
+      if (imageFiles.value && imageFiles.value.length > 0) {
+        console.log('Upload des images modifiées...');
+        
+        // Parcourir toutes les images modifiées
+        for (let i = 0; i < imageFiles.value.length; i++) {
+          if (imageFiles.value[i]) {
+            const file = imageFiles.value[i];
+            const isPrimary = i === 0; // La première image est considérée comme principale
+            
+            // Créer un FormData pour l'upload
+            const formData = new FormData();
+            formData.append('image', file);
+            formData.append('is_primary', isPrimary);
+            formData.append('alt_text', product.name); // Texte alternatif par défaut
+            
+            try {
+              // Si une image existe déjà à cette position, la supprimer d'abord
+              if (existingImages[i] && existingImages[i].id) {
+                console.log(`Suppression de l'ancienne image ${existingImages[i].id} avant de la remplacer...`);
+                await productsService.deleteProductImage(updatedProduct.slug, existingImages[i].id);
+              }
+              
+              // Ensuite, ajouter la nouvelle image
+              const uploadedImage = await productsService.addProductImage(updatedProduct.slug, formData);
+              console.log(`Image ${i+1} uploadée:`, uploadedImage);
+            } catch (imageError) {
+              console.error(`Erreur lors de la gestion de l'image ${i+1}:`, imageError);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Erreur lors de la gestion des images:', error);
+    }
+    
+    // Traiter les spécifications modifiées
+    if (product.specItems && product.specItems.length > 0) {
+      console.log('Mise à jour des spécifications...');
+      
+      // Récupérer d'abord toutes les spécifications existantes du produit
+      try {
+        const productDetails = await productsService.getProduct(updatedProduct.slug);
+        const existingSpecs = productDetails.specifications || [];
+        
+        console.log('Spécifications existantes:', existingSpecs);
+        console.log('Spécifications à mettre à jour:', product.specItems);
+        
+        // Parcourir toutes les spécifications du formulaire
+        for (const specItem of product.specItems) {
+          // Ne traiter que les spécifications qui ont un nom et une valeur
+          if (specItem.name && specItem.name.trim() && specItem.value && specItem.value.trim()) {
+            // Chercher si cette spécification existe déjà
+            const existingSpec = existingSpecs.find(s => s.name === specItem.name);
+            
+            try {
+              if (existingSpec) {
+                console.log(`Mise à jour de la spécification existante "${specItem.name}"`);
+                
+                // Si la valeur a changé, supprimer l'ancienne spécification et en créer une nouvelle
+                if (existingSpec.value !== specItem.value) {
+                  await productsService.deleteSpecification(existingSpec.id);
+                  await productsService.addProductSpecification(updatedProduct.slug, {
+                    name: specItem.name,
+                    value: specItem.value,
+                    is_highlighted: true
+                  });
+                  console.log(`Spécification "${specItem.name}" mise à jour avec la nouvelle valeur "${specItem.value}"`);
+                } else {
+                  console.log(`Spécification "${specItem.name}" inchangée, aucune action nécessaire`);
+                }
+              } else {
+                // Créer une nouvelle spécification
+                console.log(`Création de la nouvelle spécification "${specItem.name}"`);
+                await productsService.addProductSpecification(updatedProduct.slug, {
+                  name: specItem.name,
+                  value: specItem.value,
+                  is_highlighted: true
+                });
+              }
+            } catch (specError) {
+              console.error(`Erreur lors de la mise à jour de la spécification "${specItem.name}":`, specError);
+            }
+          }
+        }
+        
+        // Supprimer les spécifications qui n'existent plus dans le formulaire
+        for (const existingSpec of existingSpecs) {
+          const stillExists = product.specItems.some(item => item.name === existingSpec.name);
+          
+          if (!stillExists) {
+            try {
+              console.log(`Suppression de la spécification "${existingSpec.name}" qui n'existe plus dans le formulaire`);
+              await productsService.deleteSpecification(existingSpec.id);
+            } catch (deleteError) {
+              console.error(`Erreur lors de la suppression de la spécification "${existingSpec.name}":`, deleteError);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération des spécifications existantes:', error);
+      }
+    }
+    
+    
+    // Notification de succès
+    alert('Produit mis à jour avec succès !');
+    
+    // Rediriger vers la liste des produits
+    router.push('/admin/produits');
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour du produit:', error);
+    alert(`Erreur lors de la mise à jour: ${error.message || 'Veuillez réessayer'}`);
+  } finally {
+    loading.value = false;
+  }
 };
 
 // Gestion du téléchargement d'images
