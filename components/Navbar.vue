@@ -63,10 +63,11 @@
               </NuxtLink>
             </li>
             <li class="nav-item">
-              <NuxtLink to="/admin/login" class="nav-link px-3 py-2 mx-1 position-relative admin-link" exact-active-class="active">
+              <!-- Lien Administration avec gestion spéciale de la navigation -->
+              <a href="#" @click.prevent="navigateToAdmin" class="nav-link px-3 py-2 mx-1 position-relative admin-link">
                 <i class="bi bi-gear-fill me-1"></i> Administration
                 <span class="nav-indicator"></span>
-              </NuxtLink>
+              </a>
             </li>
             <li class="nav-item ms-lg-2">
               <a href="tel:+237000000000" class="btn btn-sm btn-primary rounded-pill px-3 py-2 d-flex align-items-center shine-effect">
@@ -84,8 +85,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
 import categoriesService from '~/services/categories';
+
+// Router pour la navigation
+const router = useRouter();
+const { $navigateToAdmin } = useNuxtApp();
+
+// Fonction pour naviguer vers la section admin en fonction de l'état d'authentification
+const navigateToAdmin = () => {
+  // Utiliser le plugin pour déterminer où rediriger (tableau de bord ou login)
+  $navigateToAdmin(router);
+};
 
 // États réactifs
 const isScrolled = ref(false);

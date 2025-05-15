@@ -27,8 +27,14 @@ export default defineNuxtConfig({
   plugins: [
     { src: '~/plugins/bootstrap.client.js', mode: 'client' },
     { src: '~/plugins/animations.client.js', mode: 'client' },
-    { src: '~/plugins/particles.client.js', mode: 'client' }
+    { src: '~/plugins/particles.client.js', mode: 'client' },
+    { src: '~/plugins/admin-navigation.js', mode: 'client' }
   ],
+  
+  // Configuration des règles de routes
+  routeRules: {
+    '/admin/**': { ssr: false } // Pas de redirection automatique pour éviter les boucles
+  },
   
   // App config
   app: {

@@ -6,14 +6,18 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.hook('app:mounted', () => {
-    // Initialize AOS
-    AOS.init({
-      duration: 800,
-      easing: 'ease-out-cubic',
-      once: false,
-      mirror: true,
-      offset: 50
-    })
+    // Delay AOS initialization to avoid hydration issues
+    setTimeout(() => {
+      // Initialize AOS only after hydration is complete
+      AOS.init({
+        duration: 800,
+        easing: 'ease-out-cubic',
+        once: true, // Changed to true to prevent re-animation
+        mirror: false, // Disabled mirroring to reduce complexity
+        offset: 50,
+        disable: 'mobile' // Disable on mobile for better performance
+      })
+    }, 200) // Delay of 200ms to ensure complete hydration
 
     // Initialize GSAP ScrollTrigger
     gsap.registerPlugin(ScrollTrigger)

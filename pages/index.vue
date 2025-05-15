@@ -359,10 +359,21 @@ onMounted(async () => {
     // Si aucun produit en vedette n'est retourné, obtenir tous les produits et filtrer
     if (featuredProducts.value.length === 0) {
       console.log('Aucun produit en vedette, récupération de tous les produits...');
-      const allProducts = await productsService.getAllProducts();
-      featuredProducts.value = allProducts
-        .filter(product => product.in_stock && product.is_featured)
-        .slice(0, 6);
+      try {
+        const allProducts = await productsService.getAllProducts();
+        // Vérifier que allProducts est bien un tableau avant d'utiliser filter
+        if (Array.isArray(allProducts)) {
+          featuredProducts.value = allProducts
+            .filter(product => product.in_stock && product.is_featured)
+            .slice(0, 6);
+        } else {
+          console.error('Les données de produits ne sont pas un tableau:', allProducts);
+          featuredProducts.value = [];
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des données:', error);
+        featuredProducts.value = [];
+      }
     }
     
     loading.value = false;

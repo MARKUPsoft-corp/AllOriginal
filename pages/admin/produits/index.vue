@@ -207,12 +207,13 @@ const categoryName = ref('');
 const loadData = async () => {
   try {
     // Charger les produits
-    const productsResponse = await fetch('/data/products.json');
-    products.value = await productsResponse.json();
+    // Utiliser le service des produits au lieu du fichier JSON statique
+    const productsService = await import('~/services/products').then(m => m.default);
+    products.value = await productsService.getAllProducts();
     
-    // Charger les catégories
-    const categoriesResponse = await fetch('/data/categories.json');
-    categories.value = await categoriesResponse.json();
+    // Charger les catégories via le service API
+    const categoriesService = await import('~/services/categories').then(m => m.default);
+    categories.value = await categoriesService.getAllCategories();
   } catch (error) {
     console.error('Erreur lors du chargement des données:', error);
   }

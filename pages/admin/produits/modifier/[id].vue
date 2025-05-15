@@ -391,25 +391,31 @@ const loadData = async () => {
   try {
     loading.value = true;
     
-    // Charger les catégories
-    const categoriesResponse = await fetch('/data/categories.json');
-    categories.value = await categoriesResponse.json();
+    // Charger les catégories via le service API
+    const categoriesService = await import('~/services/categories').then(m => m.default);
+    categories.value = await categoriesService.getAllCategories();
     
-    // Charger les produits
-    const productsResponse = await fetch('/data/products.json');
-    const products = await productsResponse.json();
+    // Charger les produits via le service API
+    const productsService = await import('~/services/products').then(m => m.default);
     
-    // Trouver le produit par ID
-    const foundProduct = products.find(p => p.id === productId.value);
+    // Récupérer directement le produit par son ID/slug
+    try {
+      const foundProduct = await productsService.getProduct(productId.value);
     
-    if (!foundProduct) {
-      alert('Produit non trouvé');
+      if (!foundProduct) {
+        alert('Produit non trouvé');
+        router.push('/admin/produits');
+        return;
+      }
+      
+      // Copier les données dans le state
+      Object.assign(product, foundProduct);
+    } catch (error) {
+      console.error('Erreur lors de la récupération du produit:', error);
+      alert('Erreur lors du chargement du produit');
       router.push('/admin/produits');
       return;
     }
-    
-    // Copier les données dans le state
-    Object.assign(product, foundProduct);
     
     // Si specs n'existe pas ou est vide, initialiser avec trois éléments vides
     if (!product.specs || product.specs.length === 0) {

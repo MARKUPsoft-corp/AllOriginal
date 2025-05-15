@@ -74,8 +74,13 @@
             </div>
             
             <!-- Message d'erreur -->
-            <div v-if="errorMessage" class="alert alert-danger mt-4 text-center rounded-3 animate__animated animate__fadeIn">
-              <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ errorMessage }}
+            <div v-if="errorMessage" class="alert alert-danger text-center mb-4" role="alert">
+              {{ errorMessage }}
+            </div>
+            
+            <!-- Message de succès -->
+            <div v-if="successMessage" class="alert alert-success text-center mb-4" role="alert">
+              {{ successMessage }}
             </div>
           </div>
         </div>
@@ -92,6 +97,7 @@ import authService from '~/services/auth';
 
 // Router pour la redirection
 const router = useRouter();
+const route = useRoute();
 
 // États
 const email = ref('');
@@ -99,31 +105,76 @@ const password = ref('');
 const rememberMe = ref(false);
 const errorMessage = ref('');
 const isLoading = ref(false);
+const successMessage = ref('');
 
-// Méthode de connexion
+// Récupérer l'URL de redirection si présente dans les paramètres
+const redirectUrl = ref(route.query.redirect || '/admin');
+
+/**
+ * Vérifier si l'utilisateur est déjà authentifié
+ */
+onMounted(() => {
+  if (process.client) {
+    const token = localStorage.getItem('admin_token') || sessionStorage.getItem('admin_token');
+    
+    // Si un token existe déjà, rediriger directement vers le tableau de bord
+    if (token) {
+      console.log('Token d\'authentification existant détecté, redirection vers le tableau de bord');
+      setTimeout(() => {
+        router.push('/admin/dashboard');
+      }, 100);
+    }
+  }
+});
+
+/**
+ * Fonction asynchrone pour connecter l'utilisateur
+ */
 const login = async () => {
-  // Réinitialiser le message d'erreur
-  errorMessage.value = '';
+  // Réinitialiser les messages d'erreur
+  errorMessage.value = null;
   isLoading.value = true;
   
   try {
+    console.log('Tentative de connexion avec:', email.value, '******');
+    
+    // Pas de suppression des tokens existants - ils resteront jusqu'à déconnexion explicite
+    
     // Appel à l'API d'authentification
-    await authService.login(email.value, password.value, rememberMe.value);
+    const response = await authService.login(email.value, password.value, rememberMe.value);
+    
+    console.log('Connexion réussie:', response);
+    console.log('Token stocké dans', rememberMe.value ? 'localStorage' : 'sessionStorage');
+    
+    // Vérifier que le token est bien présent
+    const tokenExists = localStorage.getItem('admin_token') || sessionStorage.getItem('admin_token');
+    
+    if (!tokenExists) {
+      throw new Error('Le token n\'a pas été stocké correctement');
+    }
+    
+    // Afficher un message de succès
+    successMessage.value = 'Connexion réussie! Redirection en cours...';
     
     // Simuler un délai pour une meilleure expérience utilisateur
     setTimeout(() => {
       isLoading.value = false;
-      // Rediriger vers le tableau de bord
-      console.log('Redirection vers le tableau de bord...');
-      window.location.href = '/admin';
+      // Rediriger vers le tableau de bord admin ou l'URL spécifiée dans le paramètre redirect
+      const targetUrl = redirectUrl.value || '/admin';
+      console.log(`Redirection vers ${targetUrl}...`);
+      router.push(targetUrl);
     }, 500);
   } catch (error) {
+    console.error('Erreur lors de la connexion:', error);
     isLoading.value = false;
-    // Afficher le message d'erreur du serveur ou un message générique
-    if (error.response && error.response.data && error.response.data.detail) {
+    
+    // Gérer les différents types d'erreur
+    if (error.response && error.response.status === 401) {
+      errorMessage.value = 'Email ou mot de passe incorrect';
+    } else if (error.response && error.response.data && error.response.data.detail) {
       errorMessage.value = error.response.data.detail;
     } else {
-      errorMessage.value = 'Email ou mot de passe incorrect. Veuillez réessayer.';
+      errorMessage.value = 'Erreur lors de la connexion au backend. Vérifiez que le serveur Django est en cours d\'exécution sur le port 8001.';
     }
     console.error('Erreur de connexion:', error);
   }
