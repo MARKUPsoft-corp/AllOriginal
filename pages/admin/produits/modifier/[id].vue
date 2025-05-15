@@ -570,25 +570,63 @@ const saveProduct = async () => {
   product.specs = product.specs.filter(spec => spec.trim() !== '');
   
   try {
-    // Préparer les données pour l'API Django
+    // Log des données avant soumission
+    console.log('Valeurs du formulaire avant soumission:', {
+      name: product.name,
+      slug: product.slug,
+      description: product.description, 
+      category_id: product.category_id,
+      brand: product.brand,
+      model: product.model,
+      price: product.price,
+      promo: product.promo,
+      old_price: product.old_price,
+      in_stock: product.in_stock,
+      is_featured: product.is_featured,
+      is_active: product.is_active
+    });
+    
+    // APPROCHE TRÈS SIMPLE POUR LES PROMOTIONS
+    // Dans Django, une promotion existe quand original_price > price
+    
+    console.log('===== DONNÉES DE PROMOTION (SIMPLIFIÉES) =====');
+    console.log('Prix actuel:', product.price);
+    console.log('Ancien prix:', product.old_price);
+    console.log('Promotion activée?', product.promo);
+    
+    // Définir un prix original uniquement si la case promo est cochée
+    let originalPrice = null;
+    if (product.promo && product.old_price) {
+      originalPrice = parseFloat(product.old_price);
+      // Vérification simple que l'ancien prix est supérieur
+      if (originalPrice <= parseFloat(product.price)) {
+        alert('Pour une promotion, l\'ancien prix doit être supérieur au prix actuel!');
+      }
+    }
+    
+    // Préparer les données pour l'API Django - version simplifiée
     const productData = {
       name: product.name,
       slug: product.slug,
       description: product.description,
-      category: parseInt(product.category_id), // Django attend un ID numérique
+      category: parseInt(product.category_id),
       brand: product.brand,
       model: product.model || null,
       price: parseFloat(product.price),
-      // Gestion des promotions
-      promo: product.promo, // Si le produit est en promotion
-      // Prix réduit si le produit est en promotion
-      discounted_price: product.promo ? parseFloat(product.price) : null,
-      // Ancien prix si le produit est en promotion
-      old_price: product.promo && product.old_price ? parseFloat(product.old_price) : null,
-      status: product.in_stock ? 'in_stock' : 'out_of_stock', // Statut basé sur in_stock
+      
+      // Cette ligne est cruciale: on envoie juste l'ancien prix si promo est coché
+      original_price: originalPrice,
+      
+      // Disponibilité - envoyer le statut directement, pas un booléen in_stock
+      status: product.in_stock ? 'in_stock' : 'out_of_stock',
+      
+      // Options
       is_featured: product.is_featured,
       is_active: product.is_active
-    };
+    }
+    
+    // Log pour débogage
+    console.log('Détail complet des données envoyées au backend:', productData);
     
     console.log('Données à envoyer pour la mise à jour:', productData);
     
@@ -598,40 +636,56 @@ const saveProduct = async () => {
     
     console.log('Produit mis à jour:', updatedProduct);
     
-    // Récupérer les détails actuels du produit (y compris les images existantes)
+    // SOLUTION TRÈS SIMPLE POUR LES IMAGES
     try {
-      const productDetails = await productsService.getProduct(updatedProduct.slug);
-      const existingImages = productDetails.images || [];
-      console.log('Images existantes du produit:', existingImages);
-      
-      // Traiter les images modifiées
-      if (imageFiles.value && imageFiles.value.length > 0) {
-        console.log('Upload des images modifiées...');
+      // Si nous avons des nouvelles images à ajouter
+      if (imageFiles.value && imageFiles.value.some(file => file !== null)) {
+        // 1. D'abord supprimer TOUTES les images existantes
+        const productDetails = await productsService.getProduct(updatedProduct.slug);
+        const existingImages = productDetails.images || [];
+        console.log('===== GESTION DES IMAGES =====');
+        console.log(`${existingImages.length} images existantes trouvées`, existingImages);
         
-        // Parcourir toutes les images modifiées
+        // Supprimer chaque image une par une
+        for (const image of existingImages) {
+          if (image && image.id) {
+            try {
+              console.log(`Suppression de l'image ID=${image.id}...`);
+              await productsService.deleteProductImage(updatedProduct.slug, image.id);
+              console.log(`Image ID=${image.id} supprimée avec succès`);
+              // Pause à chaque suppression pour éviter les problèmes
+              await new Promise(resolve => setTimeout(resolve, 300));
+            } catch (err) {
+              console.error(`Erreur lors de la suppression de l'image ${image.id}:`, err);
+            }
+          }
+        }
+        
+        // 2. Ensuite, attendre un moment avant d'ajouter les nouvelles images
+        console.log('Attente avant ajout des nouvelles images...');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // 3. Enfin, ajouter toutes les nouvelles images
+        console.log('Ajout des nouvelles images:');
         for (let i = 0; i < imageFiles.value.length; i++) {
           if (imageFiles.value[i]) {
+            // Préparer l'image à envoyer
             const file = imageFiles.value[i];
-            const isPrimary = i === 0; // La première image est considérée comme principale
+            const isPrimary = i === 0; // La première est principale
             
-            // Créer un FormData pour l'upload
             const formData = new FormData();
             formData.append('image', file);
             formData.append('is_primary', isPrimary);
-            formData.append('alt_text', product.name); // Texte alternatif par défaut
+            formData.append('alt_text', product.name);
             
             try {
-              // Si une image existe déjà à cette position, la supprimer d'abord
-              if (existingImages[i] && existingImages[i].id) {
-                console.log(`Suppression de l'ancienne image ${existingImages[i].id} avant de la remplacer...`);
-                await productsService.deleteProductImage(updatedProduct.slug, existingImages[i].id);
-              }
-              
-              // Ensuite, ajouter la nouvelle image
-              const uploadedImage = await productsService.addProductImage(updatedProduct.slug, formData);
-              console.log(`Image ${i+1} uploadée:`, uploadedImage);
-            } catch (imageError) {
-              console.error(`Erreur lors de la gestion de l'image ${i+1}:`, imageError);
+              console.log(`Ajout de l'image ${i+1}...`);
+              const result = await productsService.addProductImage(updatedProduct.slug, formData);
+              console.log(`Image ${i+1} ajoutée avec succès:`, result);
+              // Pause entre chaque ajout
+              await new Promise(resolve => setTimeout(resolve, 300));
+            } catch (err) {
+              console.error(`Erreur lors de l'ajout de l'image ${i+1}:`, err);
             }
           }
         }
@@ -665,7 +719,8 @@ const saveProduct = async () => {
                 
                 // Si la valeur a changé, supprimer l'ancienne spécification et en créer une nouvelle
                 if (existingSpec.value !== specItem.value) {
-                  await productsService.deleteSpecification(existingSpec.id);
+                  // FIX: Passer le slug du produit comme second paramètre
+                  await productsService.deleteSpecification(existingSpec.id, updatedProduct.slug);
                   await productsService.addProductSpecification(updatedProduct.slug, {
                     name: specItem.name,
                     value: specItem.value,
@@ -697,7 +752,9 @@ const saveProduct = async () => {
           if (!stillExists) {
             try {
               console.log(`Suppression de la spécification "${existingSpec.name}" qui n'existe plus dans le formulaire`);
-              await productsService.deleteSpecification(existingSpec.id);
+              // Passer le slug du produit en second paramètre pour former l'URL correcte
+              await productsService.deleteSpecification(existingSpec.id, updatedProduct.slug);
+              console.log(`Spécification "${existingSpec.name}" supprimée avec succès`);
             } catch (deleteError) {
               console.error(`Erreur lors de la suppression de la spécification "${existingSpec.name}":`, deleteError);
             }

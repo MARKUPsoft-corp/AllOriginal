@@ -279,7 +279,22 @@ const loadData = async () => {
 
 // Obtenir le nom de la catégorie par son ID
 const getCategoryName = (categoryId) => {
-  const category = categories.value.find(c => c.id === categoryId);
+  // Vérifier d'abord si l'ID est valide
+  if (categoryId === undefined || categoryId === null) {
+    return 'Non catégorisé';
+  }
+  
+  // S'assurer que la comparaison est faite avec des entiers
+  // isNaN vérifie si la conversion a échoué
+  const categoryIdInt = parseInt(categoryId);
+  if (isNaN(categoryIdInt)) {
+    return 'Non catégorisé';
+  }
+  
+  // Rechercher la catégorie dans la liste
+  const category = categories.value.find(c => c.id === categoryIdInt);
+  
+  // Retourner le nom si trouvé, sinon 'Non catégorisé'
   return category ? category.name : 'Non catégorisé';
 };
 
@@ -341,64 +356,66 @@ const filteredProducts = ref([]);
 // Confirmer la suppression d'un produit
 const confirmDelete = (product) => {
   productToDelete.value = product;
-  const modal = new window.bootstrap.Modal(deleteModal.value);
-  modal.show();
+  
+  // Vérifier que Bootstrap est disponible avant de l'utiliser
+  if (window.bootstrap) {
+    const modal = new window.bootstrap.Modal(deleteModal.value);
+    modal.show();
+  } else {
+    // Si Bootstrap n'est pas disponible, utiliser une approche alternative
+    console.warn('Bootstrap non chargé, utilisation du mode de confirmation alternatif');
+    if (confirm(`Êtes-vous sûr de vouloir supprimer le produit "${product.name}" ?`)) {
+      deleteProduct();
+    }
+  }
 };
 
-// Supprimer un produit
+// Supprimer un produit - VERSION FIABLE ET UX
 const deleteProduct = async () => {
   if (!productToDelete.value) return;
-  
-  // Indicateur de chargement
   isLoading.value = true;
-  
   try {
-    console.log(`Suppression du produit: ${productToDelete.value.slug}`);
-    
-    // Appel à l'API pour supprimer le produit
+    // Suppression via le service (gère token et erreurs)
     await productService.deleteProduct(productToDelete.value.slug);
-    
-    // Supprimer le produit de la liste locale
+
+    // Mise à jour locale sans reload
     products.value = products.value.filter(p => p.slug !== productToDelete.value.slug);
     filteredProducts.value = filteredProducts.value.filter(p => p.slug !== productToDelete.value.slug);
-    
-    // Mettre à jour le message de réussite
+
+    // Message de succès
     toastMessage.value = `Le produit "${productToDelete.value.name}" a été supprimé avec succès.`;
-    
-    // Afficher un message de succès
     setTimeout(() => {
       const toastEl = document.getElementById('toast-success');
-      if (toastEl) {
-        const toast = new bootstrap.Toast(toastEl);
+      if (toastEl && window.bootstrap) {
+        const toast = new window.bootstrap.Toast(toastEl);
         toast.show();
+      } else {
+        alert(toastMessage.value);
       }
     }, 300);
   } catch (error) {
-    console.error('Erreur lors de la suppression du produit:', error);
-    
-    // Mettre à jour le message d'erreur
-    toastErrorMessage.value = `Erreur lors de la suppression: ${error.message || 'Veuillez réessayer'}`;
-    
-    // Afficher un message d'erreur
+    // Message d’erreur
+    toastErrorMessage.value = `Erreur lors de la suppression: ${error.response?.data?.detail || error.message || 'Veuillez réessayer'}`;
     setTimeout(() => {
       const toastEl = document.getElementById('toast-error');
-      if (toastEl) {
-        const toast = new bootstrap.Toast(toastEl);
+      if (toastEl && window.bootstrap) {
+        const toast = new window.bootstrap.Toast(toastEl);
         toast.show();
+      } else {
+        alert(toastErrorMessage.value);
       }
     }, 300);
   } finally {
-    // Fermer le modal
-    if (deleteModal.value) {
-      const modalInstance = bootstrap.Modal.getInstance(deleteModal.value);
+    // Fermer le modal si présent
+    if (deleteModal.value && window.bootstrap) {
+      const modalInstance = window.bootstrap.Modal.getInstance(deleteModal.value);
       if (modalInstance) modalInstance.hide();
     }
-    
-    // Réinitialiser le produit à supprimer et l'indicateur de chargement
     productToDelete.value = null;
     isLoading.value = false;
   }
 };
+
 
 // Mettre à jour le statut promo d'un produit
 const updatePromo = (product) => {

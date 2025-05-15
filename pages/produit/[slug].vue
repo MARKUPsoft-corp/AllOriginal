@@ -422,7 +422,7 @@ const activeImage = computed(() => {
 const getWhatsAppLink = (product) => {
   const text = `Bonjour, je suis intéressé(e) par le produit ${product.name} au prix de ${formatPrice(product.price)} FCFA sur All Original. Pouvez-vous me donner plus d'informations ?`;
   const encodedText = encodeURIComponent(text);
-  return `https://wa.me/237XXXXXXXXX?text=${encodedText}`;
+  return `https://wa.me/237675108876?text=${encodedText}`;
 };
 
 // Assigner des icônes bootstrap en fonction du nom de la spécification

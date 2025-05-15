@@ -178,19 +178,39 @@
         <div class="row mb-5">
           <div class="col-12 text-center" data-aos="fade-up">
             <span class="badge bg-orange-subtle text-orange mb-3 px-3 py-2 rounded-pill shine-effect glow-badge">Tendances</span>
-            <h2 class="display-5 fw-bold mb-3 text-with-glow">Produits Populaires</h2>
+            <h2 class="display-5 fw-bold mb-3 text-with-glow">Produits Populaires par Catégorie</h2>
             <div class="separator-line mx-auto mb-4 glow-line"></div>
-            <p class="lead col-lg-6 mx-auto opacity-75">Découvrez nos produits les plus demandés par nos clients</p>
+            <p class="lead col-lg-6 mx-auto opacity-75">Découvrez les produits les plus populaires dans chaque catégorie</p>
           </div>
         </div>
         
-        <div class="row g-4">
-          <div v-for="(product, index) in featuredProducts" :key="product.id" class="col-12 col-md-6 col-lg-4">
-            <div class="product-card-wrapper"
-                 data-aos="fade-up" :data-aos-delay="`${index * 50}`">
-            <ProductCard :product="product" />
+        <!-- Pour chaque catégorie, afficher un produit populaire -->
+        <div v-for="(categoryData, categoryIndex) in categoriesWithProducts" :key="categoryData.category.id" class="category-products-section mb-5" data-aos="fade-up" :data-aos-delay="categoryIndex * 100">
+          <!-- En-tête de la catégorie -->
+          <div class="category-header d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex align-items-center">
+              <div class="category-icon-container me-3">
+                <i :class="`bi bi-${getCategoryIcon(categoryData.category.icon)}`"></i>
+              </div>
+              <h3 class="h4 mb-0">{{ categoryData.category.name }}</h3>
+            </div>
+            <NuxtLink :to="`/catalogue?category=${categoryData.category.slug}`" class="btn-category-view">
+              Voir plus <i class="bi bi-arrow-right ms-2"></i>
+            </NuxtLink>
           </div>
-        </div>
+          
+          <!-- Produit de la catégorie -->
+          <div class="row g-4">
+            <div v-for="(product, index) in categoryData.products" :key="product.id" class="col-12 col-md-6 col-lg-4">
+              <div class="product-card-wrapper" data-aos="fade-up" :data-aos-delay="`${index * 50}`">
+                <ProductCard :product="product" />
+              </div>
+            </div>
+            <!-- Espace réservé si pas assez de produits -->
+            <div v-if="categoryData.products.length === 0" class="col-12 text-center py-4">
+              <p class="text-muted">Aucun produit populaire dans cette catégorie</p>
+            </div>
+          </div>
         </div>
         
         <div class="text-center mt-5" data-aos="fade-up">
@@ -323,11 +343,48 @@ definePageMeta({
 });
 
 // État
+const allProducts = ref([]);
 const featuredProducts = ref([]);
 const categories = ref([]);
 const loading = ref(true);
 const currentSlide = ref(0);
 const totalSlides = ref(3); // Le nombre de slides dans le carousel
+
+// Computed property pour organiser les produits populaires par catégorie
+const categoriesWithProducts = computed(() => {
+  // Créer un tableau contenant chaque catégorie avec ses produits populaires
+  const categoriesArray = categories.value.map(category => {
+    // Filtrer les produits populaires pour cette catégorie
+    const categoryProducts = allProducts.value.filter(product => {
+      // Vérifier si la catégorie du produit correspond à la catégorie actuelle
+      if (product.category && typeof product.category === 'object') {
+        return product.category.id === category.id && product.in_stock && product.is_featured;
+      } else if (typeof product.category === 'string') {
+        return product.category === category.slug && product.in_stock && product.is_featured;
+      } else {
+        return (product.category_id === category.id || product.category === category.id) && 
+               product.in_stock && product.is_featured;
+      }
+    });
+    
+    // Trier par popularité si disponible, sinon par prix décroissant
+    const sortedProducts = categoryProducts.sort((a, b) => {
+      if (a.popularity && b.popularity) {
+        return b.popularity - a.popularity;
+      }
+      return b.price - a.price; // Par défaut, les produits les plus chers en premier
+    });
+    
+    // Prendre les 3 produits les plus populaires de chaque catégorie
+    return {
+      category,
+      products: sortedProducts.slice(0, 3)
+    };
+  });
+  
+  // Filtrer pour ne garder que les catégories qui ont au moins un produit populaire
+  return categoriesArray.filter(item => item.products.length > 0);
+})
 
 // Références pour le slider de catégories
 const categorySliderRef = ref(null);
@@ -336,45 +393,67 @@ const currentCategoryIndex = ref(0);
 const totalCategories = ref(0);
 const visibleCategories = ref(4); // Nombre de catégories visibles à la fois (desktop)
 
+// Fonction pour obtenir l'icône Bootstrap correspondant à l'icône de la catégorie
+const getCategoryIcon = (icon) => {
+  // Mapping des icônes de catégories vers des icônes Bootstrap
+  const iconMap = {
+    'smartphone': 'phone',
+    'laptop': 'laptop',
+    'headphone': 'headphones',
+    'tv': 'tv',
+    'watch': 'smartwatch',
+    'camera': 'camera',
+    'speaker': 'speaker',
+    'tablet': 'tablet',
+    'accessory': 'gear',
+    'gaming': 'controller',
+    'router': 'router',
+    'printer': 'printer',
+    'storage': 'hdd',
+    'audio': 'music-note',
+    'wearable': 'smartwatch',
+    'computer': 'pc-display',
+    'grid': 'grid'
+  };
+  
+  // Retourner l'icône correspondante ou une icône par défaut
+  return iconMap[icon] || 'grid';
+};
+
 // Récupération des données depuis l'API backend
 onMounted(async () => {
   try {
     loading.value = true;
     console.log('Chargement des données depuis l\'API...');
     
-    // Chargement parallèle des produits et catégories pour optimiser le temps de chargement
-    const [featuredData, categoriesData] = await Promise.all([
-      productsService.getFeaturedProducts(),
-      categoriesService.getAllCategories()
+    // Chargement parallèle des catégories et de tous les produits
+    const [categoriesData, productsData] = await Promise.all([
+      categoriesService.getAllCategories(),
+      productsService.getAllProducts()
     ]);
     
-    console.log('Données produits reçues de l\'API:', featuredData);
     console.log('Données catégories reçues de l\'API:', categoriesData);
+    console.log('Données produits reçues de l\'API:', productsData);
     
     // Mise à jour des états avec les données de l'API
-    featuredProducts.value = featuredData.slice(0, 6);
-    categories.value = categoriesData;
+    categories.value = categoriesData || [];
+    allProducts.value = productsData || [];
     totalCategories.value = categories.value.length;
     
-    // Si aucun produit en vedette n'est retourné, obtenir tous les produits et filtrer
-    if (featuredProducts.value.length === 0) {
-      console.log('Aucun produit en vedette, récupération de tous les produits...');
-      try {
-        const allProducts = await productsService.getAllProducts();
-        // Vérifier que allProducts est bien un tableau avant d'utiliser filter
-        if (Array.isArray(allProducts)) {
-          featuredProducts.value = allProducts
-            .filter(product => product.in_stock && product.is_featured)
-            .slice(0, 6);
-        } else {
-          console.error('Les données de produits ne sont pas un tableau:', allProducts);
-          featuredProducts.value = [];
-        }
-      } catch (error) {
-        console.error('Erreur lors du chargement des données:', error);
-        featuredProducts.value = [];
-      }
-    }
+    // Filtrer les produits en vedette pour rester compatible avec le code existant
+    featuredProducts.value = allProducts.value
+      .filter(product => product.in_stock && product.is_featured)
+      .slice(0, 6);
+    
+    // Log des produits par catégorie pour débogage
+    console.log('Catégories avec produits:', categoriesWithProducts.value);
+    
+    // Tri des catégories par nombre de produits (pour montrer d'abord les catégories avec des produits)
+    categories.value.sort((a, b) => {
+      const aProducts = categoriesWithProducts.value.find(c => c.category.id === a.id)?.products.length || 0;
+      const bProducts = categoriesWithProducts.value.find(c => c.category.id === b.id)?.products.length || 0;
+      return bProducts - aProducts;
+    });
     
     loading.value = false;
     
@@ -2328,6 +2407,60 @@ const slidePrev = () => {
   .slider-pagination {
     margin-top: 0;
   }
+}
+
+/* Styles pour les sections de catégories */
+.category-products-section {
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  margin-bottom: 2rem;
+}
+
+.category-products-section:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px);
+}
+
+.category-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.category-icon-container {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--bs-orange) 0%, var(--bs-primary) 100%);
+  color: white;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(var(--bs-orange-rgb), 0.3);
+}
+
+.category-icon-container i {
+  font-size: 1.2rem;
+}
+
+.btn-category-view {
+  color: var(--bs-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-category-view:hover {
+  color: var(--bs-orange);
+  transform: translateX(5px);
 }
 
 @media (max-width: 575px) {

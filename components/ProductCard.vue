@@ -80,7 +80,7 @@ const formatPrice = (price) => {
 
 // Générer le lien WhatsApp
 const getWhatsAppLink = (product) => {
-  const baseURL = 'https://wa.me/237600000000'; // Remplacer par votre numéro
+  const baseURL = 'https://wa.me/237675108876'; // Numéro WhatsApp réel
   const message = encodeURIComponent(
     `Bonjour, je suis intéressé par le produit ${product.name} à ${formatPrice(product.price)} FCFA. Est-il disponible ?`
   );
@@ -206,6 +206,15 @@ const getBrandGradient = (brand) => {
   height: 220px;
   position: relative;
   overflow: hidden;
+}
+
+.product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  max-height: 180px;
+  transition: transform 0.3s ease;
 }
 
 .product-placeholder {

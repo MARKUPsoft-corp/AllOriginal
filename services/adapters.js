@@ -1,6 +1,7 @@
 /**
  * Adaptateurs pour harmoniser les structures de données entre le backend Django et le frontend Nuxt
  */
+import apiClient from './api';
 
 /**
  * Convertit une catégorie du format Django au format attendu par le frontend
@@ -49,7 +50,7 @@ export const adaptProduct = (product) => {
   if (!product) return null;
   
   // Définir l'URL de base du backend pour les médias
-  const BACKEND_URL = 'http://localhost:8001';
+  const BACKEND_URL = apiClient.defaults.baseURL.replace('/api', '');
   
   // Fonction pour construire l'URL complète des images
   const getFullImageUrl = (imagePath) => {
@@ -96,7 +97,12 @@ export const adaptProduct = (product) => {
     sale_price: product.discounted_price || null,
     old_price: product.old_price || null,
     promo: product.promo || false,
+    // Préserver l'ID de catégorie pour la correspondance dans le tableau des produits
+    category_id: product.category ? (typeof product.category === 'object' ? product.category.id : product.category) : null,
+    // Conserver aussi le slug de catégorie pour les liens et autres usages
     category: product.category ? (typeof product.category === 'object' ? product.category.slug : product.category) : null,
+    // Conserver l'objet catégorie entier si disponible
+    category_obj: typeof product.category === 'object' ? product.category : null,
     brand: product.brand || 'Générique',
     model: product.model || '',
     in_stock: product.status === 'in_stock',

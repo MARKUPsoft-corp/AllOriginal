@@ -76,10 +76,39 @@ export default {
    * @returns {Promise} - Promesse avec les détails du produit mis à jour
    */
   updateProduct(slug, productData) {
-    return apiClient.put(`/products/${slug}/`, productData)
+    // Avant d'envoyer les données, assurons-nous qu'elles sont dans le format attendu par le backend
+    const cleanedData = { ...productData };
+    
+    console.log('Données avant nettoyage:', cleanedData);
+    
+    // Convertir les valeurs numériques pour éviter les problèmes de format
+    if (typeof cleanedData.price === 'string') {
+      cleanedData.price = parseFloat(cleanedData.price);
+    }
+    
+    if (typeof cleanedData.original_price === 'string' && cleanedData.original_price) {
+      cleanedData.original_price = parseFloat(cleanedData.original_price);
+    }
+    
+    // S'assurer que les booléens sont bien des booléens
+    if (cleanedData.is_featured !== undefined) {
+      cleanedData.is_featured = Boolean(cleanedData.is_featured);
+    }
+    
+    if (cleanedData.is_active !== undefined) {
+      cleanedData.is_active = Boolean(cleanedData.is_active);
+    }
+    
+    console.log('Données après nettoyage:', cleanedData);
+    
+    return apiClient.put(`/products/${slug}/`, cleanedData)
       .then(response => {
-        console.log(`Produit ${slug} mis à jour:`, response.data);
+        console.log(`Produit ${slug} mis à jour avec succès:`, response.data);
         return adaptProduct(response.data);
+      })
+      .catch(error => {
+        console.error(`Erreur lors de la mise à jour du produit ${slug}:`, error.response?.data || error.message);
+        throw error;
       });
   },
 
@@ -89,10 +118,20 @@ export default {
    * @returns {Promise} - Promesse avec le statut de suppression
    */
   deleteProduct(slug) {
+    console.log(`Tentative de suppression du produit avec le slug: ${slug}`);
+    
     return apiClient.delete(`/products/${slug}/`)
       .then(response => {
-        console.log(`Produit ${slug} supprimé:`, response.data);
+        console.log(`Produit ${slug} supprimé avec succès:`, response);
         return response.data;
+      })
+      .catch(error => {
+        // Log détaillé de l'erreur pour faciliter le débogage
+        console.error(`Erreur lors de la suppression du produit ${slug}:`, error.response?.status);
+        console.error('Détails de l\'erreur:', error.response?.data || error.message);
+        
+        // Ré-envoyer l'erreur pour qu'elle soit traitée par l'appelant
+        throw error;
       });
   },
 
@@ -187,7 +226,7 @@ export default {
   updateSpecification(specId, specData, productSlug) {
     // Comme nous n'avons pas d'endpoint de mise à jour des spécifications,
     // nous devons supprimer puis recréer
-    return this.deleteSpecification(specId)
+    return this.deleteSpecification(specId, productSlug) // Passer le slug du produit pour l'URL correcte
       .then(() => {
         console.log(`Spécification ${specId} supprimée, recréation avec nouvelle valeur...`);
         // Une fois la spécification supprimée, nous en créons une nouvelle
@@ -196,6 +235,10 @@ export default {
       .then(response => {
         console.log(`Spécification recréée avec ID ${response.id}:`, response);
         return response;
+      })
+      .catch(error => {
+        console.error(`Erreur lors de la mise à jour de la spécification ${specId}:`, error);
+        throw error;
       });
   },
 
@@ -206,22 +249,33 @@ export default {
    * @returns {Promise} - Promesse avec le statut de suppression
    */
   deleteProductImage(slug, imageId) {
-    return apiClient.delete(`/products/${slug}/images/${imageId}/`)
+    // En regardant le backend, l'URL correcte est "/products/{slug}/images/{image_id}/"
+    const url = `/products/${slug}/images/${imageId}/`;
+    console.log(`Tentative de suppression d'image avec l'URL: ${url}`);
+    
+    return apiClient.delete(url)
       .then(response => {
-        console.log(`Image ${imageId} supprimée du produit ${slug}`);
+        console.log(`Image ${imageId} supprimée avec succès du produit ${slug}`);
         return response.data;
+      })
+      .catch(error => {
+        console.error(`Erreur lors de la suppression de l'image ${imageId} du produit ${slug}:`, error.response?.data || error.message);
+        throw error;
       });
   },
   
   /**
    * Supprimer une spécification (admin uniquement)
    * @param {number} specId - ID de la spécification
+   * @param {string} productSlug - Slug du produit auquel appartient la spécification
    * @returns {Promise} - Promesse avec le statut de suppression
    */
-  deleteSpecification(specId) {
-    return apiClient.delete(`/specifications/${specId}/`)
+  deleteSpecification(specId, productSlug) {
+    // L'URL correcte est /api/products/{slug}/specifications/{id}/
+    // et non /api/specifications/{id}/
+    return apiClient.delete(`/products/${productSlug}/specifications/${specId}/`)
       .then(response => {
-        console.log(`Spécification ${specId} supprimée:`, response.data);
+        console.log(`Spécification ${specId} supprimée du produit ${productSlug}:`, response.data);
         return response.data;
       });
   },

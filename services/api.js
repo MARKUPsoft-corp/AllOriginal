@@ -6,7 +6,7 @@ import axios from 'axios';
 // Création de l'instance axios avec la configuration de base
 const apiClient = axios.create({
   // URL du backend Django (port 8001)
-  baseURL: 'http://localhost:8001/api',
+  baseURL: 'http://10.15.102.221:8001/api', // Adresse IP du serveur pour accès réseau
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
