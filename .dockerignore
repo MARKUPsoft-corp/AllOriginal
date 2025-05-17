@@ -1,0 +1,12 @@
+.git
+.github
+.nuxt
+.output
+node_modules
+npm-debug.log
+README.md
+.DS_Store
+**/.git
+**/node_modules
+**/.nuxt
+**/.output

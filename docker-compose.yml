@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  frontend:
+    build: .
+    container_name: alloriginal-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NUXT_PUBLIC_API_BASE_URL=${API_BASE_URL:-http://backend:8001/api}
+      - HOST=0.0.0.0
+      - PORT=3000
+    restart: unless-stopped

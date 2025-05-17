@@ -1,0 +1,16 @@
+services:
+  # Service pour le frontend Nuxt.js
+  - type: web
+    name: alloriginal-frontend
+    env: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: NUXT_PUBLIC_API_BASE_URL
+        value: https://alloriginal-backend.onrender.com/api
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: 3000
+    # Ajouter ici d'autres variables d'environnement si nécessaire
+    autoDeploy: true
+    plan: free # ou starter/standard selon les besoins
