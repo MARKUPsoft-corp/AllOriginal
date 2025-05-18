@@ -16,7 +16,7 @@
     will-change: transform;
   }
   
-  /* Styles uniforms pour les cartes de produits sur mobile */
+  /* Styles uniforms pour les cartes de produits sur mobile - correspondant à la version PC */
   .mobile-product-card.product-card {
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
@@ -27,14 +27,15 @@
     width: 100% !important;
     max-width: 100% !important;
     margin: 15px 0 !important;
-    border-radius: 12px !important;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+    border-radius: 15px !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
     display: flex !important;
     flex-direction: column !important;
     overflow: visible !important;
     position: relative !important;
     background: white !important;
-    padding: 15px !important;
+    padding: 12px !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
   }
 
   /* Optimiser les images des produits sur mobile */
@@ -96,19 +97,23 @@
   .mobile-product-card .product-features {
     display: flex !important;
     flex-wrap: wrap !important;
-    gap: 3px !important;
-    margin-bottom: 5px !important;
+    gap: 5px !important;
+    margin-bottom: 8px !important;
+    margin-top: 5px !important;
   }
 
   .mobile-product-card .feature-badge {
-    font-size: 0.65rem !important;
-    padding: 2px 5px !important;
-    background: #f5f5f5 !important;
-    border-radius: 3px !important;
+    font-size: 0.7rem !important;
+    padding: 3px 8px !important;
+    background: #f8f9fa !important;
+    border-radius: 20px !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
-    max-width: 100px !important;
+    max-width: 120px !important;
+    color: #ff8c00 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+    border: 1px solid rgba(255,140,0,0.3) !important;
   }
 
   /* Prix et badges sur mobile */
@@ -145,23 +150,24 @@
     font-weight: bold !important;
   }
 
-  /* Badges de marque et stock */
+  /* Badges de marque et stock - style PC */
   .mobile-product-card .product-brand {
     position: absolute !important;
-    top: 15px !important;
-    left: 15px !important;
+    top: 10px !important;
+    left: 10px !important;
     z-index: 10 !important;
     display: flex !important;
     gap: 5px !important;
   }
 
   .mobile-product-card .brand-badge {
-    background: rgba(0,0,0,0.6) !important;
+    background: #ff8c00 !important;
     color: white !important;
-    padding: 2px 6px !important;
-    border-radius: 4px !important;
-    font-size: 0.7rem !important;
+    padding: 5px 8px !important;
+    border-radius: 20px !important;
+    font-size: 0.75rem !important;
     font-weight: bold !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
   }
 
   .mobile-product-card .stock-badge {
@@ -172,8 +178,10 @@
   }
 
   .mobile-product-card .stock-badge-success {
-    background: rgba(40, 167, 69, 0.8) !important;
+    background: rgba(40, 167, 69, 0.9) !important;
     color: white !important;
+    border-radius: 20px !important;
+    padding: 5px 8px !important;
   }
 
   .mobile-product-card .stock-badge-danger {
@@ -240,10 +248,17 @@
     animation: none !important;
   }
   
-  /* Rendre la navigation plus réactive */
+  /* Rendre la navigation plus réactive et moins transparente sur mobile */
   .navbar, .nav-item, .nav-link {
     will-change: auto;
     transition: all 0.1s ease !important;
+  }
+  
+  .navbar.scrolled {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1) !important;
   }
   
   /* Assurer que le menu mobile se referme correctement */
@@ -268,6 +283,127 @@
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     scroll-behavior: auto;
+  }
+  
+  /* Optimisation des filtres de catalogue sur mobile */
+  .search-filters .col-12.col-md-7 .row {
+    margin-top: 10px !important;
+  }
+  
+  .search-filters .col-6.col-sm-4,
+  .search-filters .col-12.col-sm-4 {
+    width: 100% !important;
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 8px !important;
+  }
+  
+  .search-filters .form-select {
+    width: 100% !important;
+    height: 42px !important;
+    font-size: 0.9rem !important;
+    padding-left: 15px !important;
+    background-position: right 15px center !important;
+  }
+  
+  .search-filters .stock-filter {
+    padding: 8px 10px !important;
+    border-radius: 20px !important;
+    background: #f8f9fa !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-top: 5px !important;
+  }
+  
+  .search-filters .stock-filter .form-check-input {
+    margin-right: 10px !important;
+  }
+  
+  .search-filters .search-bar {
+    margin-bottom: 5px !important;
+  }
+  
+  .search-filters .search-input {
+    height: 42px !important;
+    font-size: 0.9rem !important;
+    border-radius: 20px !important;
+  }
+  
+  /* Optimisation des cartes de catégories sur la page d'accueil (défilement horizontal) */
+  .categories-slider-container {
+    width: 100% !important;
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  .categories-slider {
+    width: 100% !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important; /* Firefox */
+    padding: 20px 10px !important;
+    margin: 0 -10px !important;
+  }
+
+  .categories-slider::-webkit-scrollbar {
+    display: none !important; /* Chrome/Safari/Opera */
+  }
+
+  .category-slide {
+    flex: 0 0 85% !important;
+    width: 85% !important;
+    scroll-snap-align: center !important;
+    margin: 0 5px !important;
+    transform: none !important;
+  }
+
+  .category-box {
+    width: 100% !important;
+    margin: 0 auto !important;
+    border-radius: 15px !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
+    transition: all 0.3s ease !important;
+    transform: none !important;
+    height: 270px !important;
+  }
+
+  /* Cacher les contrôles de navigation sur mobile (on utilise le swipe) */
+  .slider-controls {
+    display: none !important;
+  }
+
+  /* Style des titres de sections */
+  h2.display-5.fw-bold {
+    font-size: 1.8rem !important;
+    margin-bottom: 15px !important;
+    color: #333 !important;
+  }
+
+  h2.display-5.fw-bold.text-with-glow {
+    text-shadow: 0 0 10px rgba(255, 140, 0, 0.3) !important;
+  }
+
+  .section-title-container {
+    margin-bottom: 20px !important;
+  }
+
+  .badge.bg-orange-subtle {
+    font-size: 0.8rem !important;
+    padding: 6px 12px !important;
+  }
+
+  .separator-line.glow-line {
+    width: 50px !important;
+    margin: 10px auto 15px !important;
+  }
+
+  p.lead {
+    font-size: 0.95rem !important;
+    margin-bottom: 25px !important;
   }
   
   /* Assurez-vous que les placeholders s'affichent */
