@@ -22,7 +22,7 @@
         <div class="collapse navbar-collapse" id="navbarMain">
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
             <li class="nav-item">
-              <NuxtLink to="/" class="nav-link px-3 py-2 mx-1 position-relative" exact-active-class="active">
+              <NuxtLink to="/" class="nav-link px-3 py-2 mx-1 position-relative" exact-active-class="active" @click="handleNavLinkClick('/')">
                 <i class="bi bi-house me-1"></i> Accueil
                 <span class="nav-indicator"></span>
               </NuxtLink>
@@ -37,34 +37,34 @@
                 <span class="nav-indicator"></span>
               </a>
               <ul class="dropdown-menu border-0 shadow-lg" :class="{'show': isDropdownOpen}">
-                <li @click="closeDropdown">
-                  <NuxtLink to="/catalogue?category=tous" class="dropdown-item">
+                <li>
+                  <NuxtLink to="/catalogue?category=tous" class="dropdown-item" @click="handleNavLinkClick('/catalogue?category=tous')">
                     <i class="bi bi-collection me-2 text-orange"></i> Tous les produits
                   </NuxtLink>
                 </li>
                 <!-- Catégories chargées dynamiquement depuis l'API -->
-                <li v-for="category in categories" :key="category.slug" @click="closeDropdown">
-                  <NuxtLink :to="`/catalogue?category=${category.slug}`" class="dropdown-item">
+                <li v-for="category in categories" :key="category.slug">
+                  <NuxtLink :to="`/catalogue?category=${category.slug}`" class="dropdown-item" @click="handleNavLinkClick(`/catalogue?category=${category.slug}`)">
                     <i :class="`bi bi-${getCategoryIcon(category.icon)} me-2 text-orange`"></i> {{ category.name }}
                   </NuxtLink>
                 </li>
                 <li v-if="categories.length > 0"><hr class="dropdown-divider"></li>
-                <li @click="closeDropdown">
-              <NuxtLink to="/catalogue?category=accessoires" class="dropdown-item">
+                <li>
+              <NuxtLink to="/catalogue?category=accessoires" class="dropdown-item" @click="handleNavLinkClick('/catalogue?category=accessoires')">
                     <i class="bi bi-headphones me-2 text-orange"></i> Accessoires
                   </NuxtLink>
                 </li>
               </ul>
             </li>
             <li class="nav-item">
-              <NuxtLink to="/contact" class="nav-link px-3 py-2 mx-1 position-relative" exact-active-class="active">
+              <NuxtLink to="/contact" class="nav-link px-3 py-2 mx-1 position-relative" exact-active-class="active" @click="handleNavLinkClick('/contact')">
                 <i class="bi bi-envelope me-1"></i> Contact
                 <span class="nav-indicator"></span>
               </NuxtLink>
             </li>
             <!-- Lien d'administration supprimé -->
             <li class="nav-item ms-lg-2">
-              <a href="tel:+237000000000" class="btn btn-sm btn-primary rounded-pill px-3 py-2 d-flex align-items-center shine-effect">
+              <a href="tel:+237675108876" class="btn btn-sm btn-primary rounded-pill px-3 py-2 d-flex align-items-center shine-effect" @click="closeMobileMenu()">
                 <i class="bi bi-telephone-fill me-2"></i> Nous appeler
               </a>
             </li>
@@ -120,6 +120,34 @@ const toggleMobileMenu = () => {
     } else {
       navbarMain.classList.remove('show');
     }
+  }
+};
+
+// Fermer le menu mobile
+const closeMobileMenu = () => {
+  mobileMenuOpen.value = false;
+  const navbarMain = document.getElementById('navbarMain');
+  if (navbarMain) {
+    navbarMain.classList.remove('show');
+  }
+};
+
+// Gérer le clic sur un lien de navigation
+const handleNavLinkClick = (path) => {
+  // Fermer le menu mobile si il est ouvert
+  if (window.innerWidth < 992) { // Breakpoint lg de Bootstrap (992px)
+    closeMobileMenu();
+  }
+  
+  // Fermer le dropdown si ouvert
+  closeDropdown();
+  
+  // Vérifier si on est déjà sur cette page
+  if (window.location.pathname + window.location.search === path) {
+    // Si on est sur la même page, actualiser manuellement
+    setTimeout(() => {
+      window.location.reload();
+    }, 50);
   }
 };
 

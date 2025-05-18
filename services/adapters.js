@@ -1,7 +1,7 @@
 /**
  * Adaptateurs pour harmoniser les structures de données entre le backend Django et le frontend Nuxt
  */
-import apiClient from './api';
+// Aucune dépendance nécessaire pour les adaptateurs
 
 /**
  * Convertit une catégorie du format Django au format attendu par le frontend
@@ -50,7 +50,7 @@ export const adaptProduct = (product) => {
   if (!product) return null;
   
   // Définir l'URL de base du backend pour les médias
-  const BACKEND_URL = apiClient.defaults.baseURL.replace('/api', '');
+  const BACKEND_URL = 'https://alloriginal-backend.onrender.com';
   
   // Fonction pour construire l'URL complète des images
   const getFullImageUrl = (imagePath) => {
