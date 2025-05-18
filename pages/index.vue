@@ -199,18 +199,27 @@
             </NuxtLink>
           </div>
           
-          <!-- Produit de la catégorie -->
-          <div class="row g-4">
-            <div v-for="(product, index) in categoryData.products" :key="product.id" class="col-12 col-md-6 col-lg-4">
-              <div class="product-card-wrapper" data-aos="fade-up" :data-aos-delay="`${index * 50}`">
+          <!-- Produit de la catégorie - Version optimisée avec vérification de chargement -->
+          <client-only>
+            <div class="row g-4 products-container" :class="{'mobile-products': isMobile}">
+              <!-- Pour mobile: affichage optimisé sans animation lourde -->
+              <div v-if="isMobile" v-for="(product, index) in categoryData.products" :key="product.id" class="col-12 mobile-product-column">
                 <ProductCard :product="product" />
               </div>
+              
+              <!-- Pour desktop: affichage original avec animations -->
+              <div v-else v-for="(product, index) in categoryData.products" :key="product.id" class="col-12 col-md-6 col-lg-4">
+                <div class="product-card-wrapper" data-aos="fade-up" :data-aos-delay="`${index * 50}`">
+                  <ProductCard :product="product" />
+                </div>
+              </div>
+              
+              <!-- Espace réservé si pas assez de produits -->
+              <div v-if="categoryData.products.length === 0" class="col-12 text-center py-4">
+                <p class="text-muted">Aucun produit populaire dans cette catégorie</p>
+              </div>
             </div>
-            <!-- Espace réservé si pas assez de produits -->
-            <div v-if="categoryData.products.length === 0" class="col-12 text-center py-4">
-              <p class="text-muted">Aucun produit populaire dans cette catégorie</p>
-            </div>
-          </div>
+          </client-only>
         </div>
         
         <div class="text-center mt-5" data-aos="fade-up">
@@ -332,7 +341,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted, nextTick, onUnmounted } from 'vue';
 import productsService from '~/services/products';
 import categoriesService from '~/services/categories';
 
@@ -420,6 +429,9 @@ const getCategoryIcon = (icon) => {
   return iconMap[icon] || 'grid';
 };
 
+// Utiliser notre composable de détection mobile
+const { isMobile } = useMobile();
+
 // Récupération des données depuis l'API backend
 onMounted(async () => {
   try {
@@ -457,23 +469,39 @@ onMounted(async () => {
     
     loading.value = false;
     
-    // Initialiser les particules
-    if (typeof window !== 'undefined' && window.particlesJS) {
-      window.particlesJS('particles-js', {
-        particles: {
-          number: { value: 80, density: { enable: true, value_area: 800 } },
-          color: { value: "#ffffff" },
-          opacity: { value: 0.3, random: true },
-          size: { value: 3, random: true },
-          line_linked: { enable: false },
-          move: { enable: true, speed: 1, direction: "top", random: false, straight: false, out_mode: "out" }
+    // Initialisation des effets interactifs (uniquement sur desktop)
+    nextTick(() => {
+      // Aucune animation lourde sur mobile
+      if (!isMobile.value && typeof particlesJS !== 'undefined') {
+        // Hero section
+        if (document.getElementById('particles-hero')) {
+          initParticles('particles-hero', 'orange', 30);
         }
-      });
-    }
-    
-    // Initialisation du slider de catégories
-    await nextTick();
-    initCategorySlider();
+        
+        // Catégories section
+        if (document.getElementById('particles-categories')) {
+          initParticles('particles-categories', 'blue', 20);
+        }
+        
+        // Produits section
+        if (document.getElementById('particles-products')) {
+          initParticles('particles-products', 'green', 20);
+        }
+        
+        // Services section
+        if (document.getElementById('particles-services')) {
+          initParticles('particles-services', 'purple', 20);
+        }
+      }
+      
+      // Initialisation du slider de catégories (version simplifiée pour mobile)
+      if (!isMobile.value) {
+        initCategorySlider();
+        // Mise à jour des catégories visibles en fonction de la largeur d'écran
+        window.addEventListener('resize', updateVisibleCategories);
+        updateVisibleCategories();
+      }
+    });
     
     // Initialiser AOS si disponible
     if (typeof window !== 'undefined' && window.AOS) {
@@ -2594,6 +2622,83 @@ const slidePrev = () => {
   .btn-view-all {
     padding: 0.75rem 1.5rem;
     font-size: 0.95rem;
+  }
+}
+/* Styles spécifiques pour l'optimisation mobile */
+.mobile-products {
+  margin-left: -0.5rem;
+  margin-right: -0.5rem;
+}
+
+.mobile-product-column {
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 767px) {
+  .products-container {
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .category-header {
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .category-header h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .category-icon-container {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+  }
+  
+  .btn-category-view {
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    margin-left: auto;
+  }
+  
+  .hero-section {
+    min-height: auto;
+    padding-top: 40px;
+    padding-bottom: 60px;
+  }
+  
+  .display-3, .display-5 {
+    font-size: calc(1.3rem + 1.5vw);
+  }
+  
+  .lead {
+    font-size: 1rem;
+  }
+  
+  .carousel-item {
+    padding: 1rem 0;
+  }
+  
+  .hero-circle, 
+  .decorative-shape {
+    display: none;
+  }
+  
+  .categories-section-new, 
+  .featured-products-section, 
+  .services-section-new {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  
+  .container {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
   }
 }
 </style> 

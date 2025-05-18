@@ -1,8 +1,11 @@
-import api from './api'
+import createApiClient from './api'
 
 /**
  * Service pour gérer les avis clients
  */
+
+// Créer un client API unique pour ce service
+const api = createApiClient();
 
 // URL de base pour l'API reviews
 const REVIEWS_URL = '/api/products/reviews/'

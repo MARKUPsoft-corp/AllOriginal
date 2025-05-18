@@ -1,8 +1,11 @@
 /**
  * Service pour gérer les produits avec le backend Django
  */
-import apiClient from './api';
+import createApiClient from './api';
 import { adaptProducts, adaptProduct } from './adapters';
+
+// Créer un client API unique pour ce service
+const api = createApiClient();
 
 export default {
   /**
@@ -11,7 +14,7 @@ export default {
    * @returns {Promise} - Promesse avec la liste des produits
    */
   getAllProducts(params = {}) {
-    return apiClient.get('/products/', { params })
+    return api.get('/products/', { params })
       .then(response => {
         console.log('Réponse brute de l\'API products:', response.data);
         return adaptProducts(response.data);
@@ -24,7 +27,7 @@ export default {
    * @returns {Promise} - Promesse avec les détails du produit
    */
   getProduct(slug) {
-    return apiClient.get(`/products/${slug}/`)
+    return api.get(`/products/${slug}/`)
       .then(response => {
         console.log(`Réponse brute de l'API pour le produit ${slug}:`, response.data);
         return adaptProduct(response.data);
@@ -36,7 +39,7 @@ export default {
    * @returns {Promise} - Promesse avec la liste des produits mis en avant
    */
   getFeaturedProducts() {
-    return apiClient.get('/products/featured/')
+    return api.get('/products/featured/')
       .then(response => {
         console.log('Réponse brute de l\'API produits mis en avant:', response.data);
         return adaptProducts(response.data);
@@ -49,7 +52,7 @@ export default {
    * @returns {Promise} - Promesse avec les résultats de recherche
    */
   searchProducts(query) {
-    return apiClient.get('/products/search/', { params: { q: query } })
+    return api.get('/products/search/', { params: { q: query } })
       .then(response => {
         console.log('Réponse brute de l\'API recherche produits:', response.data);
         return adaptProducts(response.data);
@@ -62,7 +65,7 @@ export default {
    * @returns {Promise} - Promesse avec les détails du produit créé
    */
   createProduct(productData) {
-    return apiClient.post('/products/', productData)
+    return api.post('/products/', productData)
       .then(response => {
         console.log('Produit créé:', response.data);
         return adaptProduct(response.data);
@@ -101,7 +104,7 @@ export default {
     
     console.log('Données après nettoyage:', cleanedData);
     
-    return apiClient.put(`/products/${slug}/`, cleanedData)
+    return api.put(`/products/${slug}/`, cleanedData)
       .then(response => {
         console.log(`Produit ${slug} mis à jour avec succès:`, response.data);
         return adaptProduct(response.data);
@@ -120,7 +123,7 @@ export default {
   deleteProduct(slug) {
     console.log(`Tentative de suppression du produit avec le slug: ${slug}`);
     
-    return apiClient.delete(`/products/${slug}/`)
+    return api.delete(`/products/${slug}/`)
       .then(response => {
         console.log(`Produit ${slug} supprimé avec succès:`, response);
         return response.data;
@@ -143,7 +146,7 @@ export default {
    */
   addProductImage(slug, imageData) {
     // Pour les fichiers, nous devons utiliser FormData et modifier les headers
-    return apiClient.post(`/products/${slug}/add_image/`, imageData, {
+    return api.post(`/products/${slug}/add_image/`, imageData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -176,7 +179,7 @@ export default {
    * @returns {Promise} - Promesse avec les détails de la spécification ajoutée
    */
   addProductSpecification(slug, specData) {
-    return apiClient.post(`/products/${slug}/add_specification/`, specData)
+    return api.post(`/products/${slug}/add_specification/`, specData)
       .then(response => {
         console.log(`Spécification ajoutée au produit ${slug}:`, response.data);
         return response.data;
@@ -253,7 +256,7 @@ export default {
     const url = `/products/${slug}/images/${imageId}/`;
     console.log(`Tentative de suppression d'image avec l'URL: ${url}`);
     
-    return apiClient.delete(url)
+    return api.delete(url)
       .then(response => {
         console.log(`Image ${imageId} supprimée avec succès du produit ${slug}`);
         return response.data;
@@ -273,7 +276,7 @@ export default {
   deleteSpecification(specId, productSlug) {
     // L'URL correcte est /api/products/{slug}/specifications/{id}/
     // et non /api/specifications/{id}/
-    return apiClient.delete(`/products/${productSlug}/specifications/${specId}/`)
+    return api.delete(`/products/${productSlug}/specifications/${specId}/`)
       .then(response => {
         console.log(`Spécification ${specId} supprimée du produit ${productSlug}:`, response.data);
         return response.data;

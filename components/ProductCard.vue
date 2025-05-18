@@ -1,5 +1,47 @@
 <template>
-  <div class="product-card" :class="{'shine-effect-container': !isMobile}">
+  <!-- Version simplifiée pour mobile -->
+  <div v-if="isMobile" class="mobile-product-card">
+    <!-- Image avec fallback pour mobile -->
+    <div class="mobile-image-container">
+      <img 
+        v-if="product.main_image" 
+        :src="product.main_image" 
+        :alt="product.name" 
+        loading="eager"
+        class="mobile-product-img" 
+        @error="mobileImageError = true"
+      />
+      <div v-if="!product.main_image || mobileImageError" class="mobile-product-placeholder">
+        {{ product.brand.charAt(0) }}
+      </div>
+      <div class="mobile-product-badges">
+        <span class="mobile-brand-badge">{{ product.brand }}</span>
+        <span class="mobile-stock-badge" :class="product.in_stock ? 'mobile-in-stock' : 'mobile-out-stock'">
+          {{ product.in_stock ? 'En stock' : 'Rupture' }}
+        </span>
+      </div>
+    </div>
+    
+    <!-- Info du produit pour mobile, version simplifiée -->
+    <div class="mobile-product-info">
+      <h3 class="mobile-product-title">{{ product.name }}</h3>
+      <p class="mobile-product-price">{{ formatPrice(product.price) }} FCFA</p>
+      <p v-if="product.promo" class="mobile-product-old-price">{{ formatPrice(product.old_price) }} FCFA</p>
+      
+      <!-- Boutons d'action simplifiés -->
+      <div class="mobile-product-actions">
+        <NuxtLink :to="`/produit/${product.slug}`" class="mobile-btn-view">
+          Voir
+        </NuxtLink>
+        <a v-if="product.in_stock" :href="getWhatsAppLink(product)" class="mobile-btn-order">
+          Commander
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Version desktop originale avec les effets transform -->
+  <div v-else class="product-card shine-effect-container">
     <div class="product-brand">
       <span class="brand-badge">{{ product.brand }}</span>
       <span class="stock-badge" :class="product.in_stock ? 'stock-badge-success' : 'stock-badge-danger'">
@@ -13,16 +55,13 @@
         v-if="product.main_image" 
         :src="product.main_image" 
         :alt="product.name" 
-        class="product-img shadow-lg rounded-4"
-        :class="{'tilt-effect': !isMobile}"
+        class="product-img shadow-lg rounded-4 tilt-effect"
         loading="lazy"
-        @error="handleImageError"
       />
       <!-- Placeholder si pas d'image -->
       <div 
         v-else
-        class="product-placeholder shadow-lg rounded-4" 
-        :class="{'tilt-effect': !isMobile}"
+        class="product-placeholder shadow-lg rounded-4 tilt-effect" 
         :style="{ background: getBrandGradient(product.brand) }"
       >
         <span class="brand-initial">{{ product.brand.charAt(0) }}</span>
@@ -77,11 +116,9 @@ const props = defineProps({
   }
 });
 
-// Détection mobile
-const isMobile = ref(false);
-const checkMobile = () => {
-  isMobile.value = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
-};
+// Détection mobile avec notre composable
+const { isMobile } = useMobile()
+const mobileImageError = ref(false)
 
 // Gestionnaire d'erreur pour les images
 function handleImageError(e) {
@@ -92,15 +129,7 @@ function handleImageError(e) {
   e.target.nextElementSibling.style.background = getBrandGradient(props.product.brand);
 }
 
-// Écouteurs d'événements pour la détection mobile
-onMounted(() => {
-  checkMobile();
-  window.addEventListener('resize', checkMobile);
-});
-
-onUnmounted(() => {
-  window.removeEventListener('resize', checkMobile);
-});
+// Plus besoin d'écouteurs manuels, le plugin s'en occupe
 
 // Formater le prix avec des espaces
 function formatPrice(price) {
@@ -526,5 +555,141 @@ const getBrandGradient = (brand) => {
 .product-card:hover .product-shine-overlay {
   opacity: 1;
   animation: cardShine 1.5s forwards;
+}
+/* Styles spécifiques pour la version mobile des cartes de produits */
+.mobile-product-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-image-container {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  background-color: #f8f9fa;
+  overflow: hidden;
+}
+
+.mobile-product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mobile-product-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(135deg, #ff8c00, #ff4500);
+}
+
+.mobile-product-badges {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 5;
+}
+
+.mobile-brand-badge {
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.mobile-stock-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.mobile-in-stock {
+  background-color: rgba(40, 167, 69, 0.8);
+  color: #fff;
+}
+
+.mobile-out-stock {
+  background-color: rgba(220, 53, 69, 0.8);
+  color: #fff;
+}
+
+.mobile-product-info {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-product-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #333;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.mobile-product-price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ff8c00;
+  margin-bottom: 4px;
+}
+
+.mobile-product-old-price {
+  font-size: 0.85rem;
+  color: #6c757d;
+  text-decoration: line-through;
+  margin-bottom: 8px;
+}
+
+.mobile-product-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.mobile-btn-view, .mobile-btn-order {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-btn-view {
+  background-color: #f8f9fa;
+  color: #495057;
+  border: 1px solid #dee2e6;
+}
+
+.mobile-btn-order {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
 }
 </style> 

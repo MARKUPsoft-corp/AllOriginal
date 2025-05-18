@@ -1,7 +1,10 @@
 /**
  * Service pour gérer l'authentification avec le backend Django
  */
-import apiClient from './api';
+import createApiClient from './api';
+
+// Créer un client API unique pour ce service
+const api = createApiClient();
 
 export default {
   /**
@@ -12,7 +15,7 @@ export default {
    * @returns {Promise} - Promesse avec les données de l'utilisateur et le token
    */
   login(email, password, rememberMe = false) {
-    return apiClient.post('/accounts/login/', { email, password })
+    return api.post('/accounts/login/', { email, password })
       .then(response => {
         const { token, user } = response.data;
         
@@ -35,7 +38,7 @@ export default {
    * @returns {Promise} - Promesse avec le statut de déconnexion
    */
   logout() {
-    return apiClient.post('/accounts/logout/')
+    return api.post('/accounts/logout/')
       .then(response => {
         // Supprimer le token et les informations de l'utilisateur
         localStorage.removeItem('admin_token');
@@ -77,7 +80,7 @@ export default {
    * @returns {Promise} - Promesse avec les données de l'utilisateur
    */
   getCurrentUser() {
-    return apiClient.get('/accounts/me/')
+    return api.get('/accounts/me/')
       .then(response => response.data);
   }
 };

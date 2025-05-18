@@ -1,8 +1,11 @@
 /**
  * Service pour gérer les catégories avec le backend Django
  */
-import apiClient from './api';
+import createApiClient from './api';
 import { adaptCategories, adaptCategory } from './adapters';
+
+// Créer un client API unique pour ce service
+const api = createApiClient();
 
 export default {
   /**
@@ -10,7 +13,7 @@ export default {
    * @returns {Promise} - Promesse avec la liste des catégories
    */
   getAllCategories() {
-    return apiClient.get('/categories/')
+    return api.get('/categories/')
       .then(response => {
         console.log('Réponse brute de l\'API categories:', response.data);
         return adaptCategories(response.data);
@@ -23,7 +26,7 @@ export default {
    * @returns {Promise} - Promesse avec les détails de la catégorie
    */
   getCategory(slug) {
-    return apiClient.get(`/categories/${slug}/`)
+    return api.get(`/categories/${slug}/`)
       .then(response => {
         console.log(`Réponse brute de l'API pour la catégorie ${slug}:`, response.data);
         return adaptCategory(response.data);
@@ -36,7 +39,7 @@ export default {
    * @returns {Promise} - Promesse avec la liste des produits de la catégorie
    */
   getCategoryProducts(slug) {
-    return apiClient.get(`/categories/${slug}/products/`)
+    return api.get(`/categories/${slug}/products/`)
       .then(response => response.data);
   },
 
@@ -46,7 +49,7 @@ export default {
    * @returns {Promise} - Promesse avec les détails de la catégorie créée
    */
   createCategory(categoryData) {
-    return apiClient.post('/categories/', categoryData)
+    return api.post('/categories/', categoryData)
       .then(response => response.data);
   },
 
@@ -57,7 +60,7 @@ export default {
    * @returns {Promise} - Promesse avec les détails de la catégorie mise à jour
    */
   updateCategory(slug, categoryData) {
-    return apiClient.put(`/categories/${slug}/`, categoryData)
+    return api.put(`/categories/${slug}/`, categoryData)
       .then(response => response.data);
   },
 
@@ -67,6 +70,6 @@ export default {
    * @returns {Promise} - Promesse avec le statut de suppression
    */
   deleteCategory(slug) {
-    return apiClient.delete(`/categories/${slug}/`);
+    return api.delete(`/categories/${slug}/`);
   }
 };
