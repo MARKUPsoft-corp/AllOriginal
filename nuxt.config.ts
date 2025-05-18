@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   // Configuration API pour communiquer avec le backend Django
   runtimeConfig: {
     public: {
-      apiBaseUrl: 'http://localhost:8000/api'
+      apiBaseUrl: 'https://alloriginal-backend.onrender.com/api'
     }
   },
   

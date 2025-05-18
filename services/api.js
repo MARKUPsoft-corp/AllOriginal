@@ -2,11 +2,15 @@
  * Service API de base pour communiquer avec le backend Django
  */
 import axios from 'axios';
+import { useRuntimeConfig } from 'nuxt/app';
+
+// Récupération de la configuration d'exécution
+const config = useRuntimeConfig();
 
 // Création de l'instance axios avec la configuration de base
 const apiClient = axios.create({
-  // URL du backend Django - configurable via les variables d'environnement
-  baseURL: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:8001/api',
+  // URL du backend Django - configurée dans nuxt.config.ts
+  baseURL: config.public.apiBaseUrl,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
