@@ -25,6 +25,27 @@ export default defineNuxtConfig({
     }
   },
   
+  // Désactiver le cache pour les mobiles et forcer le rechargement
+  nitro: {
+    compressPublicAssets: true,
+    routeRules: {
+      '/**': {
+        headers: {
+          'Cache-Control': 'no-store, max-age=0',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      },
+      '/api/**': {
+        headers: {
+          'Cache-Control': 'no-store, max-age=0',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      }
+    }
+  },
+  
   // Modules
   modules: [
     '@nuxt/image',
@@ -33,18 +54,38 @@ export default defineNuxtConfig({
   
   // Global CSS
   css: [
-    '~/assets/css/main.css',
-    '~/assets/css/mobile-optimizations.css',
     'bootstrap/dist/css/bootstrap.min.css',
     'bootstrap-icons/font/bootstrap-icons.css',
+    'aos/dist/aos.css',
+    '~/assets/css/main.css',
+    '~/assets/css/mobile-optimizations.css',
+    '~/assets/css/real-mobile-fixes.css'
   ],
+  
+  // Optimisation des CSS pour éviter le FOUC (Flash of unstyled content)
+  vite: {
+    css: {
+      devSourcemap: true,
+      preprocessorOptions: {
+        scss: {
+          additionalData: '@import "@/assets/css/variables.scss";'
+        }
+      }
+    },
+    build: {
+      cssCodeSplit: false,
+      cssMinify: true
+    }
+  },
   
   // Plugins
   plugins: [
     { src: '~/plugins/bootstrap.client.js', mode: 'client' },
     { src: '~/plugins/animations.client.js', mode: 'client' },
     { src: '~/plugins/particles.client.js', mode: 'client' },
-    { src: '~/plugins/admin-navigation.js', mode: 'client' }
+    { src: '~/plugins/admin-navigation.js', mode: 'client' },
+    { src: '~/plugins/mobile-optimization.client.js', mode: 'client' },
+    { src: '~/plugins/real-device-fix.client.js', mode: 'client' }
   ],
   
   // Configuration des règles de routes
