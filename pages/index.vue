@@ -122,18 +122,19 @@
           </div>
         </div>
         
-        <div class="categories-slider-container" data-aos="fade-up">
-          <div class="categories-slider" ref="categorySliderRef">
-            <div v-for="(category, index) in categories" :key="category.id" class="category-slide">
-              <div class="category-box" 
-                :data-aos-delay="`${index * 50}`">
+        <!-- Catégories responsive avec défilement horizontal sur mobile -->
+        <div class="categories-container" data-aos="fade-up">
+          <!-- Version défilable horizontalement sur mobile -->
+          <div class="category-scroll-container d-flex d-md-none">
+            <div v-for="(category, index) in categories" :key="category.id" class="category-card-wrapper">
+              <div class="category-box" :data-aos-delay="`${index * 50}`">
                 <div class="category-pulse-wrapper">
                   <div class="pulse-effect"></div>
                   <div class="icon-halo"></div>
                   <div class="category-icon-container">
                     <i :class="`bi bi-${category.icon === 'smartphone' ? 'phone' : category.icon === 'laptop' ? 'laptop' : category.icon === 'tablet' ? 'tablet' : category.icon === 'headphones' ? 'headphones' : 'box'}`"></i>
-          </div>
-        </div>
+                  </div>
+                </div>
                 <h3 class="category-name">{{ category.name }}</h3>
                 <p class="category-desc">{{ category.description }}</p>
                 <NuxtLink :to="`/catalogue?category=${category.slug}`" class="category-link">
@@ -144,18 +145,41 @@
             </div>
           </div>
           
-          <div class="slider-controls">
-            <button class="slider-arrow slider-prev" @click="slidePrev" aria-label="Précédent">
-              <i class="bi bi-chevron-left"></i>
-            </button>
-            <button class="slider-arrow slider-next" @click="slideNext" aria-label="Suivant">
-              <i class="bi bi-chevron-right"></i>
-            </button>
-          </div>
+          <!-- Version normale pour desktop avec slider -->
+          <div class="categories-slider-container d-none d-md-block">
+            <div class="categories-slider" ref="categorySliderRef">
+              <div v-for="(category, index) in categories" :key="category.id" class="category-slide">
+                <div class="category-box" :data-aos-delay="`${index * 50}`">
+                  <div class="category-pulse-wrapper">
+                    <div class="pulse-effect"></div>
+                    <div class="icon-halo"></div>
+                    <div class="category-icon-container">
+                      <i :class="`bi bi-${category.icon === 'smartphone' ? 'phone' : category.icon === 'laptop' ? 'laptop' : category.icon === 'tablet' ? 'tablet' : category.icon === 'headphones' ? 'headphones' : 'box'}`"></i>
+                    </div>
+                  </div>
+                  <h3 class="category-name">{{ category.name }}</h3>
+                  <p class="category-desc">{{ category.description }}</p>
+                  <NuxtLink :to="`/catalogue?category=${category.slug}`" class="category-link">
+                    Découvrir <i class="bi bi-arrow-right"></i>
+                  </NuxtLink>
+                  <div class="category-hover-effect"></div>
+                </div>
+              </div>
+            </div>
           
-          <div class="slider-pagination">
-            <div class="slider-progress">
-              <div class="slider-progress-bar" ref="progressBarRef"></div>
+            <div class="slider-controls">
+              <button class="slider-arrow slider-prev" @click="slidePrev" aria-label="Précédent">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <button class="slider-arrow slider-next" @click="slideNext" aria-label="Suivant">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+            </div>
+            
+            <div class="slider-pagination">
+              <div class="slider-progress">
+                <div class="slider-progress-bar" ref="progressBarRef"></div>
+              </div>
             </div>
           </div>
         </div>

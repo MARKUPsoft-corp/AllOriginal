@@ -200,12 +200,22 @@ const handleClickOutside = (event) => {
   }
 };
 
-// Ajouter classe au scroll
+// Ajouter classe au scroll avec gestion spécifique mobile
 const handleScroll = () => {
+  const isMobileView = window.innerWidth < 992; // Breakpoint lg de Bootstrap
+  
   if (window.scrollY > 50) {
     isScrolled.value = true;
+    
+    // Ajouter une classe spécifique pour mobile - moins transparente
+    if (isMobileView) {
+      document.querySelector('.navbar')?.classList.add('mobile-scrolled');
+    } else {
+      document.querySelector('.navbar')?.classList.remove('mobile-scrolled');
+    }
   } else {
     isScrolled.value = false;
+    document.querySelector('.navbar')?.classList.remove('mobile-scrolled');
   }
 };
 

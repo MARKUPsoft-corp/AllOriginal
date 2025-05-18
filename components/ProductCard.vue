@@ -1,71 +1,6 @@
 <template>
-  <!-- Version mobile avec tous les détails (identique à desktop) -->
-  <div v-if="isMobile" class="product-card shine-effect-container mobile-product-card">
-    <div class="product-brand">
-      <span class="brand-badge">{{ product.brand }}</span>
-      <span class="stock-badge" :class="product.in_stock ? 'stock-badge-success' : 'stock-badge-danger'">
-        {{ product.in_stock ? 'En stock' : 'Rupture' }}
-      </span>
-    </div>
-    
-    <div class="product-image">
-      <!-- Image du produit si disponible -->
-      <img 
-        v-if="product.main_image" 
-        :src="product.main_image" 
-        :alt="product.name" 
-        class="product-img shadow-lg rounded-4 tilt-effect"
-        loading="eager"
-        @error="handleImageError"
-      />
-      <!-- Placeholder si pas d'image -->
-      <div 
-        v-else
-        class="product-placeholder shadow-lg rounded-4 tilt-effect" 
-        :style="{ background: getBrandGradient(product.brand) }"
-      >
-        <span class="brand-initial">{{ product.brand.charAt(0) }}</span>
-        <span class="brand-model opacity-50">{{ product.model || product.name.split(' ')[0] }}</span>
-      </div>
-    </div>
-    
-    <div class="product-info">
-      <h3 class="product-title">{{ product.name }}</h3>
-      <div class="product-features" v-if="product.specs && product.specs.length > 0">
-        <span v-for="(spec, index) in product.specs" :key="index" class="feature-badge">
-          {{ spec }}
-        </span>
-      </div>
-      <p class="product-description">{{ product.description }}</p>
-      <div class="product-price-container">
-        <div class="product-price">{{ formatPrice(product.price) }} <span class="currency">FCFA</span></div>
-        <div v-if="product.promo" class="product-old-price">{{ formatPrice(product.old_price || Math.round(product.price * 1.2)) }} FCFA</div>
-        <div v-if="product.promo" class="product-ribbon">
-          <i class="bi bi-tag-fill me-1"></i>Promo
-        </div>
-      </div>
-      <div class="product-actions">
-        <NuxtLink :to="`/produit/${product.slug}`" class="btn-details shine-effect">
-          <i class="bi bi-eye me-2"></i> Voir détails
-        </NuxtLink>
-        <a 
-          v-if="product.in_stock"
-          :href="getWhatsAppLink(product)" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          class="btn-whatsapp shine-effect">
-          <i class="bi bi-whatsapp me-2"></i> Commander
-        </a>
-        <span v-else class="btn-unavailable">
-          <i class="bi bi-x-circle me-2"></i> Indisponible
-        </span>
-      </div>
-    </div>
-    <div class="product-shine-overlay"></div>
-  </div>
-  
-  <!-- Version desktop originale avec les effets transform -->
-  <div v-else class="product-card shine-effect-container">
+  <!-- Carte produit unique responsive -->
+  <div class="product-card shine-effect-container responsive-product-card">
     <div class="product-brand">
       <span class="brand-badge">{{ product.brand }}</span>
       <span class="stock-badge" :class="product.in_stock ? 'stock-badge-success' : 'stock-badge-danger'">
@@ -140,9 +75,7 @@ const props = defineProps({
   }
 });
 
-// Détection mobile avec notre composable
-const { isMobile } = useMobile()
-const mobileImageError = ref(false)
+// Nous n'avons plus besoin de la détection mobile pour la carte produit
 
 // Gestionnaire d'erreur pour les images
 function handleImageError(e) {

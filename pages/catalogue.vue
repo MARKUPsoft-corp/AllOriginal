@@ -104,10 +104,11 @@
                 </div>
               </div>
               
-              <!-- Recherche et filtres -->
+              <!-- Recherche et filtres - Optimisés pour desktop et mobile -->
               <div class="search-filters p-4">
                 <div class="row g-3 align-items-center">
-                  <div class="col-12 col-md-5">
+                  <!-- Barre de recherche - 100% sur mobile, 5/12 sur desktop -->
+                  <div class="col-12 col-md-5 mb-3 mb-md-0">
                     <div class="search-bar position-relative">
                       <input 
                         type="text" 
@@ -119,16 +120,21 @@
                     </div>
                   </div>
                   
+                  <!-- Filtres - Un élément par ligne sur mobile, en ligne sur desktop -->
                   <div class="col-12 col-md-7">
-                    <div class="row g-3">
-                      <div class="col-6 col-sm-4">
+                    <div class="row g-3 mobile-filters">
+                      <!-- Sélection des marques - 100% sur mobile -->
+                      <div class="col-12 col-md-4 filter-item">
+                        <label class="filter-label d-block d-md-none">Marque :</label>
                         <select v-model="selectedBrand" class="form-select py-2">
                           <option value="">Toutes les marques</option>
                           <option v-for="brand in availableBrands" :key="brand" :value="brand">{{ brand }}</option>
                         </select>
                       </div>
                       
-                      <div class="col-6 col-sm-4">
+                      <!-- Tri des prix - 100% sur mobile -->
+                      <div class="col-12 col-md-4 filter-item">
+                        <label class="filter-label d-block d-md-none">Prix :</label>
                         <select v-model="priceRange" class="form-select py-2">
                           <option value="">Tous les prix</option>
                           <option value="low">Prix croissant</option>
@@ -136,7 +142,8 @@
                         </select>
                       </div>
                       
-                      <div class="col-12 col-sm-4">
+                      <!-- Filtre de stock - 100% sur mobile -->
+                      <div class="col-12 col-md-4 filter-item">
                         <div class="stock-filter form-check form-switch">
                           <input class="form-check-input" type="checkbox" id="stockSwitch" v-model="inStockOnly">
                           <label class="form-check-label" for="stockSwitch">En stock uniquement</label>
