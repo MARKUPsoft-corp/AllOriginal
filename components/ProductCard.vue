@@ -1,5 +1,5 @@
 <template>
-  <div class="product-card shine-effect-container">
+  <div class="product-card" :class="{'shine-effect-container': !isMobile}">
     <div class="product-brand">
       <span class="brand-badge">{{ product.brand }}</span>
       <span class="stock-badge" :class="product.in_stock ? 'stock-badge-success' : 'stock-badge-danger'">
@@ -13,13 +13,16 @@
         v-if="product.main_image" 
         :src="product.main_image" 
         :alt="product.name" 
-        class="product-img shadow-lg rounded-4 tilt-effect"
+        class="product-img shadow-lg rounded-4"
+        :class="{'tilt-effect': !isMobile}"
         loading="lazy"
+        @error="handleImageError"
       />
       <!-- Placeholder si pas d'image -->
       <div 
         v-else
-        class="product-placeholder shadow-lg rounded-4 tilt-effect" 
+        class="product-placeholder shadow-lg rounded-4" 
+        :class="{'tilt-effect': !isMobile}"
         :style="{ background: getBrandGradient(product.brand) }"
       >
         <span class="brand-initial">{{ product.brand.charAt(0) }}</span>
@@ -64,8 +67,9 @@
 </template>
 
 <script setup>
-import { defineProps, computed } from 'vue';
+import { ref, onMounted, onUnmounted, defineProps, computed } from 'vue';
 
+// Props du composant
 const props = defineProps({
   product: {
     type: Object,
@@ -73,18 +77,41 @@ const props = defineProps({
   }
 });
 
+// Détection mobile
+const isMobile = ref(false);
+const checkMobile = () => {
+  isMobile.value = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+};
+
+// Gestionnaire d'erreur pour les images
+function handleImageError(e) {
+  // Remplacer par un placeholder si l'image ne charge pas
+  e.target.style.display = 'none';
+  e.target.nextElementSibling = document.createElement('div');
+  e.target.nextElementSibling.className = 'product-placeholder shadow-lg rounded-4';
+  e.target.nextElementSibling.style.background = getBrandGradient(props.product.brand);
+}
+
+// Écouteurs d'événements pour la détection mobile
+onMounted(() => {
+  checkMobile();
+  window.addEventListener('resize', checkMobile);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', checkMobile);
+});
+
 // Formater le prix avec des espaces
-const formatPrice = (price) => {
-  return new Intl.NumberFormat('fr-FR').format(price);
+function formatPrice(price) {
+  if (!price) return '0';
+  return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 };
 
 // Générer le lien WhatsApp
-const getWhatsAppLink = (product) => {
-  const baseURL = 'https://wa.me/237675108876'; // Numéro WhatsApp réel
-  const message = encodeURIComponent(
-    `Bonjour, je suis intéressé par le produit ${product.name} à ${formatPrice(product.price)} FCFA. Est-il disponible ?`
-  );
-  return `${baseURL}?text=${message}`;
+function getWhatsAppLink(product) {
+  const message = `Bonjour, je suis intéressé par ${product.name} à ${formatPrice(product.price)} FCFA. Est-ce disponible ?`;
+  return `https://wa.me/237675108876?text=${encodeURIComponent(message)}`;
 };
 
 // Générer un dégradé de couleur en fonction de la marque

@@ -1,0 +1,64 @@
+/* Optimisations pour appareils mobiles */
+
+/* Réduire les animations et effets sur mobile */
+@media (max-width: 767px) {
+  /* Simplifier les cartes */
+  .product-card {
+    transform: none !important;
+    transition: transform 0.2s ease-in-out !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  /* Désactiver les effets de survol complexes */
+  .shine-effect::before,
+  .shine-effect-container::before {
+    display: none !important;
+  }
+
+  /* Améliorer la lisibilité et la navigation */
+  .product-title {
+    font-size: 1rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .product-description {
+    font-size: 0.85rem !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  /* Optimiser le chargement des images */
+  img {
+    transform: translateZ(0); /* Activer l'accélération matérielle */
+    will-change: auto; /* Optimisation du moteur de rendu */
+  }
+
+  /* Simplifier l'effet de survol des boutons */
+  .btn-details, 
+  .btn-whatsapp {
+    transform: none !important;
+    box-shadow: none !important;
+    transition: background-color 0.2s ease-in-out !important;
+  }
+
+  /* Optimiser la performance du navbar */
+  .navbar {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Optimiser la performance du scroll */
+  body, html {
+    scroll-behavior: auto !important; /* Désactiver le scroll smooth pour améliorer la réactivité */
+  }
+  
+  /* Améliorer la navigation tactile */
+  .nav-link, 
+  .dropdown-item, 
+  .btn {
+    padding: 0.75rem 1rem !important;
+  }
+}

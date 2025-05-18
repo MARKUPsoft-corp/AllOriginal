@@ -10,6 +10,21 @@ export default defineNuxtConfig({
     }
   },
   
+  // Optimisations de performance
+  experimental: {
+    payloadExtraction: true,
+    renderJsonPayloads: true,
+    crossOriginPrefetch: true,
+    viewTransition: true,
+  },
+  
+  // Optimisation de routage pour éviter les problèmes de rechargement sur mobile
+  router: {
+    options: {
+      strict: false
+    }
+  },
+  
   // Modules
   modules: [
     '@nuxt/image',
@@ -19,6 +34,7 @@ export default defineNuxtConfig({
   // Global CSS
   css: [
     '~/assets/css/main.css',
+    '~/assets/css/mobile-optimizations.css',
     'bootstrap/dist/css/bootstrap.min.css',
     'bootstrap-icons/font/bootstrap-icons.css',
   ],

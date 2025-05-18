@@ -5,19 +5,27 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 export default defineNuxtPlugin((nuxtApp) => {
+  // Détecter si l'appareil est un mobile
+  const isMobile = () => {
+    if (typeof window === 'undefined') return false
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768
+  }
+  
   nuxtApp.hook('app:mounted', () => {
-    // Delay AOS initialization to avoid hydration issues
+    // Utiliser une configuration simplifiée sur mobile
+    const mobile = isMobile()
+    
+    // Initialiser AOS avec des paramètres adaptés selon l'appareil
     setTimeout(() => {
-      // Initialize AOS only after hydration is complete
       AOS.init({
-        duration: 800,
-        easing: 'ease-out-cubic',
-        once: true, // Changed to true to prevent re-animation
-        mirror: false, // Disabled mirroring to reduce complexity
-        offset: 50,
-        disable: 'mobile' // Disable on mobile for better performance
+        duration: mobile ? 400 : 800,
+        easing: 'ease-out',
+        once: true,
+        mirror: false,
+        offset: mobile ? 20 : 50,
+        disable: mobile // Désactiver complètement sur mobile pour de meilleures performances
       })
-    }, 200) // Delay of 200ms to ensure complete hydration
+    }, mobile ? 100 : 200) // Réduire le délai sur mobile
 
     // Initialize GSAP ScrollTrigger
     gsap.registerPlugin(ScrollTrigger)
