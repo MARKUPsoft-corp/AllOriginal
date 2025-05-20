@@ -749,7 +749,7 @@ onMounted(async () => {
 @media (max-width: 992px) {
   .product-main-image img {
     max-height: 400px;
-  opacity: 1;
+  }
 }
 
 @keyframes shine {
