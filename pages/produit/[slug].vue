@@ -795,19 +795,32 @@ onMounted(async () => {
 }
 
 /* Style pour assurer que la description s'affiche complètement sur mobile */
-.full-description {
-  white-space: normal;
-  overflow: visible;
-  text-overflow: clip;
-  max-height: none;
-  height: auto;
-  text-align: justify;
+.product-description .full-description {
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  max-height: none !important;
+  height: auto !important;
+  text-align: justify !important;
+  display: block !important;
+  word-wrap: break-word !important;
+  word-break: normal !important;
 }
 
 @media (max-width: 767px) {
-  .full-description {
+  .product-description .full-description {
     padding: 1rem !important;
-    font-size: 0.95rem;
+    font-size: 0.95rem !important;
+    line-height: 1.6 !important;
+    -webkit-line-clamp: unset !important;
+    -webkit-box-orient: unset !important;
+    max-height: unset !important;
+  }
+  
+  /* Forçage des styles pour éviter les troncatures automatiques sur mobile */
+  .product-description {
+    max-height: unset !important;
+    overflow: visible !important;
   }
 }
 

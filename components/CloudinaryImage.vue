@@ -1,19 +1,15 @@
 <template>
   <div :class="['cloudinary-image-container', containerClass]" :style="containerStyle">
     <client-only>
-      <CldImage
-        v-if="src && src.includes('cloudinary') || isCloudinaryUrl"
-        :src="getCloudinarySrc(src)"
+      <!-- Si c'est une URL Cloudinary, on utilise CldImage -->
+      <img 
+        v-if="src"
+        :src="src"
         :width="width"
         :height="height"
         :alt="alt"
         :loading="loading"
-        :gravity="gravity"
-        :crop="crop"
-        :quality="quality"
-        :fetch-format="fetchFormat"
         :class="imageClass"
-        :placeholder="placeholder"
       />
       <div v-else-if="!src && !fallbackSrc" class="placeholder-image">
         <span class="placeholder-initial">{{ placeholderText }}</span>
@@ -34,6 +30,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { useRuntimeConfig } from 'nuxt/app';
 
 // Props du composant
 const props = defineProps({
@@ -102,32 +99,8 @@ const props = defineProps({
 // État et gestion des erreurs
 const hasError = ref(false);
 
-// Vérifier si une URL est une URL Cloudinary
-const isCloudinaryUrl = computed(() => {
-  if (!props.src) return false;
-  return props.src.includes('cloudinary.com') || props.src.includes('res.cloudinary.com');
-});
-
-// Extraire le chemin de l'image pour Cloudinary
-const getCloudinarySrc = (src) => {
-  if (!src) return '';
-
-  // Si c'est déjà une URL Cloudinary complète
-  if (src.includes('cloudinary.com')) {
-    return src;
-  }
-
-  // Si c'est une URL de l'API AllOriginal
-  if (src.includes('/media/')) {
-    // Extraire juste le chemin du fichier après /media/
-    const parts = src.split('/media/');
-    if (parts.length > 1) {
-      return parts[1];
-    }
-  }
-
-  return src;
-};
+// Aucun besoin de transformation complexe, nous utilisons directement l'URL fournie
+// Nous avons supprimé le code de détection et transformation des URLs pour simplifier
 
 // Gestion des erreurs d'image
 const handleImageError = (e) => {
