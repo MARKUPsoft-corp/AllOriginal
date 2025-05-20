@@ -5,8 +5,15 @@ export default defineNuxtConfig({
   
   // Configuration API pour communiquer avec le backend Django
   runtimeConfig: {
+    // Variables privées (côté serveur uniquement)
+    // cloudinaryApiSecret n'est disponible que côté serveur
+    cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || '',
+    
+    // Variables publiques (accessibles côté client)
     public: {
-      apiBaseUrl: 'https://alloriginal-backend.onrender.com/api'
+      apiBaseUrl: 'https://alloriginal-backend.onrender.com/api',
+      cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || 'dqwohzfae',
+      cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || '529667232189611',
     }
   },
   

@@ -44,6 +44,9 @@
                     :gravity="'auto'"
                     loading="lazy"
                   />
+                  <div v-if="activeImage" class="debug-info position-absolute bottom-0 start-0 bg-dark text-white p-2" style="font-size: 0.7rem; opacity: 0.7; max-width: 100%; overflow: hidden; text-overflow: ellipsis;">
+                    URL: {{ activeImage }}
+                  </div>
                   <!-- Placeholder si pas d'image -->
                   <template v-else>
                     <div class="brand-model-badge">{{ product.model || product.name.split(' ')[0] }}</div>
@@ -381,6 +384,9 @@ const productHasImages = computed(() => {
 const displayedImages = computed(() => {
   if (!product.value) return [];
   
+  // Déboguer toutes les données du produit pour comprendre la structure
+  console.log('Données complètes du produit:', product.value);
+  
   // Essayer d'abord avec full_images (plus complet)
   if (product.value.full_images && Array.isArray(product.value.full_images) && product.value.full_images.length > 0) {
     console.log('Utilisation de full_images:', product.value.full_images);
@@ -392,12 +398,14 @@ const displayedImages = computed(() => {
     });
     
     // Extraire les URLs des images
-    return sortedImages.slice(0, 3).map(img => img.image);
+    const imageUrls = sortedImages.slice(0, 3).map(img => img.image);
+    console.log('URLs extraites de full_images:', imageUrls);
+    return imageUrls;
   }
   
   // Essayer ensuite avec les URLs simples
   if (product.value.images && Array.isArray(product.value.images) && product.value.images.length > 0) {
-    console.log('Utilisation de images URLs simples');
+    console.log('Utilisation de images URLs simples', product.value.images);
     // Limiter à 3 images maximum
     return product.value.images.slice(0, 3);
   }

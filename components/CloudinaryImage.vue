@@ -1,22 +1,22 @@
 <template>
   <div :class="['cloudinary-image-container', containerClass]" :style="containerStyle">
     <client-only>
-      <!-- Si c'est une URL Cloudinary, on utilise CldImage -->
       <img 
-        v-if="src"
-        :src="src"
+        v-if="processedSrc"
+        :src="processedSrc"
         :width="width"
         :height="height"
         :alt="alt"
         :loading="loading"
         :class="imageClass"
+        @error="handleImageError"
       />
-      <div v-else-if="!src && !fallbackSrc" class="placeholder-image">
+      <div v-else-if="!processedSrc && !fallbackSrc" class="placeholder-image">
         <span class="placeholder-initial">{{ placeholderText }}</span>
       </div>
       <img
         v-else
-        :src="src || fallbackSrc"
+        :src="fallbackSrc"
         :width="width"
         :height="height"
         :alt="alt"
@@ -25,6 +25,9 @@
         @error="handleImageError"
       />
     </client-only>
+    <div v-if="debug && processedSrc" class="debug-info position-absolute bottom-0 start-0 bg-dark text-white p-1" style="font-size: 0.6rem; opacity: 0.7; max-width: 100%; overflow: hidden; text-overflow: ellipsis;">
+      {{ processedSrc }}
+    </div>
   </div>
 </template>
 
@@ -93,17 +96,46 @@ const props = defineProps({
   containerStyle: {
     type: Object,
     default: () => ({})
+  },
+  debug: {
+    type: Boolean,
+    default: false
   }
 });
 
 // État et gestion des erreurs
 const hasError = ref(false);
+const config = useRuntimeConfig();
 
-// Aucun besoin de transformation complexe, nous utilisons directement l'URL fournie
-// Nous avons supprimé le code de détection et transformation des URLs pour simplifier
+// Traitement des URLs pour les faire pointer directement sur Cloudinary
+const processedSrc = computed(() => {
+  if (!props.src) return '';
+  
+  // Vérifier si c'est déjà une URL Cloudinary directe
+  if (props.src.includes('res.cloudinary.com')) {
+    return props.src;
+  }
+  
+  // Corriger les URLs qui passent par le backend
+  if (props.src.includes('/media/image/upload/')) {
+    // Extraction du chemin Cloudinary depuis l'URL du backend
+    const regex = /\/media\/image\/upload\/(.+)/;
+    const match = props.src.match(regex);
+    
+    if (match && match[1]) {
+      // Construction de l'URL Cloudinary directe
+      const cloudName = config.public.cloudinaryCloudName || 'dqwohzfae';
+      return `https://res.cloudinary.com/${cloudName}/image/upload/${match[1]}`;
+    }
+  }
+  
+  // Si aucune transformation n'est possible, renvoyer l'URL d'origine
+  return props.src;
+});
 
 // Gestion des erreurs d'image
 const handleImageError = (e) => {
+  console.error('Erreur de chargement d\'image:', props.src);
   hasError.value = true;
   // Utilisez le fallback si disponible, sinon masquez l'image
   if (!props.fallbackSrc) {
