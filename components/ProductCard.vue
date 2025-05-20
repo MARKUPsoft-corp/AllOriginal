@@ -35,7 +35,12 @@
     </div>
     
     <div class="product-info">
-      <h3 class="product-title">{{ product.name }}</h3>
+      <div class="product-header d-flex align-items-start">
+        <h3 class="product-title">{{ product.name }}</h3>
+        <div v-if="product.promo" class="product-ribbon ms-2">
+          <i class="bi bi-tag-fill me-1"></i>Promo
+        </div>
+      </div>
       <div class="product-features" v-if="product.specs && product.specs.length > 0">
         <span v-for="(spec, index) in product.specs" :key="index" class="feature-badge">
           {{ spec }}
@@ -44,10 +49,7 @@
       <p class="product-description">{{ product.description }}</p>
       <div class="product-price-container">
         <div class="product-price">{{ formatPrice(product.price) }} <span class="currency">FCFA</span></div>
-        <div v-if="product.promo" class="product-old-price">{{ formatPrice(product.old_price || Math.round(product.price * 1.2)) }} FCFA</div>
-        <div v-if="product.promo" class="product-ribbon">
-          <i class="bi bi-tag-fill me-1"></i>Promo
-        </div>
+        <div v-if="product.promo" class="product-old-price mt-1">{{ formatPrice(product.old_price || Math.round(product.price * 1.2)) }} FCFA</div>
       </div>
       <div class="product-actions">
         <NuxtLink :to="`/produit/${product.slug}`" class="btn-details shine-effect">
@@ -231,215 +233,6 @@ const getBrandGradient = (brand) => {
 }
 
 .product-image {
-  padding: 1.5rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 220px;
-  position: relative;
-  overflow: hidden;
-}
-
-.product-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-  max-height: 180px;
-  transition: transform 0.3s ease;
-}
-
-.product-placeholder {
-  width: 180px;
-  height: 180px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  position: relative;
-  transition: transform 0.5s ease;
-}
-
-.brand-initial {
-  font-size: 3.5rem;
-  font-weight: bold;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-}
-
-.brand-model {
-  font-size: 1rem;
-  font-weight: 500;
-  margin-top: -0.5rem;
-}
-
-.tilt-effect {
-  transition: transform 0.3s ease;
-}
-
-.product-card:hover .tilt-effect {
-  transform: perspective(500px) rotateY(5deg) rotateX(5deg) translateZ(10px);
-}
-
-.product-info {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  position: relative;
-  z-index: 5;
-}
-
-.product-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-  color: var(--bs-gray-800);
-  transition: color 0.3s ease;
-}
-
-.product-card:hover .product-title {
-  color: var(--bs-orange);
-}
-
-.product-features {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.feature-badge {
-  font-size: 0.7rem;
-  font-weight: 500;
-  padding: 0.15rem 0.5rem;
-  border-radius: 0.25rem;
-  background-color: rgba(var(--bs-primary-rgb), 0.1);
-  color: var(--bs-primary);
-}
-
-.product-description {
-  font-size: 0.9rem;
-  line-height: 1.6;
-  color: var(--bs-gray-600);
-  margin-bottom: 1rem;
-  flex-grow: 1;
-}
-
-.product-price-container {
-  display: flex;
-  align-items: flex-end;
-  margin-bottom: 1.25rem;
-  position: relative;
-}
-
-.product-price {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--bs-orange);
-  margin-right: 0.75rem;
-}
-
-.currency {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--bs-gray-600);
-}
-
-.product-old-price {
-  font-size: 0.9rem;
-  color: var(--bs-gray-500);
-  text-decoration: line-through;
-}
-
-.product-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  position: relative;
-  z-index: 10;
-}
-
-.btn-details, .btn-whatsapp, .btn-unavailable {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-align: center;
-  text-decoration: none;
-  position: relative;
-  z-index: 5;
-}
-
-.btn-details {
-  background-color: rgba(var(--bs-primary-rgb), 0.1);
-  color: var(--bs-primary);
-  border: none;
-}
-
-.btn-details:hover {
-  background-color: var(--bs-primary);
-  color: white;
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(0, 123, 255, 0.2);
-}
-
-.btn-whatsapp {
-  background-color: var(--bs-success);
-  color: white;
-  border: none;
-}
-
-.btn-whatsapp:hover {
-  background-color: #0c8a3e;
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
-}
-
-.btn-unavailable {
-  background-color: rgba(var(--bs-gray-400-rgb), 0.2);
-  color: var(--bs-gray-600);
-  cursor: not-allowed;
-}
-
-.shine-effect {
-  position: relative;
-  overflow: hidden;
-}
-
-.shine-effect::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
-  transform: rotate(-45deg);
-  opacity: 0;
-  transition: opacity 0.8s ease;
-}
-
-.shine-effect:hover::after {
-  opacity: 1;
-  animation: shine 1.5s forwards;
-}
-
-.shine-effect-container {
-  position: relative;
-  overflow: hidden;
-}
-
-.product-shine {
-  position: absolute;
-  top: -100%;
-  left: -100%;
-  width: 250%;
   height: 250%;
   background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%);
   transform: rotate(-45deg);

@@ -133,7 +133,10 @@
                 {{ product.in_stock ? 'En stock' : 'Rupture de stock' }}
                   </span>
                 </div>
-                <h1 class="product-title display-5 fw-bold mb-3">{{ product.name }}</h1>
+                <h1 class="product-title display-5 fw-bold mb-3">
+                  {{ product.name }}
+                  <span v-if="product.promo" class="product-ribbon ms-2">Promo</span>
+                </h1>
                 
                 <!-- Note et avis (simulés) -->
                 <div class="rating-wrapper d-flex align-items-center gap-2 mb-3">
@@ -146,24 +149,30 @@
               
               <!-- Prix -->
               <div class="product-price-container mb-4">
-                <div class="d-flex align-items-baseline gap-3">
+                <!-- Prix normal ou prix en promo -->
+                <div class="price-info">
                   <div class="current-price display-6 fw-bold text-orange">{{ formatPrice(product.price) }} FCFA</div>
-                  <div v-if="product.promo" class="old-price text-decoration-line-through text-muted fs-5">
-                    {{ formatPrice(product.old_price || Math.round(product.price * 1.2)) }} FCFA
+                  
+                  <div v-if="product.promo" class="price-discount-info mt-2">
+                    <div class="old-price text-decoration-line-through text-muted fs-5">
+                      {{ formatPrice(product.old_price || Math.round(product.price * 1.2)) }} FCFA
+                    </div>
+                    <div class="savings-badge bg-success-subtle text-success small rounded-pill px-2 py-1 d-inline-block mt-1">
+                      Économisez {{ calculateDiscount(product) }}%
+                    </div>
                   </div>
                 </div>
-                <div v-if="product.promo" class="savings-badge bg-success-subtle text-success small rounded-pill px-2 py-1 d-inline-block mt-2">
-                  Économisez {{ calculateDiscount(product) }}%
               </div>
-            </div>
             
               <!-- Description -->
               <div class="product-description mb-5">
                 <h2 class="description-title fw-semibold fs-4 mb-4 border-start border-4 border-orange ps-3">Description</h2>
                 <div class="description-text p-4 bg-light rounded-3 shadow-sm">
-                  {{ product.long_description || product.description }}
-            </div>
-            </div>
+                  <p class="description-content mb-0">
+                    {{ product.long_description || product.description }}
+                  </p>
+                </div>
+              </div>
             
               <!-- Actions -->
               <div class="product-actions mb-4">
@@ -418,11 +427,25 @@ const activeImage = computed(() => {
   return null; // Les autres cas sont déjà couverts par displayedImages
 });
 
-// Générer le lien WhatsApp
+// Générer le lien WhatsApp (Web sur desktop, app sur mobile)
 const getWhatsAppLink = (product) => {
   const text = `Bonjour, je suis intéressé(e) par le produit ${product.name} au prix de ${formatPrice(product.price)} FCFA sur All Original. Pouvez-vous me donner plus d'informations ?`;
   const encodedText = encodeURIComponent(text);
-  return `https://wa.me/237675108876?text=${encodedText}`;
+  
+  // Détection si l'utilisateur est sur mobile
+  const isMobile = () => {
+    if (process.client) {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+    return false;
+  };
+  
+  // Rediriger vers WhatsApp Web sur PC, et l'application sur mobile
+  if (isMobile()) {
+    return `https://wa.me/237675108876?text=${encodedText}`;
+  } else {
+    return `https://web.whatsapp.com/send?phone=237675108876&text=${encodedText}`;
+  }
 };
 
 // Assigner des icônes bootstrap en fonction du nom de la spécification
@@ -633,64 +656,16 @@ onMounted(async () => {
 
 .thumbnail-item.active {
   border-color: var(--bs-orange);
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
 }
 
-.thumbnail-item.active::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-bottom: 8px solid var(--bs-orange);
-  transform: translateX(-50%) rotate(180deg);
-}
-
-/* Spécifications */
-.product-specs {
-  margin-bottom: 2rem;
-}
-
-.spec-item {
-  background-color: #f8f9fa;
-  border-radius: 0.75rem;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+.thumbnail-inner {
+  width: 100%;
   height: 100%;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
 }
 
-.spec-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-  border-left: 3px solid var(--bs-orange);
-}
-
-.spec-icon {
-  font-size: 1.5rem;
-  flex-shrink: 0;
-}
-
-.spec-label {
-  font-size: 0.75rem;
-  color: var(--bs-gray-600);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.spec-value {
-  font-weight: 600;
-  color: var(--bs-gray-800);
-  font-size: 0.95rem;
-  line-height: 1.2;
-}
-
-/* Infos produit */
+/* Informations produit */
 .product-info-container {
   height: 100%;
   display: flex;
@@ -698,62 +673,82 @@ onMounted(async () => {
 }
 
 .brand-badge {
-  background-color: var(--bs-primary);
-  color: white;
+  background-color: #f1f1f1;
+  color: #333;
   font-weight: 600;
-  letter-spacing: 0.5px;
-  font-size: 0.85rem;
 }
 
 .stock-badge {
   font-weight: 600;
-  font-size: 0.85rem;
-  letter-spacing: 0.5px;
 }
 
 .stock-badge-success {
-  background-color: rgba(var(--bs-success-rgb), 0.15);
-  color: var(--bs-success);
+  background-color: #d4edda;
+  color: #155724;
 }
 
 .stock-badge-danger {
-  background-color: rgba(var(--bs-danger-rgb), 0.15);
-  color: var(--bs-danger);
+  background-color: #f8d7da;
+  color: #721c24;
 }
 
-.product-title {
-  line-height: 1.2;
-  color: var(--bs-gray-800);
+/* Description du produit */
+.description-content {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
-/* Description */
-.description-text {
-  line-height: 1.9;
-  color: var(--bs-gray-700);
-  font-size: 1.05rem;
-  border-left: 4px solid var(--bs-orange);
+/* Prix en promo réorganisé */
+.price-info {
+  display: flex;
+  flex-direction: column;
 }
 
-/* Boutons */
-.shine-effect {
-  position: relative;
-  overflow: hidden;
+.current-price {
+  font-weight: bold;
 }
 
-.shine-effect::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
-  transform: rotate(-45deg);
-  animation: shine 3s infinite;
-  opacity: 0;
+.price-discount-info {
+  display: flex;
+  flex-direction: column;
 }
 
-.shine-effect:hover::after {
+/* Spécifications */
+.spec-item {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.spec-icon {
+  font-size: 1.5rem;
+}
+
+.spec-label {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.spec-value {
+  font-weight: 600;
+}
+
+/* Garanties et avantages */
+.guarantee-badge, .delivery-badge {
+  height: 100%;
+}
+
+/* Similarités */
+.similar-product-title {
+  font-size: 1.8rem;
+  letter-spacing: -0.5px;
+}
+
+/* Responsive design */
+@media (max-width: 992px) {
+  .product-main-image img {
+    max-height: 400px;
   opacity: 1;
 }
 
