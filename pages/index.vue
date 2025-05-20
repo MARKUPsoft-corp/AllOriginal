@@ -653,6 +653,25 @@ const slidePrev = () => {
   const prevIndex = Math.max(0, currentCategoryIndex.value - visibleCategories.value);
   slideCategoryTo(prevIndex);
 };
+// SEO Meta Tags - Section ajoutée pour optimiser le référencement
+useHead({
+  title: 'AllOriginal - Boutique High-Tech Premium au Cameroun',
+  meta: [
+    { name: 'description', content: 'AllOriginal: Votre boutique high-tech premium au Cameroun. Smartphones, ordinateurs et accessoires 100% authentiques avec garantie. Livraison rapide à Douala et dans tout le pays.' },
+    { name: 'keywords', content: 'alloriginal, boutique, high-tech, smartphone, cameroun, douala, ordinateurs, accessoires, tech premium, telephonie' },
+    { property: 'og:title', content: 'AllOriginal - Boutique High-Tech Premium au Cameroun' },
+    { property: 'og:description', content: 'Boutique tech premium proposant des produits high-tech authentiques et garantis au Cameroun. Livraison rapide à Douala et dans tout le pays.' },
+    { property: 'og:image', content: 'https://alloriginal-shop.com/img/alloriginal-hero.jpg' },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: 'https://alloriginal-shop.com' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: 'AllOriginal - Boutique High-Tech Premium au Cameroun' },
+    { name: 'twitter:description', content: 'Boutique tech premium proposant des produits high-tech authentiques et garantis au Cameroun.' },
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://alloriginal-shop.com' }
+  ]
+})
 </script>
 
 <style scoped>

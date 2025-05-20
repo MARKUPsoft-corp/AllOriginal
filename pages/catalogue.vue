@@ -375,13 +375,79 @@ const resetFilters = () => {
   setCategory('tous');
 };
 
-// Observer les changements d'URL
+// Observer les changements d'URL et mettre à jour les métadonnées SEO en fonction de la catégorie
 watch(() => route.query.category, (newCategory) => {
   if (newCategory) {
     activeCategory.value = newCategory;
   } else {
     activeCategory.value = 'tous';
   }
+  
+  // Mettre à jour le SEO en fonction de la catégorie sélectionnée
+  updateSEO();
+});
+
+// Générer les métadonnées SEO dynamiques pour chaque catégorie
+const updateSEO = () => {
+  // Trouver la catégorie courante pour avoir son nom complet
+  const currentCategory = categories.value.find(cat => cat.slug === activeCategory.value);
+  const categoryName = currentCategory ? currentCategory.name : 'Tous les produits';
+  
+  // Adapter les détails SEO en fonction de la catégorie
+  const title = activeCategory.value === 'tous' 
+    ? 'Tous les produits high-tech - AllOriginal Shop'
+    : `${categoryName} - AllOriginal Shop`;
+    
+  const description = activeCategory.value === 'tous'
+    ? 'Découvrez notre sélection complète de produits high-tech: smartphones, ordinateurs, accessoires et plus. Livraison rapide à Douala et dans tout le Cameroun.'
+    : `Découvrez notre sélection de ${categoryName.toLowerCase()} premium et garantis chez AllOriginal. Produits authentiques et service après-vente au Cameroun.`;
+  
+  // Générer les mots-clés adaptés à la catégorie
+  let keywords = 'alloriginal, boutique, tech, cameroun, douala';
+  if (activeCategory.value !== 'tous') {
+    keywords = `${keywords}, ${categoryName.toLowerCase()}, ${activeCategory.value}`;
+    
+    // Ajouter des mots-clés spécifiques pour certaines catégories
+    if (activeCategory.value === 'smartphones') {
+      keywords += ', iphone, samsung, xiaomi, oppo, honor, téléphones';
+    } else if (activeCategory.value === 'ordinateurs') {
+      keywords += ', pc, laptop, macbook, dell, hp, lenovo, asus';
+    } else if (activeCategory.value === 'accessoires') {
+      keywords += ', écouteurs, casques, chargeurs, coques, housses';
+    } else if (activeCategory.value === 'tablettes') {
+      keywords += ', ipad, galaxy tab, android, tablette tactile';
+    }
+  }
+  
+  // Définir l'URL canonique
+  const canonicalUrl = activeCategory.value === 'tous'
+    ? 'https://alloriginal-shop.com/catalogue'
+    : `https://alloriginal-shop.com/catalogue?category=${activeCategory.value}`;
+  
+  // Mettre à jour les balises SEO
+  useHead({
+    title: title,
+    meta: [
+      { name: 'description', content: description },
+      { name: 'keywords', content: keywords },
+      { property: 'og:title', content: title },
+      { property: 'og:description', content: description },
+      { property: 'og:url', content: canonicalUrl },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:image', content: 'https://alloriginal-shop.com/img/catalogue-social.jpg' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: title },
+      { name: 'twitter:description', content: description },
+    ],
+    link: [
+      { rel: 'canonical', href: canonicalUrl }
+    ]
+  });
+};
+
+// Mettre à jour le SEO au chargement initial
+onMounted(() => {
+  updateSEO();
 });
 
 // Convertir les icônes en classes Bootstrap Icons

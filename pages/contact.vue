@@ -263,6 +263,26 @@ const submitForm = async () => {
     isSubmitting.value = false;
   }
 };
+
+// Configuration des métadonnées SEO pour la page contact
+useHead({
+  title: 'Contactez-nous | AllOriginal - Boutique High-Tech Premium au Cameroun',
+  meta: [
+    { name: 'description', content: 'Contactez AllOriginal, votre boutique high-tech premium au Cameroun. Posez vos questions sur nos produits et services ou demandez un devis personnalisé. Service client disponible à Douala et par téléphone.' },
+    { name: 'keywords', content: 'alloriginal, contact, boutique, cameroun, douala, service client, assistance, high-tech, devis, informations, téléphone' },
+    { property: 'og:title', content: 'Contactez-nous | AllOriginal Cameroun' },
+    { property: 'og:description', content: 'Contactez notre équipe pour toute question sur nos produits high-tech authentiques et garantis. Service client réactif basé à Douala, Cameroun.' },
+    { property: 'og:url', content: 'https://alloriginal-shop.com/contact' },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:image', content: 'https://alloriginal-shop.com/img/contact-social.jpg' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: 'Contactez-nous | AllOriginal Cameroun' },
+    { name: 'twitter:description', content: 'Contactez notre équipe pour toute question sur nos produits high-tech authentiques et garantis. Service client disponible à Douala.' }
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://alloriginal-shop.com/contact' }
+  ]
+});
 </script>
 
 <style scoped>

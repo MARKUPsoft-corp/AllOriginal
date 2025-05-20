@@ -1,0 +1,26 @@
+{
+  "name": "AllOriginal - Boutique High-Tech Premium au Cameroun",
+  "short_name": "AllOriginal",
+  "description": "Boutique high-tech premium proposant des smartphones, ordinateurs, accessoires et produits tech authentiques à Douala, Cameroun",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "theme_color": "#ff5722",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "prefer_related_applications": false
+}

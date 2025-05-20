@@ -9,18 +9,24 @@
     </div>
     
     <div class="product-image">
-      <!-- Image du produit si disponible -->
-      <img 
-        v-if="product.main_image" 
-        :src="product.main_image" 
-        :alt="product.name" 
-        class="product-img shadow-lg rounded-4 tilt-effect"
+      <!-- Image du produit avec Cloudinary -->
+      <CloudinaryImage
+        v-if="product.main_image"
+        :src="product.main_image"
+        :alt="product.name"
+        :placeholder-text="product.brand.charAt(0)"
+        image-class="product-img shadow-lg rounded-4 tilt-effect"
+        :width="400"
+        :height="400"
+        :crop="'fill'"
+        :gravity="'auto'"
         loading="lazy"
+        @error="handleImageError"
       />
       <!-- Placeholder si pas d'image -->
-      <div 
+      <div
         v-else
-        class="product-placeholder shadow-lg rounded-4 tilt-effect" 
+        class="product-placeholder shadow-lg rounded-4 tilt-effect"
         :style="{ background: getBrandGradient(product.brand) }"
       >
         <span class="brand-initial">{{ product.brand.charAt(0) }}</span>
@@ -66,6 +72,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, defineProps, computed } from 'vue';
+import CloudinaryImage from '~/components/CloudinaryImage.vue';
 
 // Props du composant
 const props = defineProps({
@@ -79,14 +86,26 @@ const props = defineProps({
 
 // Gestionnaire d'erreur pour les images
 function handleImageError(e) {
-  // Remplacer par un placeholder si l'image ne charge pas
-  e.target.style.display = 'none';
-  e.target.nextElementSibling = document.createElement('div');
-  e.target.nextElementSibling.className = 'product-placeholder shadow-lg rounded-4';
-  e.target.nextElementSibling.style.background = getBrandGradient(props.product.brand);
+  // Chercher le parent de l'image
+  const imageContainer = document.querySelector('.product-image');
+  if (imageContainer && !imageContainer.querySelector('.product-placeholder')) {
+    // Masquer l'image Cloudinary
+    const cloudinaryContainer = imageContainer.querySelector('.cloudinary-image-container');
+    if (cloudinaryContainer) {
+      cloudinaryContainer.style.display = 'none';
+    }
+    
+    // Créer un placeholder
+    const placeholder = document.createElement('div');
+    placeholder.className = 'product-placeholder shadow-lg rounded-4 tilt-effect';
+    placeholder.style.background = getBrandGradient(props.product.brand);
+    placeholder.innerHTML = `
+      <span class="brand-initial">${props.product.brand.charAt(0)}</span>
+      <span class="brand-model opacity-50">${props.product.model || props.product.name.split(' ')[0]}</span>
+    `;
+    imageContainer.appendChild(placeholder);
+  }
 }
-
-// Plus besoin d'écouteurs manuels, le plugin s'en occupe
 
 // Formater le prix avec des espaces
 function formatPrice(price) {

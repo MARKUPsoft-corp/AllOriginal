@@ -49,8 +49,53 @@ export default defineNuxtConfig({
   // Modules
   modules: [
     '@nuxt/image',
-    '@nuxtjs/color-mode'
+    '@nuxtjs/color-mode',
+    '@nuxtjs/cloudinary'
   ],
+  
+  // Configuration Cloudinary
+  cloudinary: {
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
+    apiKey: process.env.CLOUDINARY_API_KEY || '',
+    apiSecret: process.env.CLOUDINARY_API_SECRET || '',
+    useComponent: true,
+    secure: true,
+    configurations: {
+      allOriginalMedia: {
+        quality: 'auto:best',
+        fetchFormat: 'auto',
+        responsive: true,
+        loading: 'lazy',
+        placeholder: 'blur'
+      },
+      profilePicture: {
+        quality: 'auto:good',
+        fetchFormat: 'auto',
+        width: 250,
+        height: 250,
+        crop: 'fill',
+        gravity: 'face'
+      }
+    }
+  },
+  
+  // Configuration @nuxt/image pour utiliser Cloudinary
+  image: {
+    cloudinary: {
+      baseURL: `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME || 'demo'}/image/upload/alloriginal/media/`
+    },
+    providers: {
+      cloudinary: {
+        provider: 'cloudinary',
+        options: {
+          cloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
+          apiKey: process.env.CLOUDINARY_API_KEY || '',
+          apiSecret: process.env.CLOUDINARY_API_SECRET || '',
+          baseURL: 'https://res.cloudinary.com/'
+        }
+      }
+    }
+  },
   
   // Global CSS
   css: [
@@ -93,22 +138,44 @@ export default defineNuxtConfig({
     '/admin/**': { ssr: false } // Pas de redirection automatique pour éviter les boucles
   },
   
-  // App config
+  // App config avec SEO optimisé
   app: {
     head: {
-      title: 'All Original - Boutique High-Tech Premium au Cameroun',
+      titleTemplate: '%s | AllOriginal - Boutique High-Tech Premium au Cameroun',
+      title: 'AllOriginal - Boutique High-Tech Premium au Cameroun',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Découvrez notre sélection complète de produits technologiques haut de gamme. Téléphones, ordinateurs et accessoires high-tech disponibles à Douala, Cameroun.' },
-        { property: 'og:title', content: 'All Original - Boutique High-Tech Premium' },
-        { property: 'og:description', content: 'Découvrez notre sélection complète de produits technologiques haut de gamme au Cameroun.' },
+        { name: 'description', content: 'AllOriginal: Boutique high-tech premium proposant des smartphones, ordinateurs, accessoires et produits tech authentiques et garantis à Douala, Cameroun. Livraison dans tout le pays.' },
+        { name: 'keywords', content: 'alloriginal, high-tech, smartphone, ordinateur, accessoires, tech, cameroun, douala, premium, authentique, garanti, apple, samsung, xiaomi' },
+        { name: 'author', content: 'AllOriginal Shop' },
+        { name: 'robots', content: 'index, follow' },
+        { name: 'googlebot', content: 'index, follow' },
+        { property: 'og:site_name', content: 'AllOriginal Shop' },
+        { property: 'og:title', content: 'AllOriginal - Boutique High-Tech Premium au Cameroun' },
+        { property: 'og:description', content: 'Découvrez notre sélection complète de produits technologiques haut de gamme authentiques et garantis au Cameroun.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:url', content: 'https://alloriginal.cm' },
-        { name: 'format-detection', content: 'telephone=no' }
+        { property: 'og:url', content: 'https://alloriginal-shop.com' },
+        { property: 'og:image', content: 'https://alloriginal-shop.com/img/alloriginal-logo.png' },
+        { property: 'og:image:width', content: '1200' },
+        { property: 'og:image:height', content: '630' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: 'AllOriginal - Boutique High-Tech Premium au Cameroun' },
+        { name: 'twitter:description', content: 'Découvrez notre sélection complète de produits technologiques haut de gamme au Cameroun.' },
+        { name: 'twitter:image', content: 'https://alloriginal-shop.com/img/alloriginal-logo.png' },
+        { name: 'format-detection', content: 'telephone=yes' },
+        { name: 'theme-color', content: '#ff5722' },
+        { hid: 'mobile-web-app-capable', name: 'mobile-web-app-capable', content: 'yes' },
+        { hid: 'apple-mobile-web-app-title', name: 'apple-mobile-web-app-title', content: 'AllOriginal' },
+        { hid: 'application-name', name: 'application-name', content: 'AllOriginal' },
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
+        { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
+        { rel: 'manifest', href: '/site.webmanifest' },
+        { rel: 'canonical', href: 'https://alloriginal-shop.com' },
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap' }
       ]
     }
