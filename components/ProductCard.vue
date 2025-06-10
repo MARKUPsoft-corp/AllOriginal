@@ -238,6 +238,7 @@ const getBrandGradient = (brand) => {
   height: 220px;
   position: relative;
   overflow: hidden;
+  background-color: white;
 }
 
 .product-img {
@@ -247,6 +248,8 @@ const getBrandGradient = (brand) => {
   object-position: center;
   max-height: 180px;
   transition: transform 0.3s ease;
+  background-color: white;
+  pointer-events: none; /* Désactive les interactions de l'image */
 }
 
 .product-placeholder {

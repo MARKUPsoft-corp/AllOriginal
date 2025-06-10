@@ -29,7 +29,7 @@
               <div class="main-image-wrapper position-relative mb-4 rounded-4 overflow-hidden shadow">
               <div 
                   class="product-main-image"
-                  :style="{ background: getBrandGradient(product.brand, activeImageIndex) }"
+                  :style="{ background: 'white' }"
               >
                   <!-- Image du produit avec Cloudinary si disponible -->
                   <CloudinaryImage 
@@ -37,7 +37,7 @@
                     :src="activeImage" 
                     :alt="product.name" 
                     :placeholder-text="product.brand.charAt(0)" 
-                    image-class="w-100 h-100 object-fit-cover"
+                    image-class="w-100 h-100 object-fit-contain"
                     :width="800"
                     :height="800"
                     :crop="'fill'"
@@ -69,11 +69,11 @@
                     :class="{ 'active': activeImageIndex === index }"
                     @click="setActiveImage(index)"
                   >
-                    <div class="thumbnail-inner position-relative overflow-hidden">
+                    <div class="thumbnail-inner position-relative overflow-hidden" style="background-color: white;">
                       <CloudinaryImage 
                         :src="image" 
                         :alt="`Vue ${index + 1} de ${product.name}`" 
-                        image-class="w-100 h-100 object-fit-cover"
+                        image-class="w-100 h-100 object-fit-contain"
                         :width="200"
                         :height="200"
                         :crop="'fill'"
@@ -598,6 +598,7 @@ onMounted(async () => {
   position: relative;
   overflow: hidden;
   transition: transform 0.5s ease;
+  background-color: white;
 }
 
 .brand-initial {
@@ -659,6 +660,7 @@ onMounted(async () => {
   width: 100%;
   height: 100%;
   transition: transform 0.3s ease;
+  background-color: white;
 }
 
 .thumbnail-item:hover .thumbnail-inner {
@@ -683,6 +685,12 @@ onMounted(async () => {
   border-right: 8px solid transparent;
   border-bottom: 8px solid var(--bs-orange);
   transform: translateX(-50%) rotate(180deg);
+}
+
+/* Styles pour désactiver les interactions sur les images */
+.product-main-image img,
+.thumbnail-inner img {
+  pointer-events: none;
 }
 
 /* Spécifications */

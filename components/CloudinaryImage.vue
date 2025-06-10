@@ -148,6 +148,12 @@ const handleImageError = (e) => {
 .cloudinary-image-container {
   overflow: hidden;
   position: relative;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
 }
 
 .placeholder-image {
@@ -167,6 +173,8 @@ const handleImageError = (e) => {
 img {
   max-width: 100%;
   height: auto;
-  object-fit: cover;
+  object-fit: contain;
+  background-color: white;
+  pointer-events: none; /* Supprime les interactions comme les liens sur les images */
 }
 </style>
