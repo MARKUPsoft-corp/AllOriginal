@@ -177,7 +177,7 @@
             
               <!-- Actions -->
               <div class="product-actions mb-4">
-                <div class="d-grid gap-3 d-md-flex">
+                <div class="d-grid gap-3">
                   <a 
                     v-if="product.in_stock"
                     :href="getWhatsAppLink(product)" 
@@ -194,7 +194,7 @@
               </div>
               
               <!-- Information additionnelles -->
-              <div class="product-additional rounded-4 p-4 bg-light">
+              <div class="product-additional rounded-4 p-4 bg-light mb-4">
                 <div class="row g-4">
                   <div class="col-md-6">
                     <div class="guarantee-badge d-flex gap-3 align-items-center">
@@ -788,6 +788,11 @@ onMounted(async () => {
   color: var(--bs-gray-700);
   font-size: 1.05rem;
   border-left: 4px solid var(--bs-orange);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+  position: relative;
+  z-index: 1;
 }
 
 /* Boutons */
@@ -1003,6 +1008,51 @@ onMounted(async () => {
   
   .similar-products-section {
     padding: 4rem 0;
+  }
+}
+
+/* Styles spécifiques pour mobile */
+@media (max-width: 767.98px) {
+  .product-info-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .product-description {
+    order: 1;
+  }
+  
+  .product-actions {
+    order: 2;
+    position: relative;
+    z-index: 10;
+    margin-top: 20px;
+  }
+  
+  .product-additional {
+    order: 3;
+    position: relative;
+    z-index: 5;
+    margin-top: 10px;
+  }
+  
+  /* Ajustement de l'espacement */
+  .product-main-image {
+    height: 350px;
+  }
+  
+  .product-price-container {
+    flex-wrap: wrap;
+  }
+  
+  .product-title {
+    font-size: 1.75rem;
+  }
+  
+  .description-text {
+    clear: both;
+    width: 100%;
+    margin-bottom: 2rem;
   }
 }
 </style> 
