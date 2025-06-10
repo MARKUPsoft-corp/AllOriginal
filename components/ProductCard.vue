@@ -239,6 +239,8 @@ const getBrandGradient = (brand) => {
   position: relative;
   overflow: hidden;
   background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
 .product-img {
@@ -250,6 +252,10 @@ const getBrandGradient = (brand) => {
   transition: transform 0.3s ease;
   background-color: white;
   pointer-events: none; /* Désactive les interactions de l'image */
+}
+
+.product-card:hover .product-img {
+  transform: scale(1.05);
 }
 
 .product-placeholder {

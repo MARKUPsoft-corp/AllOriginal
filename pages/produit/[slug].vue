@@ -44,9 +44,7 @@
                     :gravity="'auto'"
                     loading="lazy"
                   />
-                  <div v-if="activeImage" class="debug-info position-absolute bottom-0 start-0 bg-dark text-white p-2" style="font-size: 0.7rem; opacity: 0.7; max-width: 100%; overflow: hidden; text-overflow: ellipsis;">
-                    URL: {{ activeImage }}
-                  </div>
+
                   <!-- Placeholder si pas d'image -->
                   <template v-else>
                     <div class="brand-model-badge">{{ product.model || product.name.split(' ')[0] }}</div>
@@ -599,6 +597,16 @@ onMounted(async () => {
   overflow: hidden;
   transition: transform 0.5s ease;
   background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.product-main-image img {
+  transition: transform 0.4s ease;
+}
+
+.main-image-wrapper:hover .product-main-image img {
+  transform: scale(1.05);
 }
 
 .brand-initial {
@@ -638,10 +646,6 @@ onMounted(async () => {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.main-image-wrapper:hover .product-main-image {
-  transform: scale(1.03);
-}
-
 .thumbnails-wrapper {
   margin-top: 1.5rem;
 }
@@ -654,6 +658,8 @@ onMounted(async () => {
   transition: all 0.3s ease;
   overflow: hidden;
   position: relative;
+  border-radius: 0.75rem;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
 }
 
 .thumbnail-inner {
@@ -661,6 +667,14 @@ onMounted(async () => {
   height: 100%;
   transition: transform 0.3s ease;
   background-color: white;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumbnail-inner img {
+  transition: transform 0.3s ease;
 }
 
 .thumbnail-item:hover .thumbnail-inner {
