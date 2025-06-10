@@ -235,7 +235,7 @@ const getBrandGradient = (brand) => {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 220px;
+  height: 280px;
   position: relative;
   overflow: hidden;
   background-color: white;
@@ -248,7 +248,7 @@ const getBrandGradient = (brand) => {
   height: 100%;
   object-fit: contain;
   object-position: center;
-  max-height: 180px;
+  max-height: 240px;
   transition: transform 0.3s ease;
   background-color: white;
   pointer-events: none; /* Désactive les interactions de l'image */
@@ -676,5 +676,34 @@ const getBrandGradient = (brand) => {
   background-color: #28a745;
   color: #fff;
   border: none;
+}
+
+/* Styles responsives pour mobile */
+@media (max-width: 767.98px) {
+  .product-image {
+    height: 260px;
+    padding: 1rem;
+  }
+  
+  .product-img {
+    max-height: 220px;
+  }
+  
+  .product-info {
+    padding: 1.25rem;
+  }
+  
+  .product-title {
+    font-size: 1.1rem;
+  }
+  
+  .product-description {
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .product-price {
+    font-size: 1.3rem;
+  }
 }
 </style> 

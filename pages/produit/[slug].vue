@@ -793,6 +793,9 @@ onMounted(async () => {
   hyphens: auto;
   position: relative;
   z-index: 1;
+  height: auto;
+  max-height: none;
+  overflow: visible;
 }
 
 /* Boutons */
@@ -842,20 +845,29 @@ onMounted(async () => {
   word-break: normal !important;
 }
 
-@media (max-width: 767px) {
-  .product-description .full-description {
-    padding: 1rem !important;
-    font-size: 0.95rem !important;
-    line-height: 1.6 !important;
-    -webkit-line-clamp: unset !important;
-    -webkit-box-orient: unset !important;
-    max-height: unset !important;
+@media (max-width: 767.98px) {
+  .description-text {
+    clear: both;
+    width: 100%;
+    margin-bottom: 2rem;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    min-height: 100px;
   }
   
-  /* Forçage des styles pour éviter les troncatures automatiques sur mobile */
   .product-description {
-    max-height: unset !important;
-    overflow: visible !important;
+    width: 100%;
+    height: auto;
+    display: block;
+    position: relative;
+    overflow: visible;
+    margin-bottom: 3rem !important;
+  }
+  
+  .full-description {
+    height: auto !important;
+    max-height: none !important;
   }
 }
 
