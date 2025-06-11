@@ -19,6 +19,18 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://alloriginal-shop.com/a-propos</loc>
+    <lastmod>2025-05-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alloriginal-shop.com/livraison</loc>
+    <lastmod>2025-05-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
 
   <!-- Catégories principales -->
   <url>
@@ -51,6 +63,44 @@
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
+  
+  <!-- Sous-catégories -->
+  <url>
+    <loc>https://alloriginal-shop.com/catalogue?category=smartphones&amp;brand=apple</loc>
+    <lastmod>2025-05-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alloriginal-shop.com/catalogue?category=smartphones&amp;brand=samsung</loc>
+    <lastmod>2025-05-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alloriginal-shop.com/catalogue?category=smartphones&amp;brand=xiaomi</loc>
+    <lastmod>2025-05-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alloriginal-shop.com/catalogue?category=ordinateurs&amp;brand=apple</loc>
+    <lastmod>2025-05-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alloriginal-shop.com/catalogue?category=ordinateurs&amp;brand=dell</loc>
+    <lastmod>2025-05-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alloriginal-shop.com/catalogue?category=ordinateurs&amp;brand=hp</loc>
+    <lastmod>2025-05-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
 
   <!-- Produits populaires (à ajuster avec vos produits réels) -->
   <url>
@@ -67,6 +117,42 @@
   </url>
   <url>
     <loc>https://alloriginal-shop.com/produit/macbook-air-m2</loc>
+    <lastmod>2025-05-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alloriginal-shop.com/produit/dell-xps-13</loc>
+    <lastmod>2025-05-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alloriginal-shop.com/produit/hp-spectre-x360</loc>
+    <lastmod>2025-05-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alloriginal-shop.com/produit/xiaomi-redmi-note-11</loc>
+    <lastmod>2025-05-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alloriginal-shop.com/produit/airpods-pro</loc>
+    <lastmod>2025-05-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alloriginal-shop.com/produit/ipad-air-5</loc>
+    <lastmod>2025-05-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alloriginal-shop.com/produit/samsung-galaxy-tab-s8</loc>
     <lastmod>2025-05-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

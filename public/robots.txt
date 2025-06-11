@@ -9,7 +9,6 @@ Disallow: /cgi-bin/
 
 # Interdire l'accès aux fichiers temporaires ou de développement
 Disallow: /*.json$
-Disallow: /*.xml$
 Disallow: /*.txt$
 Disallow: /*.md$
 Disallow: /*.yml$
@@ -22,6 +21,7 @@ Disallow: /node_modules/
 
 # Autoriser explicitement sitemap.xml
 Allow: /sitemap.xml
+Allow: /*.xml$
 
-# Sitemap
+# Sitemap (généré dynamiquement)
 Sitemap: https://alloriginal-shop.com/sitemap.xml

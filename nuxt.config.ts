@@ -57,8 +57,15 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/image',
     '@nuxtjs/color-mode',
-    '@nuxtjs/cloudinary'
+    '@nuxtjs/cloudinary',
+    '@nuxtjs/sitemap'
   ],
+  
+  // Configuration du sitemap
+  sitemap: {
+    hostname: 'https://alloriginal-shop.com',
+    gzip: true
+  },
   
   // Configuration Cloudinary
   cloudinary: {
@@ -181,6 +188,7 @@ export default defineNuxtConfig({
         { rel: 'apple-touch-icon', href: '/smartphone-icon.svg?v=1' },
         { rel: 'icon', type: 'image/svg+xml', sizes: '32x32', href: '/smartphone-icon.svg?v=1' },
         { rel: 'icon', type: 'image/svg+xml', sizes: '16x16', href: '/smartphone-icon.svg?v=1' },
+        { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/google-icon.png' },
         { rel: 'manifest', href: '/site.webmanifest?v=1' },
         { rel: 'canonical', href: 'https://alloriginal-shop.com' },
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap' }
