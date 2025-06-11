@@ -18,14 +18,19 @@ export default defineEventHandler(async (event) => {
     sitemap.write({ url: '/catalogue', changefreq: 'daily', priority: 0.9 })
     sitemap.write({ url: '/contact', changefreq: 'monthly', priority: 0.8 })
     sitemap.write({ url: '/a-propos', changefreq: 'monthly', priority: 0.7 })
+    sitemap.write({ url: '/livraison', changefreq: 'monthly', priority: 0.7 })
+    sitemap.write({ url: '/conditions-generales', changefreq: 'monthly', priority: 0.6 })
+    sitemap.write({ url: '/politique-confidentialite', changefreq: 'monthly', priority: 0.6 })
+    
+    const apiBaseUrl = config.public.apiBaseUrl || 'https://alloriginal-backend.onrender.com/api'
+    let categories = []
     
     // Récupérer les données de l'API - Catégories
     try {
-      const apiBaseUrl = config.public.apiBaseUrl || 'https://alloriginal-backend.onrender.com/api'
       const categoriesRes = await fetch(`${apiBaseUrl}/categories/`)
       
       if (categoriesRes.ok) {
-        const categories = await categoriesRes.json()
+        categories = await categoriesRes.json()
         
         // Ajouter les routes de catégories
         for (const category of categories) {
@@ -42,7 +47,6 @@ export default defineEventHandler(async (event) => {
     
     // Récupérer les données de l'API - Produits
     try {
-      const apiBaseUrl = config.public.apiBaseUrl || 'https://alloriginal-backend.onrender.com/api'
       const productsRes = await fetch(`${apiBaseUrl}/products/`)
       
       if (productsRes.ok) {
@@ -58,6 +62,58 @@ export default defineEventHandler(async (event) => {
             changefreq: 'monthly', 
             priority: 0.7,
             lastmod: product.updated_at || new Date().toISOString()
+          })
+        }
+        
+        // Ajouter les routes de marques
+        for (const brand of brands) {
+          if (brand) {
+            const brandSlug = brand.toString().toLowerCase().replace(/\s+/g, '-')
+            sitemap.write({
+              url: `/catalogue?brand=${brandSlug}`,
+              changefreq: 'weekly',
+              priority: 0.7
+            })
+          }
+        }
+        
+        // Ajouter les combinaisons catégorie/marque
+        try {
+          if (categories && categories.length > 0) {
+            for (const category of categories) {
+              for (const brand of brands) {
+                if (brand) {
+                  const brandSlug = brand.toString().toLowerCase().replace(/\s+/g, '-')
+                  sitemap.write({
+                    url: `/catalogue?category=${category.slug}&brand=${brandSlug}`,
+                    changefreq: 'weekly',
+                    priority: 0.6
+                  })
+                }
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Erreur lors de la génération des combinaisons catégorie/marque:', error)
+        }
+        
+        // Ajouter les filtres de prix
+        const priceRanges = [
+          { min: 0, max: 100000 },
+          { min: 100000, max: 300000 },
+          { min: 300000, max: 500000 },
+          { min: 500000, max: 1000000 },
+          { min: 1000000, max: null }
+        ]
+        
+        for (const range of priceRanges) {
+          let url = `/catalogue?price_min=${range.min}`
+          if (range.max) url += `&price_max=${range.max}`
+          
+          sitemap.write({
+            url,
+            changefreq: 'weekly',
+            priority: 0.5
           })
         }
       }
