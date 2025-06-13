@@ -14,6 +14,7 @@ export default defineEventHandler(async (event) => {
   
   try {
     // Routes statiques principales
+    // Note: La page /debug a été supprimée et est exclue du sitemap
     sitemap.write({ url: '/', changefreq: 'daily', priority: 1.0 })
     sitemap.write({ url: '/catalogue', changefreq: 'daily', priority: 0.9 })
     sitemap.write({ url: '/contact', changefreq: 'monthly', priority: 0.8 })

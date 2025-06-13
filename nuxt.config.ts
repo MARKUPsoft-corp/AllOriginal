@@ -64,7 +64,8 @@ export default defineNuxtConfig({
   // Configuration du sitemap
   sitemap: {
     hostname: 'https://alloriginal-shop.com',
-    gzip: true
+    gzip: true,
+    exclude: ['/debug']
   },
   
   // Configuration Cloudinary
