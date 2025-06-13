@@ -7,21 +7,17 @@ Disallow: /admin/
 Disallow: /admin-panel/
 Disallow: /cgi-bin/
 
-# Interdire l'accès aux fichiers temporaires ou de développement
-Disallow: /*.json$
-Disallow: /*.txt$
+# Interdire l'accès aux fichiers de développement qui ne sont pas nécessaires au rendu.
+# Nous autorisons les JS et CSS car ils sont nécessaires au rendu des pages Nuxt.
 Disallow: /*.md$
 Disallow: /*.yml$
 Disallow: /*.yaml$
 Disallow: /*.ts$
-Disallow: /*.js$
-Disallow: /*.css$
 Disallow: /dev/
 Disallow: /node_modules/
 
 # Autoriser explicitement sitemap.xml
 Allow: /sitemap.xml
-Allow: /*.xml$
 
 # Sitemap (généré dynamiquement)
 Sitemap: https://alloriginal-shop.com/sitemap.xml
